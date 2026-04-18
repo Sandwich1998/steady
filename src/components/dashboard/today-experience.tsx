@@ -32,16 +32,6 @@ type TodayExperienceProps = {
       averageUrgeIntensity: number | null;
     };
   }[];
-  weeklyHistory: {
-    date: string;
-    label: string;
-    mood: number | null;
-    completed: boolean;
-    completionsCount: number;
-    urgesCount: number;
-    resistedCount: number;
-    actedCount: number;
-  }[];
 };
 
 const moodLabels: Record<number, string> = {
@@ -61,14 +51,16 @@ export function TodayExperience({
   dayReset,
   dayCompleted,
   habits,
-  weeklyHistory,
 }: TodayExperienceProps) {
   const completedCount = habits.filter((habit) => habit.completedToday).length;
   const breakHabits = habits.filter((habit) => habit.type === "BREAK");
   const nextHabit = habits.find((habit) => !habit.completedToday) ?? habits[0] ?? null;
-  const progress = getProgress(completedCount, Math.max(habits.length, 1));
-  const progressStops = weeklyHistory.slice(-7);
+  const totalHabits = Math.max(habits.length, 1);
+  const progress = getProgress(completedCount, totalHabits);
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const radius = 54;
+  const circumference = 2 * Math.PI * radius;
+  const strokeOffset = circumference - circumference * animatedProgress;
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -166,52 +158,77 @@ export function TodayExperience({
           <div className="mt-6 rounded-[26px] border border-white/8 bg-white/[0.04] p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-sm font-semibold text-white">Glow path</div>
+                <div className="text-sm font-semibold text-white">Today</div>
                 <div className="mt-1 text-sm text-white/62">
-                  One lit point means you showed up. That is enough to move the line.
+                  {dayCompleted
+                    ? "You already held the day."
+                    : "One more small action can still lock in the win."}
                 </div>
               </div>
               <div className="rounded-full bg-white/[0.06] px-3 py-1.5 text-sm font-medium text-white/78">
-                {completedCount}/{Math.max(habits.length, 1)} held
+                {completedCount}/{totalHabits} held
               </div>
             </div>
 
-            <div className="mt-5 flex items-center gap-2">
-              {progressStops.map((day, index) => (
-                <div key={day.date} className="flex flex-1 items-center gap-2">
-                  <div className="flex flex-col items-center gap-2">
-                    <div
-                      className={`flex h-11 w-11 items-center justify-center rounded-full border text-sm font-semibold transition ${
-                        day.completed
-                          ? "border-[#f7c85e]/55 bg-[radial-gradient(circle_at_35%_35%,#fff5c4_0%,#f7bf4c_42%,#f08c35_100%)] text-black shadow-[0_18px_40px_-22px_rgba(251,191,36,0.9)]"
-                          : day.mood
-                            ? "border-white/10 bg-white/[0.06] text-white"
-                            : "border-white/8 bg-white/[0.03] text-white/45"
-                      }`}
-                      style={{
-                        transform:
-                          index === progressStops.length - 1 && animatedProgress > 0
-                            ? `scale(${0.94 + animatedProgress * 0.12})`
-                            : undefined,
-                      }}
-                    >
-                      {day.completed ? "✦" : day.mood ?? "·"}
-                    </div>
-                    <div className="text-[10px] uppercase tracking-[0.18em] text-white/42">
-                      {day.label.slice(0, 3)}
-                    </div>
+            <div className="mt-5 flex items-center gap-4">
+              <div className="relative shrink-0">
+                <svg viewBox="0 0 132 132" className="h-[7.2rem] w-[7.2rem] -rotate-90">
+                  <circle
+                    cx="66"
+                    cy="66"
+                    r={radius}
+                    stroke="rgba(255,255,255,0.08)"
+                    strokeWidth="10"
+                    fill="none"
+                  />
+                  <circle
+                    cx="66"
+                    cy="66"
+                    r={radius}
+                    stroke="url(#todayProgressRing)"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    fill="none"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeOffset}
+                    className="transition-[stroke-dashoffset] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  />
+                  <defs>
+                    <linearGradient id="todayProgressRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                      <stop offset="100%" stopColor="rgba(255,255,255,0.35)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="text-[1.55rem] font-semibold text-white">
+                    {completedCount}/{totalHabits}
                   </div>
-                  {index < progressStops.length - 1 ? (
-                    <div
-                      className={`h-[2px] flex-1 rounded-full ${
-                        day.completed
-                          ? "bg-[linear-gradient(90deg,rgba(247,201,91,0.52),rgba(124,108,255,0.35))]"
-                          : "bg-white/10"
-                      }`}
-                    />
-                  ) : null}
+                  <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.22em] text-white/40">
+                    today
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="grid gap-2">
+                  {habits.slice(0, 4).map((habit) => (
+                    <div key={habit.id} className="flex items-center gap-3">
+                      <div
+                        className={`h-2.5 w-2.5 rounded-full ${
+                          habit.completedToday ? "bg-white" : "bg-white/24"
+                        }`}
+                      />
+                      <div className="min-w-0 text-sm text-white/76">
+                        <span className="font-medium text-white">
+                          {habit.completedToday ? "Held" : "Open"}
+                        </span>{" "}
+                        <span className="truncate">{habit.name}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

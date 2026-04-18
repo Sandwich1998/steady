@@ -112,24 +112,37 @@ export function MobileShell({ data }: MobileShellProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   const breakHabits = data.habits.filter((habit) => habit.type === "BREAK");
+  const compactHeader = activeTab !== "today";
+  const screenLabel =
+    activeTab === "today" ? "Daily companion" : activeTab === "progress" ? "Reflection" : "Craft";
+  const screenTitle =
+    activeTab === "today" ? "Steady" : activeTab === "progress" ? "Progress" : "Manage";
   return (
     <main className="min-h-screen bg-[#09090b] px-0 text-white">
       <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col bg-[#111111] sm:min-h-[100svh] sm:border-x sm:border-white/5 sm:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_40px_120px_-40px_rgba(0,0,0,0.8)]">
         <header
-          className="sticky top-0 z-30 border-b border-white/6 bg-[#111111]/92 px-4 pb-3 backdrop-blur"
-          style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}
+          className={`sticky top-0 z-30 border-b border-white/6 bg-[#111111]/92 px-4 backdrop-blur ${compactHeader ? "pb-2.5" : "pb-3"}`}
+          style={{ paddingTop: `calc(env(safe-area-inset-top) + ${compactHeader ? "10px" : "12px"})` }}
         >
           <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-3">
+            <div className={`flex items-start ${compactHeader ? "gap-2.5" : "gap-3"}`}>
               <AppMark size="sm" />
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
-                  Daily companion
+                  {screenLabel}
                 </div>
-                <h1 className="mt-1.5 text-[1.6rem] font-semibold leading-none tracking-tight">
-                  Steady
+                <h1
+                  className={`font-semibold leading-none tracking-tight ${compactHeader ? "mt-1 text-[1.25rem]" : "mt-1.5 text-[1.6rem]"}`}
+                >
+                  {screenTitle}
                 </h1>
-                <p className="mt-1 text-sm text-white/72">{data.today}</p>
+                <p className={`text-white/72 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
+                  {compactHeader
+                    ? activeTab === "progress"
+                      ? "A calmer read of the week."
+                      : "Shape habits with cleaner intent."
+                    : data.today}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -159,7 +172,6 @@ export function MobileShell({ data }: MobileShellProps) {
               dayReset={data.dayReset}
               dayCompleted={data.stats.dayCompleted}
               habits={data.habits}
-              weeklyHistory={data.weeklyHistory}
             />
           ) : null}
 
@@ -172,19 +184,28 @@ export function MobileShell({ data }: MobileShellProps) {
 
           {activeTab === "manage" ? (
             <div className="mt-5 grid gap-4">
+              <section className="overflow-hidden rounded-[30px] border border-white/8 bg-[radial-gradient(circle_at_top,rgba(124,108,255,0.18),transparent_34%),linear-gradient(180deg,#171727_0%,#121212_100%)] px-5 py-5">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
+                  Habit studio
+                </div>
+                <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-white">
+                  Shape what you want to repeat.
+                </h2>
+                <p className="mt-2 max-w-[16rem] text-sm leading-6 text-white/70">
+                  Add a rhythm with a tiny floor so the habit feels easy to begin and easy to keep.
+                </p>
+              </section>
               <CreateHabitForm />
-              <section className="rounded-[28px] border border-white/6 bg-[#171717] p-5">
+              <section className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
                   Gentle overview
                 </div>
-                <div className="mt-4 grid gap-3">
-                  <div className="rounded-2xl bg-white/[0.03] p-4">
-                    <div className="text-sm text-white/72">Habits you are growing</div>
-                    <div className="mt-1 text-2xl font-semibold">{data.stats.buildHabits}</div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/78">
+                    <span className="text-white">Growing:</span> {data.stats.buildHabits}
                   </div>
-                  <div className="rounded-2xl bg-white/[0.03] p-4">
-                    <div className="text-sm text-white/72">Loops you are softening</div>
-                    <div className="mt-1 text-2xl font-semibold">{breakHabits.length}</div>
+                  <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/78">
+                    <span className="text-white">Softening:</span> {breakHabits.length}
                   </div>
                 </div>
               </section>

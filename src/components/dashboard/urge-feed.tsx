@@ -18,38 +18,39 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
   const visibleUrges = recentUrges.slice(0, 4);
 
   return (
-    <Card title="Pressure notes" description="A light look at the latest urge moments.">
+    <Card title="Pressure notes" description="A clean line of recent urge moments." variant="soft">
       {recentUrges.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-white/72">
           No recent urge notes. When a moment spikes, log it and let it pass.
         </p>
       ) : (
-        <div className="grid gap-3">
-          {visibleUrges.map((urge) => (
-            <article
-              key={urge.id}
-              className="flex items-center justify-between gap-3 rounded-[24px] border border-white/8 bg-white/[0.03] p-4"
-            >
-              <div className="min-w-0 space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="truncate text-sm font-semibold text-white">{urge.habitName}</h3>
-                  <span
-                    className={`rounded-full px-2 py-1 text-xs font-semibold ${
-                      urge.habitType === "BREAK"
-                        ? "bg-[#3b1e23] text-[#f18da0]"
-                        : "bg-[#1d2d4e] text-[#8fb0ff]"
-                    }`}
-                  >
-                    {urge.habitType === "BREAK" ? "Break habit" : "Build habit"}
-                  </span>
+        <div className="relative">
+          <div className="pointer-events-none absolute bottom-0 left-[7px] top-1 w-px bg-white/8" />
+          <div className="grid gap-4">
+            {visibleUrges.map((urge) => (
+              <article key={urge.id} className="relative grid grid-cols-[auto_1fr_auto] items-start gap-3">
+                <div
+                  className={`mt-1.5 h-4 w-4 rounded-full border ${
+                    urge.outcome === "RESISTED"
+                      ? "border-emerald-300/50 bg-emerald-300 shadow-[0_0_14px_rgba(110,231,183,0.8)]"
+                      : "border-rose-300/50 bg-rose-300 shadow-[0_0_14px_rgba(251,113,133,0.65)]"
+                  }`}
+                />
+                <div className="min-w-0 border-b border-white/6 pb-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="truncate text-sm font-semibold text-white">{urge.habitName}</h3>
+                    <span className="text-xs font-medium uppercase tracking-[0.16em] text-white/42">
+                      {urge.habitType === "BREAK" ? "Break" : "Build"}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-white/70">
+                    {urge.outcome === "RESISTED" ? "Held the line" : "Acted on it"} • intensity {urge.intensity}
+                  </p>
                 </div>
-                <p className="text-sm text-white/70">
-                  {urge.outcome === "RESISTED" ? "Resisted" : "Acted"} at intensity {urge.intensity}
-                </p>
-              </div>
-              <div className="shrink-0 text-right text-sm text-white/70">{urge.createdAtLabel}</div>
-            </article>
-          ))}
+                <div className="pt-0.5 text-right text-sm text-white/62">{urge.createdAtLabel}</div>
+              </article>
+            ))}
+          </div>
           {recentUrges.length > visibleUrges.length ? (
             <div className="text-center text-xs font-medium uppercase tracking-[0.18em] text-white/60">
               Showing latest {visibleUrges.length}

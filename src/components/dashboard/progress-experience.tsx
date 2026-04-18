@@ -20,13 +20,16 @@ type ProgressExperienceProps = {
 
 const moodTone = ["Quiet", "Low", "Steady", "Good", "Bright", "Strong"];
 
+function getProgress(value: number, total: number) {
+  if (total <= 0) return 0;
+  return Math.min(value / total, 1);
+}
+
 export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceProps) {
   const brightDays = weeklyHistory.filter((day) => day.completed).length;
   const calmDays = weeklyHistory.filter((day) => day.resistedCount >= day.actedCount).length;
-  const aliveDays = weeklyHistory.filter((day) => day.mood !== null).length;
   const bestDay = [...weeklyHistory].sort((a, b) => b.completionsCount - a.completionsCount)[0] ?? null;
   const totalCompletions = weeklyHistory.reduce((sum, day) => sum + day.completionsCount, 0);
-  const totalActed = weeklyHistory.reduce((sum, day) => sum + day.actedCount, 0);
   const averageMoodSource = weeklyHistory.filter((day) => day.mood !== null);
   const moodAverage =
     averageMoodSource.length > 0
@@ -35,6 +38,12 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             averageMoodSource.length,
         )
       : null;
+  const ringRadius = 34;
+  const ringCircumference = 2 * Math.PI * ringRadius;
+  const completionOffset = ringCircumference - ringCircumference * getProgress(brightDays, 7);
+  const calmOffset = ringCircumference - ringCircumference * getProgress(calmDays, 7);
+  const moodOffset =
+    ringCircumference - ringCircumference * getProgress(moodAverage ?? 0, 5);
 
   return (
     <div className="grid gap-4">
@@ -49,79 +58,118 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
           Progress lives in return, not perfection. This view is for noticing the pattern, not judging it.
         </p>
 
-        <div className="mt-6 rounded-[26px] border border-white/8 bg-white/[0.04] p-4">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-sm font-semibold text-white">Glow path</div>
-              <div className="mt-1 text-sm text-white/62">
-                Each lit node is a day where you moved the week forward.
+        <div className="mt-6 grid grid-cols-3 gap-3">
+          <article className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+            <div className="relative mx-auto h-[5.25rem] w-[5.25rem]">
+              <svg viewBox="0 0 84 84" className="-rotate-90">
+                <circle cx="42" cy="42" r={ringRadius} stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
+                <circle
+                  cx="42"
+                  cy="42"
+                  r={ringRadius}
+                  stroke="url(#completionRing)"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={completionOffset}
+                />
+                <defs>
+                  <linearGradient id="completionRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.35)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-xl font-semibold text-white">{brightDays}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">lit</div>
               </div>
             </div>
-            <div className="rounded-full bg-white/[0.06] px-3 py-1.5 text-sm font-medium text-white/78">
-              {brightDays}/7 lit
-            </div>
-          </div>
+            <div className="mt-3 text-center text-sm font-semibold text-white">Week wins</div>
+            <div className="mt-1 text-center text-sm text-white/62">Days you showed up</div>
+          </article>
 
-          <div className="relative mt-5">
-            <div className="pointer-events-none absolute inset-x-5 top-6 h-[2px] rounded-full bg-white/10" />
-            <div
-              className="pointer-events-none absolute left-5 top-6 h-[2px] rounded-full bg-[linear-gradient(90deg,rgba(247,201,91,0.52),rgba(124,108,255,0.35))]"
-              style={{
-                width: `${weeklyHistory.length > 1 ? ((brightDays - 1) / (weeklyHistory.length - 1)) * 100 : 0}%`,
-              }}
-            />
-            <div className="relative grid grid-cols-7 gap-1 sm:gap-2">
-              {weeklyHistory.map((day) => (
-                <div key={day.date} className="flex min-w-0 flex-col items-center gap-2">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold sm:h-12 sm:w-12 ${
-                      day.completed
-                        ? "border-[#f7c85e]/55 bg-[radial-gradient(circle_at_35%_35%,#fff5c4_0%,#f7bf4c_42%,#f08c35_100%)] text-black shadow-[0_18px_44px_-24px_rgba(251,191,36,0.9)]"
-                        : day.mood
-                          ? "border-white/10 bg-white/[0.06] text-white"
-                          : "border-white/8 bg-white/[0.03] text-white/45"
-                    }`}
-                  >
-                    {day.completed ? "✦" : day.mood ?? "·"}
-                  </div>
-                  <div className="text-center text-[10px] uppercase tracking-[0.16em] text-white/40 sm:text-[11px] sm:tracking-[0.18em]">
-                    {day.label.slice(0, 3)}
-                  </div>
-                </div>
-              ))}
+          <article className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+            <div className="relative mx-auto h-[5.25rem] w-[5.25rem]">
+              <svg viewBox="0 0 84 84" className="-rotate-90">
+                <circle cx="42" cy="42" r={ringRadius} stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
+                <circle
+                  cx="42"
+                  cy="42"
+                  r={ringRadius}
+                  stroke="url(#calmRing)"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={calmOffset}
+                />
+                <defs>
+                  <linearGradient id="calmRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.82)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.22)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-xl font-semibold text-white">{calmDays}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">calm</div>
+              </div>
             </div>
-          </div>
+            <div className="mt-3 text-center text-sm font-semibold text-white">Pressure</div>
+            <div className="mt-1 text-center text-sm text-white/62">Days you held more than slipped</div>
+          </article>
+
+          <article className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+            <div className="relative mx-auto h-[5.25rem] w-[5.25rem]">
+              <svg viewBox="0 0 84 84" className="-rotate-90">
+                <circle cx="42" cy="42" r={ringRadius} stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
+                <circle
+                  cx="42"
+                  cy="42"
+                  r={ringRadius}
+                  stroke="url(#moodRing)"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={moodOffset}
+                />
+                <defs>
+                  <linearGradient id="moodRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.74)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.18)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-lg font-semibold text-white">{moodAverage ?? "-"}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">tone</div>
+              </div>
+            </div>
+            <div className="mt-3 text-center text-sm font-semibold text-white">Mood tone</div>
+            <div className="mt-1 text-center text-sm text-white/62">
+              {moodAverage ? moodTone[moodAverage] : "Unmarked"}
+            </div>
+          </article>
         </div>
       </section>
 
       <section className="grid gap-3">
-        <div className="grid grid-cols-2 gap-3">
-          <article className="rounded-[26px] border border-white/8 bg-[#181818] p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
-              Week energy
-            </div>
-            <div className="mt-3 text-3xl font-semibold text-white">
-              {moodAverage ? moodTone[moodAverage] : "Unmarked"}
-            </div>
-            <div className="mt-2 text-sm leading-6 text-white/68">
-              {aliveDays > 0 ? `${aliveDays} check-ins gave this week a clearer tone.` : "No reset pattern yet."}
-            </div>
-          </article>
-
-          <article className="rounded-[26px] border border-white/8 bg-[#181818] p-4">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
-              Pressure balance
-            </div>
-            <div className="mt-3 text-3xl font-semibold text-white">
-              {calmDays > 0 ? `${calmDays} calm` : "Open"}
-            </div>
-            <div className="mt-2 text-sm leading-6 text-white/68">
-              {stats.urgesResisted} resisted, {totalActed} acted. The direction matters more than the total.
-            </div>
-          </article>
+        <div className="flex flex-wrap gap-2">
+          <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+            <span className="text-white">Week energy:</span> {moodAverage ? moodTone[moodAverage] : "Unmarked"}
+          </div>
+          <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+            <span className="text-white">Pressure:</span> {calmDays > 0 ? `${calmDays} calm days` : "Open"}
+          </div>
+          <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+            <span className="text-white">Wins:</span> {totalCompletions}
+          </div>
         </div>
 
-        <article className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5">
+        <article className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-white">What stood out</div>
@@ -134,8 +182,8 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3">
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.02] p-4">
+          <div className="mt-4 grid gap-4">
+            <div className="rounded-[22px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.02)_100%)] p-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/48">
                 Brightest moment
               </div>
@@ -146,11 +194,11 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
               </div>
             </div>
 
-            <div className="grid gap-2">
+            <div className="grid gap-1">
               {weeklyHistory.map((day) => (
                 <div
                   key={day.date}
-                  className="flex items-center justify-between gap-3 rounded-[20px] border border-white/8 bg-white/[0.02] px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-[18px] px-1 py-3"
                 >
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-white">{day.label}</div>
@@ -180,7 +228,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
           </div>
         </article>
 
-        <article className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5">
+        <article className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
           <div className="text-sm font-semibold text-white">Your practice mix</div>
           <div className="mt-1 text-sm text-white/62">
             What you are building and what you are trying to soften.
