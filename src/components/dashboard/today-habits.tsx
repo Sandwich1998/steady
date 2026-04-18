@@ -37,9 +37,13 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   );
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const completedCount = habits.filter((habit) => habit.completedToday).length;
   const selectedHabit = habits.find((habit) => habit.id === selectedHabitId) ?? null;
   const nextHabit = habits.find((habit) => !habit.completedToday) ?? habits[0] ?? null;
-  const queueHabits = habits.filter((habit) => habit.id !== nextHabit?.id);
+  const queueHabits = habits.filter(
+    (habit) => !habit.completedToday && habit.id !== nextHabit?.id,
+  );
+  const allHeld = habits.length > 0 && completedCount === habits.length;
 
   useEffect(() => {
     if (!successMessage) return;
@@ -126,21 +130,19 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   return (
     <>
       <section id="today-habits" className="grid gap-4">
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/52">
-              Next hold
+        {allHeld ? (
+          <article className="rounded-[30px] border border-white/8 bg-white/[0.035] px-5 py-5">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/46">
+              All held
             </div>
-            <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">
-              {nextHabit?.completedToday ? "Today's list is settled." : "One thing, then you're clear."}
+            <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-white">
+              Nothing else needs doing here.
             </h3>
-          </div>
-          <div className="rounded-full bg-white/[0.05] px-3 py-1.5 text-sm font-medium text-white/72">
-            {habits.filter((habit) => habit.completedToday).length}/{habits.length} complete
-          </div>
-        </div>
-
-        {nextHabit ? (
+            <p className="mt-2 max-w-[18rem] text-sm leading-6 text-white/68">
+              If the day turns slippery later, urge help is still one tap away.
+            </p>
+          </article>
+        ) : nextHabit ? (
           <article
             className={`relative overflow-hidden rounded-[30px] border px-5 py-5 transition ${
               celebratingHabitId === nextHabit.id
@@ -154,7 +156,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <>
                 <div className="animate-success-burst pointer-events-none absolute inset-0 rounded-[30px] border border-emerald-300/35" />
                 <div className="pointer-events-none absolute right-5 top-5 rounded-full bg-emerald-400/18 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-200">
-                  Win locked
+                  Held
                 </div>
               </>
             ) : null}
@@ -162,6 +164,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             <div className="relative flex items-start justify-between gap-4">
               <div className="max-w-[14rem]">
                 <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-xs font-semibold text-white/62">
+                    Right now
+                  </span>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                       nextHabit.type === "BUILD"
@@ -169,10 +174,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                         : "bg-[#432229] text-[#f5a0af]"
                     }`}
                   >
-                    {nextHabit.type === "BUILD" ? "Build" : "Break"}
-                  </span>
-                  <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-xs font-semibold text-white/70">
-                    {nextHabit.completedToday ? "Held" : "On deck"}
+                    {nextHabit.type === "BUILD" ? "Repeat" : "Loosen"}
                   </span>
                 </div>
                 <h4 className="mt-4 text-[1.7rem] font-semibold leading-[1.05] tracking-tight text-white">
@@ -188,7 +190,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 onClick={() => setSelectedHabitId(nextHabit.id)}
                 className="flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white/80"
               >
-                View
+                Details
               </button>
             </div>
 
@@ -203,28 +205,26 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     : "bg-[#3554d1] text-white shadow-[0_16px_42px_-24px_rgba(69,101,235,1)] hover:scale-[1.01] hover:bg-[#4565eb] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
-                {nextHabit.completedToday ? "Held today" : "Mark held"}
+                {nextHabit.completedToday ? "Held today" : "Hold this"}
               </button>
               <div className="rounded-full bg-white/[0.05] px-3 py-2 text-sm text-white/72">
-                {nextHabit.type === "BUILD" ? "To repeat" : "To loosen"}
+                {queueHabits.length} more after this
               </div>
             </div>
           </article>
         ) : null}
 
         {queueHabits.length > 0 ? (
-          <section className="rounded-[28px] border border-white/8 bg-white/[0.03] p-4">
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-white">Later today</div>
-              <div className="text-xs uppercase tracking-[0.18em] text-white/42">
-                Swipe
-              </div>
+          <section className="grid gap-3">
+            <div className="flex items-center justify-between gap-3 px-1">
+              <div className="text-sm font-semibold text-white">Still there</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-white/42">Swipe</div>
             </div>
-            <div className="mt-3 grid gap-3">
+            <div className="grid gap-3">
               {queueHabits.map((habit) => (
                 <div
                   key={habit.id}
-                  className={`relative overflow-hidden rounded-[22px] border bg-[#191919] transition-shadow ${
+                  className={`relative overflow-hidden rounded-[22px] border bg-white/[0.03] transition-shadow ${
                     swipedOpenId === habit.id
                       ? "border-[#3554d1]/45 shadow-[0_18px_50px_-34px_rgba(69,101,235,0.95)]"
                       : "border-white/8"
@@ -244,7 +244,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                       onClick={() => setSelectedHabitId(habit.id)}
                       className="min-h-11 rounded-full bg-[#24345f] px-4 py-2.5 text-sm font-semibold text-[#adc0ff]"
                     >
-                      View
+                      Details
                     </button>
                   </div>
                   <button
@@ -257,7 +257,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     onPointerMove={(event) => moveSwipe(habit.id, event.clientX)}
                     onPointerUp={() => endSwipe(habit.id)}
                     onPointerCancel={() => endSwipe(habit.id)}
-                    className={`relative flex min-h-11 w-full items-center justify-between gap-3 bg-[#191919] px-4 py-3 text-left will-change-transform ${
+                    className={`relative flex min-h-11 w-full items-center justify-between gap-3 bg-transparent px-4 py-3 text-left will-change-transform ${
                       draggingHabitId === habit.id
                         ? ""
                         : "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
