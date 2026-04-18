@@ -85,7 +85,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             </div>
           ) : null
         ) : (
-        <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-4">
+        <div className="app-card-soft rounded-[24px] p-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="text-sm font-semibold text-white">Need a steadying pause?</div>
@@ -96,13 +96,13 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             <button
               type="button"
               onClick={() => setIsOpen(true)}
-              className="pressable shrink-0 rounded-full bg-[#3554d1] px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_34px_-22px_rgba(69,101,235,0.95)] hover:bg-[#4565eb]"
+              className="pressable app-btn-primary shrink-0 rounded-full px-4 py-3 text-sm font-semibold"
             >
               I feel an urge
             </button>
           </div>
           {savedMessage ? (
-            <div className="animate-success-toast mt-4 rounded-[18px] bg-[#1d3b2a] px-4 py-3 text-sm text-[#9be4b6]">
+            <div className="animate-success-toast mt-4 rounded-[18px] bg-[rgba(121,219,198,0.14)] px-4 py-3 text-sm text-[var(--accent-mint)]">
               {savedMessage}
             </div>
           ) : null}
@@ -117,7 +117,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             className="absolute inset-0"
           />
           <form
-            className="animate-sheet-rise relative z-10 w-full rounded-t-[34px] border border-white/8 bg-[#17171a] p-5 shadow-[0_-30px_80px_-30px_rgba(0,0,0,0.95)]"
+            className="app-card animate-sheet-rise relative z-10 w-full rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(7,16,20,0.95)]"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
             onSubmit={handleSubmit}
           >
@@ -152,7 +152,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   id="urge-habit"
                   value={selectedHabitId}
                   onChange={(event) => setHabitId(event.target.value)}
-                  className="min-h-11 rounded-[20px] border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
+                  className="app-field rounded-[20px] px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
                 >
                   {breakHabits.map((habit) => (
                     <option key={habit.id} value={habit.id}>
@@ -172,8 +172,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                       onClick={() => setIntensity(value)}
                       className={`pressable min-h-11 rounded-[18px] border px-3 py-3 text-sm font-semibold ${
                         value === intensity
-                          ? "border-[#3554d1] bg-[#3554d1] text-white shadow-[0_12px_30px_-18px_rgba(69,101,235,1)]"
-                          : "border-white/8 bg-white/[0.03] text-white/80 hover:border-white/15"
+                          ? "border-[var(--accent-mint)] bg-[rgba(121,219,198,0.18)] text-white shadow-[0_12px_30px_-18px_rgba(121,219,198,0.5)]"
+                          : "border-white/8 bg-white/[0.04] text-white/80 hover:border-white/15"
                       }`}
                     >
                       {value}
@@ -190,8 +190,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                     onClick={() => setOutcome("RESISTED")}
                     className={`pressable min-h-11 rounded-[22px] border px-4 py-4 text-left ${
                       outcome === "RESISTED"
-                        ? "border-[#2f7c59] bg-[#214635] text-white shadow-[0_12px_30px_-20px_rgba(47,124,89,1)]"
-                        : "border-white/8 bg-white/[0.03] text-white/80 hover:border-white/15"
+                        ? "border-[var(--accent-mint)] bg-[rgba(121,219,198,0.16)] text-white shadow-[0_12px_30px_-20px_rgba(121,219,198,0.42)]"
+                        : "border-white/8 bg-white/[0.04] text-white/80 hover:border-white/15"
                     }`}
                   >
                       <div className="text-base font-semibold">I resisted it</div>
@@ -204,8 +204,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                     onClick={() => setOutcome("ACTED")}
                     className={`pressable min-h-11 rounded-[22px] border px-4 py-4 text-left ${
                       outcome === "ACTED"
-                        ? "border-[#85384a] bg-[#4c2631] text-white shadow-[0_12px_30px_-20px_rgba(133,56,74,1)]"
-                        : "border-white/8 bg-white/[0.03] text-white/80 hover:border-white/15"
+                        ? "border-[var(--accent-rose)] bg-[rgba(255,171,157,0.14)] text-white shadow-[0_12px_30px_-20px_rgba(255,171,157,0.34)]"
+                        : "border-white/8 bg-white/[0.04] text-white/80 hover:border-white/15"
                     }`}
                   >
                       <div className="text-base font-semibold">I acted on it</div>
@@ -220,7 +220,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             <button
               type="submit"
               disabled={!selectedHabitId || isPending}
-              className="pressable mt-5 min-h-11 w-full rounded-full bg-[#3554d1] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-24px_rgba(69,101,235,1)] hover:bg-[#4565eb] disabled:cursor-not-allowed disabled:opacity-60"
+              className="pressable app-btn-primary mt-5 min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
               Save this moment
             </button>

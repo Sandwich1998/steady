@@ -87,13 +87,13 @@ export function DayResetCard({
         description="Check in with yourself first. Pick the point on the scale that feels honest, then begin from there."
         action={
           currentMood ? (
-            <div className="rounded-full bg-[#1d3b2a] px-3 py-1 text-sm font-medium text-[#72d397]">
+            <div className="rounded-full bg-[rgba(121,219,198,0.16)] px-3 py-1 text-sm font-medium text-[var(--accent-mint)]">
               Day started
             </div>
           ) : null
         }
       >
-        <div className="rounded-[24px] border border-white/6 bg-white/[0.025] p-4">
+        <div className="app-card-soft rounded-[24px] p-4">
         <div className="flex items-end justify-between gap-4">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
@@ -111,7 +111,7 @@ export function DayResetCard({
             <div className="mt-2 text-2xl font-semibold text-white">{selectedMood}/5</div>
           </div>
         </div>
-        <div className="mt-4 h-2 rounded-full bg-[linear-gradient(90deg,rgba(251,113,133,0.9)_0%,rgba(251,146,60,0.9)_25%,rgba(252,211,77,0.95)_50%,rgba(132,204,22,0.9)_75%,rgba(52,211,153,0.95)_100%)]" />
+        <div className="mt-4 h-2 rounded-full bg-[linear-gradient(90deg,rgba(255,171,157,0.9)_0%,rgba(255,200,155,0.92)_38%,rgba(184,179,255,0.9)_72%,rgba(121,219,198,0.92)_100%)]" />
         <div className="mt-2 flex items-center justify-between text-xs font-medium uppercase tracking-[0.18em] text-white/60">
           <span>Low</span>
           <span>High</span>
@@ -119,7 +119,7 @@ export function DayResetCard({
       </div>
 
       {dayStarted ? (
-        <div className="rounded-[24px] border border-white/8 bg-white/[0.03] px-4 py-4">
+        <div className="app-card-soft rounded-[24px] px-4 py-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
@@ -145,7 +145,7 @@ export function DayResetCard({
                 className={`rounded-[24px] border px-4 py-4 text-left transition ${
                   active
                     ? mood.activeClass
-                    : "border-white/8 bg-white/[0.03] text-white/68 hover:border-white/15 hover:bg-white/[0.045]"
+                    : "border-white/8 bg-[rgba(255,255,255,0.045)] text-white/72 hover:border-white/15 hover:bg-white/[0.07]"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -173,7 +173,7 @@ export function DayResetCard({
           type="button"
           onClick={startDay}
           disabled={isPending || dayStarted}
-          className="rounded-full bg-[#3554d1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4565eb] disabled:cursor-not-allowed disabled:opacity-60"
+          className="pressable app-btn-primary rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           {dayStarted ? "Day started" : "Begin today"}
         </button>

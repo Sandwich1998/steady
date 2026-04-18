@@ -26,16 +26,16 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
       ) : (
         <div className="relative">
           <div className="pointer-events-none absolute bottom-0 left-[7px] top-1 w-px bg-white/8" />
-          <div className="grid gap-4">
-            {visibleUrges.map((urge) => (
-              <article key={urge.id} className="relative grid grid-cols-[auto_1fr_auto] items-start gap-3">
-                <div
-                  className={`mt-1.5 h-4 w-4 rounded-full border ${
-                    urge.outcome === "RESISTED"
-                      ? "border-emerald-300/50 bg-emerald-300 shadow-[0_0_14px_rgba(110,231,183,0.8)]"
-                      : "border-rose-300/50 bg-rose-300 shadow-[0_0_14px_rgba(251,113,133,0.65)]"
-                  }`}
-                />
+            <div className="grid gap-4">
+              {visibleUrges.map((urge) => (
+                <article key={urge.id} className="relative grid grid-cols-[auto_1fr_auto] items-start gap-3">
+                  <div
+                    className={`mt-1.5 h-4 w-4 rounded-full border ${
+                      urge.outcome === "RESISTED"
+                      ? "border-[rgba(121,219,198,0.5)] bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(121,219,198,0.65)]"
+                      : "border-[rgba(255,171,157,0.5)] bg-[var(--accent-rose)] shadow-[0_0_14px_rgba(255,171,157,0.55)]"
+                    }`}
+                  />
                 <div className="min-w-0 border-b border-white/6 pb-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="truncate text-sm font-semibold text-white">{urge.habitName}</h3>

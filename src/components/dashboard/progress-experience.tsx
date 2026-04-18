@@ -47,7 +47,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
 
   return (
     <div className="grid gap-4">
-      <section className="overflow-hidden rounded-[32px] border border-white/8 bg-[radial-gradient(circle_at_top,rgba(124,108,255,0.22),transparent_38%),radial-gradient(circle_at_18%_22%,rgba(247,201,91,0.18),transparent_26%),linear-gradient(180deg,#181629_0%,#111111_100%)] px-5 py-6 shadow-[0_32px_90px_-48px_rgba(124,108,255,0.85)]">
+      <section className="app-hero overflow-hidden rounded-[32px] px-5 py-6">
         <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
           Reflection
         </div>
@@ -59,7 +59,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
         </p>
 
         <div className="mt-6 grid grid-cols-3 gap-3">
-          <article className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+          <article className="app-card-soft rounded-[24px] p-4">
             <div className="relative mx-auto h-[5.25rem] w-[5.25rem]">
               <svg viewBox="0 0 84 84" className="-rotate-90">
                 <circle cx="42" cy="42" r={ringRadius} stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
@@ -90,7 +90,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             <div className="mt-1 text-center text-sm text-white/62">Days you showed up</div>
           </article>
 
-          <article className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+          <article className="app-card-soft rounded-[24px] p-4">
             <div className="relative mx-auto h-[5.25rem] w-[5.25rem]">
               <svg viewBox="0 0 84 84" className="-rotate-90">
                 <circle cx="42" cy="42" r={ringRadius} stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
@@ -121,7 +121,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             <div className="mt-1 text-center text-sm text-white/62">Days you held more than slipped</div>
           </article>
 
-          <article className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+          <article className="app-card-soft rounded-[24px] p-4">
             <div className="relative mx-auto h-[5.25rem] w-[5.25rem]">
               <svg viewBox="0 0 84 84" className="-rotate-90">
                 <circle cx="42" cy="42" r={ringRadius} stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
@@ -158,13 +158,13 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
 
       <section className="grid gap-3">
         <div className="flex flex-wrap gap-2">
-          <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
             <span className="text-white">Week energy:</span> {moodAverage ? moodTone[moodAverage] : "Unmarked"}
           </div>
-          <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
             <span className="text-white">Pressure:</span> {calmDays > 0 ? `${calmDays} calm days` : "Open"}
           </div>
-          <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
             <span className="text-white">Wins:</span> {totalCompletions}
           </div>
         </div>

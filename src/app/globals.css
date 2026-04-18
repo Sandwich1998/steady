@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #09090b;
-  --foreground: #f4f4f5;
+  --background: #0b1215;
+  --foreground: #f6faf7;
+  --surface-shell: rgba(12, 20, 24, 0.94);
+  --surface-card: rgba(23, 34, 39, 0.82);
+  --surface-soft: rgba(255, 255, 255, 0.045);
+  --surface-field: rgba(9, 16, 20, 0.54);
+  --line-soft: rgba(255, 255, 255, 0.085);
+  --text-soft: rgba(246, 250, 247, 0.72);
+  --accent-mint: #7bc9b7;
+  --accent-teal: #5ca99b;
+  --accent-peach: #d8b18c;
+  --accent-lilac: #9e97c7;
+  --accent-rose: #d49b92;
+  --shadow-soft: 0 28px 80px -42px rgba(3, 8, 10, 0.86);
 }
 
 @theme inline {
@@ -21,7 +33,10 @@ html {
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, rgba(158, 151, 199, 0.08), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(123, 201, 183, 0.06), transparent 22%),
+    linear-gradient(180deg, #10181b 0%, #0a1114 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -35,8 +50,8 @@ textarea {
 }
 
 ::selection {
-  background: rgba(79, 109, 245, 0.45);
-  color: white;
+  background: rgba(123, 201, 183, 0.26);
+  color: #091316;
 }
 
 @keyframes soft-pop {
@@ -149,6 +164,78 @@ textarea {
 
 .pressable:active {
   transform: scale(0.97);
+}
+
+.app-shell {
+  background:
+    radial-gradient(circle at top, rgba(158, 151, 199, 0.07), transparent 24%),
+    linear-gradient(180deg, rgba(16, 25, 29, 0.98) 0%, rgba(10, 17, 20, 0.98) 100%);
+}
+
+.app-header {
+  background: rgba(13, 22, 26, 0.82);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 14px 38px -30px rgba(3, 8, 10, 0.92);
+}
+
+.app-nav {
+  background: rgba(13, 22, 26, 0.9);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.app-card {
+  border: 1px solid var(--line-soft);
+  background: linear-gradient(180deg, rgba(26, 38, 43, 0.82) 0%, rgba(18, 27, 31, 0.88) 100%);
+  box-shadow: var(--shadow-soft);
+}
+
+.app-card-soft {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.app-hero {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top, rgba(216, 177, 140, 0.1), transparent 24%),
+    radial-gradient(circle at 82% 16%, rgba(158, 151, 199, 0.09), transparent 22%),
+    linear-gradient(180deg, rgba(21, 31, 36, 0.98) 0%, rgba(12, 20, 24, 0.98) 100%);
+  box-shadow: 0 34px 100px -54px rgba(3, 8, 10, 0.92);
+}
+
+.app-chip {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.app-field {
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-field);
+}
+
+.app-btn-primary {
+  color: #081113;
+  background: linear-gradient(180deg, #8ad0c0 0%, #6ab8a8 100%);
+  box-shadow: 0 18px 40px -24px rgba(123, 201, 183, 0.34);
+}
+
+.app-btn-primary:hover {
+  background: linear-gradient(180deg, #94d6c7 0%, #74c0b1 100%);
+}
+
+.app-btn-secondary {
+  color: var(--foreground);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.app-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.text-soft {
+  color: var(--text-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

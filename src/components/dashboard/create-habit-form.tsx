@@ -52,7 +52,7 @@ export function CreateHabitForm() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Morning walk"
-            className="min-h-11 rounded-2xl border border-white/8 bg-[#18181a] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/20"
+            className="app-field rounded-2xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20"
             required
           />
         </div>
@@ -65,7 +65,7 @@ export function CreateHabitForm() {
               className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
                 type === "BUILD"
                   ? "border-[#3554d1]/50 bg-[#1d2550] text-white shadow-[0_16px_34px_-22px_rgba(69,101,235,0.9)]"
-                  : "border-white/8 bg-[#18181a] text-white/78 hover:bg-white/[0.04]"
+                  : "border-white/8 bg-[rgba(255,255,255,0.04)] text-white/78 hover:bg-white/[0.08]"
               }`}
             >
               <div className="text-sm font-semibold">Grow</div>
@@ -77,7 +77,7 @@ export function CreateHabitForm() {
               className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
                 type === "BREAK"
                   ? "border-[#88405a]/45 bg-[#301d25] text-white shadow-[0_16px_34px_-22px_rgba(136,64,90,0.9)]"
-                  : "border-white/8 bg-[#18181a] text-white/78 hover:bg-white/[0.04]"
+                  : "border-white/8 bg-[rgba(255,255,255,0.04)] text-white/78 hover:bg-white/[0.08]"
               }`}
             >
               <div className="text-sm font-semibold">Soften</div>
@@ -94,14 +94,14 @@ export function CreateHabitForm() {
             value={minimumAction}
             onChange={(event) => setMinimumAction(event.target.value)}
             placeholder="Put on shoes and walk 5 minutes"
-            className="min-h-11 rounded-2xl border border-white/8 bg-[#18181a] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/20"
+            className="app-field rounded-2xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20"
             required
           />
         </div>
         <button
           type="submit"
           disabled={isPending}
-          className="pressable min-h-11 rounded-full bg-[#3554d1] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4565eb] disabled:cursor-not-allowed disabled:opacity-60"
+          className="pressable app-btn-primary min-h-11 rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           Add this rhythm
         </button>

@@ -114,9 +114,9 @@ export function TodayExperience({
 
   return (
     <div className="mt-4 grid gap-4">
-      <section className="relative overflow-hidden rounded-[34px] border border-white/8 bg-[radial-gradient(circle_at_top,rgba(247,201,91,0.2),transparent_28%),radial-gradient(circle_at_80%_18%,rgba(124,108,255,0.22),transparent_25%),linear-gradient(180deg,#181629_0%,#121212_58%,#101010_100%)] px-5 py-6 shadow-[0_34px_100px_-52px_rgba(124,108,255,0.85)]">
-        <div className="pointer-events-none absolute -right-10 top-5 h-32 w-32 rounded-full bg-[#7c6cff]/20 blur-3xl" />
-        <div className="pointer-events-none absolute -left-10 bottom-0 h-28 w-28 rounded-full bg-[#f7c95b]/18 blur-3xl" />
+      <section className="app-hero relative overflow-hidden rounded-[34px] px-5 py-6">
+        <div className="pointer-events-none absolute -right-10 top-5 h-32 w-32 rounded-full bg-[rgba(184,179,255,0.18)] blur-3xl" />
+        <div className="pointer-events-none absolute -left-10 bottom-0 h-28 w-28 rounded-full bg-[rgba(255,200,155,0.16)] blur-3xl" />
 
         <div className="relative">
           <div className="max-w-[15rem]">
@@ -130,8 +130,8 @@ export function TodayExperience({
               {heroTitle}
             </h2>
             <p className="mt-3 text-sm leading-6 text-white/74">{heroSubtitle}</p>
-            <div className="mt-4 inline-flex max-w-full items-center rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-medium text-white/82">
-              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[#f7c95b] shadow-[0_0_14px_rgba(247,201,91,0.95)]" />
+            <div className="app-chip mt-4 inline-flex max-w-full items-center rounded-full px-3 py-2 text-sm font-medium text-white/82">
+              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(121,219,198,0.75)]" />
               <span className="truncate">{heroStatus}</span>
             </div>
           </div>
@@ -140,7 +140,7 @@ export function TodayExperience({
             <button
               type="button"
               onClick={handlePrimaryAction}
-              className="pressable min-h-11 w-full rounded-full bg-[#3554d1] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_42px_-24px_rgba(69,101,235,1)] hover:bg-[#4565eb]"
+              className="pressable app-btn-primary min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold"
             >
               {primaryActionLabel}
             </button>
@@ -148,14 +148,14 @@ export function TodayExperience({
               <button
                 type="button"
                 onClick={openUrgeSheet}
-                className="pressable min-h-11 w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-white/86 hover:bg-white/[0.06]"
+                className="pressable app-btn-secondary min-h-11 w-full rounded-full px-5 py-3 text-sm font-medium text-white/86"
               >
                 Need urge support
               </button>
             ) : null}
           </div>
 
-          <div className="mt-6 rounded-[26px] border border-white/8 bg-white/[0.04] p-4">
+          <div className="app-card-soft mt-6 rounded-[26px] p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-semibold text-white">Today</div>
@@ -165,7 +165,7 @@ export function TodayExperience({
                     : "One more small action can still lock in the win."}
                 </div>
               </div>
-              <div className="rounded-full bg-white/[0.06] px-3 py-1.5 text-sm font-medium text-white/78">
+              <div className="app-chip rounded-full px-3 py-1.5 text-sm font-medium text-white/78">
                 {completedCount}/{totalHabits} held
               </div>
             </div>

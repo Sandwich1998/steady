@@ -17,8 +17,8 @@ export function Card({
 }: CardProps) {
   const shellClass =
     variant === "soft"
-      ? "rounded-[28px] border border-white/8 bg-white/[0.03] p-5 text-white"
-      : "rounded-[28px] border border-white/6 bg-[#171717] p-5 text-white shadow-[0_20px_50px_-30px_rgba(0,0,0,0.7)]";
+      ? "app-card-soft rounded-[28px] p-5 text-white"
+      : "app-card rounded-[28px] p-5 text-white";
 
   return (
     <section className={shellClass}>

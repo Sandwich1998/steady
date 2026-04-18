@@ -118,10 +118,10 @@ export function MobileShell({ data }: MobileShellProps) {
   const screenTitle =
     activeTab === "today" ? "Steady" : activeTab === "progress" ? "Progress" : "Manage";
   return (
-    <main className="min-h-screen bg-[#09090b] px-0 text-white">
-      <div className="mx-auto flex min-h-screen w-full max-w-[430px] flex-col bg-[#111111] sm:min-h-[100svh] sm:border-x sm:border-white/5 sm:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_40px_120px_-40px_rgba(0,0,0,0.8)]">
+    <main className="min-h-screen px-0 text-white">
+      <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-white/8 sm:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_40px_120px_-40px_rgba(5,14,18,0.85)]">
         <header
-          className={`sticky top-0 z-30 border-b border-white/6 bg-[#111111]/92 px-4 backdrop-blur ${compactHeader ? "pb-2.5" : "pb-3"}`}
+          className={`app-header sticky top-0 z-30 px-4 backdrop-blur ${compactHeader ? "pb-2.5" : "pb-3"}`}
           style={{ paddingTop: `calc(env(safe-area-inset-top) + ${compactHeader ? "10px" : "12px"})` }}
         >
           <div className="flex items-start justify-between gap-4">
@@ -149,7 +149,7 @@ export function MobileShell({ data }: MobileShellProps) {
               <button
                 type="button"
                 onClick={() => setActiveTab("progress")}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.06]"
+                className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-full text-white/80"
                 aria-label="Open progress"
               >
                 <IconProgress />
@@ -157,7 +157,7 @@ export function MobileShell({ data }: MobileShellProps) {
               <button
                 type="button"
                 onClick={() => setShowMenu((value) => !value)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-[#4f6df5]/35 bg-[#1b2450] text-[#95a8ff] hover:bg-[#243069]"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white"
                 aria-label="Open quick actions"
               >
                 <IconManage />
@@ -184,7 +184,7 @@ export function MobileShell({ data }: MobileShellProps) {
 
           {activeTab === "manage" ? (
             <div className="mt-5 grid gap-4">
-              <section className="overflow-hidden rounded-[30px] border border-white/8 bg-[radial-gradient(circle_at_top,rgba(124,108,255,0.18),transparent_34%),linear-gradient(180deg,#171727_0%,#121212_100%)] px-5 py-5">
+              <section className="app-card-soft overflow-hidden rounded-[30px] px-5 py-5">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
                   Habit studio
                 </div>
@@ -213,8 +213,8 @@ export function MobileShell({ data }: MobileShellProps) {
           ) : null}
         </div>
 
-        <nav className="fixed bottom-0 left-0 right-0 z-40 mx-auto w-full max-w-[430px] border-t border-white/6 bg-[#111111]/95 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-          <div className="grid grid-cols-4 gap-2 rounded-[26px] border border-white/6 bg-[#1a1a1a] p-2 shadow-[0_20px_40px_-24px_rgba(0,0,0,0.8)]">
+        <nav className="app-nav fixed bottom-0 left-0 right-0 z-40 mx-auto w-full max-w-[430px] border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur">
+          <div className="grid grid-cols-4 gap-2 rounded-[26px] border border-white/8 bg-[rgba(255,255,255,0.05)] p-2 shadow-[0_20px_40px_-24px_rgba(6,14,18,0.8)]">
             {tabs.map((tab) => {
               const active = activeTab === tab.id;
 
@@ -229,12 +229,12 @@ export function MobileShell({ data }: MobileShellProps) {
                   }}
                   className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
                     active
-                      ? "bg-[#2c2c2e] text-white shadow-[0_14px_30px_-24px_rgba(255,255,255,0.35)]"
-                      : "text-white/65 hover:bg-white/[0.03] hover:text-white/85"
+                      ? "bg-[rgba(255,255,255,0.12)] text-white shadow-[0_14px_30px_-24px_rgba(121,219,198,0.4)]"
+                      : "text-white/65 hover:bg-white/[0.05] hover:text-white/85"
                   }`}
                 >
                   {active ? (
-                    <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#fbbf24_0%,#7c6cff_100%)]" />
+                    <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#79dbc6_0%,#ffc89b_100%)]" />
                   ) : null}
                   {tab.icon}
                   <span>{tab.label}</span>
@@ -246,12 +246,12 @@ export function MobileShell({ data }: MobileShellProps) {
               onClick={() => setShowMenu((value) => !value)}
               className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
                 showMenu
-                  ? "bg-[#3554d1] text-white shadow-[0_18px_36px_-24px_rgba(69,101,235,1)]"
-                  : "text-white/65 hover:bg-white/[0.03] hover:text-white/85"
+                  ? "app-btn-primary text-[#0d2327] shadow-[0_18px_36px_-24px_rgba(121,219,198,0.7)]"
+                  : "text-white/65 hover:bg-white/[0.05] hover:text-white/85"
               }`}
             >
               {showMenu ? (
-                <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#fbbf24_0%,#95a8ff_100%)]" />
+                <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#79dbc6_0%,#ffc89b_100%)]" />
               ) : null}
               <IconManage />
               <span>Menu</span>
@@ -261,7 +261,7 @@ export function MobileShell({ data }: MobileShellProps) {
 
         {showMenu ? (
           <div className="pointer-events-none fixed inset-x-0 bottom-28 z-50 mx-auto w-full max-w-[430px] px-4">
-            <div className="animate-sheet-rise pointer-events-auto rounded-[32px] border border-white/8 bg-[#1d1d1f]/98 p-4 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] backdrop-blur">
+            <div className="app-card animate-sheet-rise pointer-events-auto rounded-[32px] p-4 backdrop-blur">
               <button
                 type="button"
                 onClick={() => {
@@ -286,7 +286,7 @@ export function MobileShell({ data }: MobileShellProps) {
                 }}
                 className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-white/[0.04]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#2a2a2c] text-white/75">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/[0.08] text-white/75">
                   <IconToday />
                 </div>
                 <div>
@@ -302,7 +302,7 @@ export function MobileShell({ data }: MobileShellProps) {
                 }}
                 className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-white/[0.04]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f4b544] text-black">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffc89b_0%,#79dbc6_100%)] text-[#0d2327]">
                   <IconProgress />
                 </div>
                 <div>
