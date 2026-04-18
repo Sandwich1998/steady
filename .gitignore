@@ -36,6 +36,15 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local agent / audit artifacts
+.codex
+.codex/
+reports/
+
+# local database
+prisma/*.db
+prisma/*.db-*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum HabitType {
+  BUILD
+  BREAK
+}
+
+enum UrgeOutcome {
+  RESISTED
+  ACTED
+}
+
+model Habit {
+  id            String            @id @default(cuid())
+  name          String
+  type          HabitType
+  minimumAction String
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  completions   HabitCompletion[]
+  urgeLogs      UrgeLog[]
+}
+
+model DayReset {
+  id        String   @id @default(cuid())
+  date      String   @unique
+  mood      Int
+  startedAt DateTime @default(now())
+}
+
+model HabitCompletion {
+  id          String   @id @default(cuid())
+  date        String
+  completedAt DateTime @default(now())
+  habitId     String
+  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+}
+
+model UrgeLog {
+  id        String      @id @default(cuid())
+  intensity Int
+  outcome   UrgeOutcome
+  createdAt DateTime    @default(now())
+  habitId    String
+  habit      Habit      @relation(fields: [habitId], references: [id], onDelete: Cascade)
+}
