@@ -94,7 +94,7 @@ export function HabitList({ habits, dayCompleted }: HabitListProps) {
                   </span>
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-white/70">
-                  <span>{habit.completedToday ? "Completed today" : "Open today"}</span>
+                  <span>{habit.completedToday ? "Held today" : "Not held yet"}</span>
                   <span className="text-white/45">•</span>
                   <span>{habit.stats.totalCompletions} total reps</span>
                 </div>

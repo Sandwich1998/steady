@@ -24,7 +24,7 @@ export function CreateHabitForm() {
     });
 
     if (!response.ok) {
-      setError("Unable to create the habit.");
+      setError("Couldn't save this practice.");
       return;
     }
 
@@ -38,14 +38,14 @@ export function CreateHabitForm() {
 
   return (
     <Card
-      title="Shape a new rhythm"
-      description="Give it a clean name, one tiny floor, and one clear direction."
+      title="New practice"
+      description="Name it plainly, set the smallest version, choose repeat or loosen."
       variant="soft"
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
         <div className="grid gap-2">
           <label className="text-sm font-medium text-white/78" htmlFor="habit-name">
-            Habit name
+            Name
           </label>
           <input
             id="habit-name"
@@ -57,7 +57,7 @@ export function CreateHabitForm() {
           />
         </div>
         <div className="grid gap-2">
-          <span className="text-sm font-medium text-white/78">Direction</span>
+            <span className="text-sm font-medium text-white/78">Direction</span>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -67,9 +67,9 @@ export function CreateHabitForm() {
                   ? "border-[#3554d1]/50 bg-[#1d2550] text-white shadow-[0_16px_34px_-22px_rgba(69,101,235,0.9)]"
                   : "border-white/8 bg-[rgba(255,255,255,0.04)] text-white/78 hover:bg-white/[0.08]"
               }`}
-            >
-              <div className="text-sm font-semibold">Grow</div>
-              <div className="mt-1 text-sm text-white/62">A habit you want more of</div>
+              >
+              <div className="text-sm font-semibold">Repeat</div>
+              <div className="mt-1 text-sm text-white/62">Something you want to do more often</div>
             </button>
             <button
               type="button"
@@ -79,15 +79,15 @@ export function CreateHabitForm() {
                   ? "border-[#88405a]/45 bg-[#301d25] text-white shadow-[0_16px_34px_-22px_rgba(136,64,90,0.9)]"
                   : "border-white/8 bg-[rgba(255,255,255,0.04)] text-white/78 hover:bg-white/[0.08]"
               }`}
-            >
-              <div className="text-sm font-semibold">Soften</div>
-              <div className="mt-1 text-sm text-white/62">A loop you want less of</div>
+              >
+              <div className="text-sm font-semibold">Loosen</div>
+              <div className="mt-1 text-sm text-white/62">Something you want to interrupt sooner</div>
             </button>
           </div>
         </div>
         <div className="grid gap-2">
           <label className="text-sm font-medium text-white/78" htmlFor="habit-minimum-action">
-            Tiny floor
+            Minimum step
           </label>
           <input
             id="habit-minimum-action"
@@ -103,7 +103,7 @@ export function CreateHabitForm() {
           disabled={isPending}
           className="pressable app-btn-primary min-h-11 rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Add this rhythm
+          Save practice
         </button>
         {error ? <p className="text-sm text-rose-400">{error}</p> : null}
       </form>

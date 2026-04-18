@@ -52,13 +52,15 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
     });
 
     if (!response.ok) {
-      setError("Unable to log the urge.");
+      setError("Couldn't save this urge.");
       return;
     }
 
     setIntensity(3);
     setOutcome("RESISTED");
-    setSavedMessage(outcome === "RESISTED" ? "Urge logged. You held the line." : "Urge logged. Start again from here.");
+    setSavedMessage(
+      outcome === "RESISTED" ? "Saved. You resisted it." : "Saved. Pick back up from here.",
+    );
     window.setTimeout(() => {
       setSavedMessage("");
     }, 2200);
@@ -70,12 +72,12 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
 
   return (
     <Card
-      title="Hold the moment"
-      description="Use this only when you need it. Log the moment quickly, then let it pass."
+      title="Urge support"
+      description="For the minute when the pull gets loud."
     >
       {breakHabits.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-white/72">
-          Create one habit you want to loosen before you start logging urges.
+          Add one practice to loosen before you log urges here.
         </p>
       ) : !isOpen ? (
         hiddenUntilOpen ? (
@@ -88,9 +90,9 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
         <div className="app-card-soft rounded-[24px] p-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-sm font-semibold text-white">Need a steadying pause?</div>
+              <div className="text-sm font-semibold text-white">The pull is here.</div>
               <p className="mt-1 text-sm leading-6 text-white/70">
-                Name what is happening, mark what happened, and get back to your day.
+                Mark what happened, then get out of here.
               </p>
             </div>
             <button
@@ -98,7 +100,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               onClick={() => setIsOpen(true)}
               className="pressable app-btn-primary shrink-0 rounded-full px-4 py-3 text-sm font-semibold"
             >
-              I feel an urge
+              Note the urge
             </button>
           </div>
           {savedMessage ? (
@@ -125,13 +127,13 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             <div className="flex items-start justify-between gap-3">
               <div className="max-w-[15rem]">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#9bb0ff]">
-                  Steady support
+                  Urge support
                 </div>
                 <div className="mt-3 text-[1.9rem] font-semibold leading-[1.02] tracking-tight text-white">
-                  Stay with yourself for one breath.
+                  Mark the pull.
                 </div>
                 <div className="mt-3 text-sm leading-6 text-white/70">
-                  Name the pull, choose the honest outcome, then let the moment move through.
+                  Pick the habit, mark the pull, say what happened.
                 </div>
               </div>
               <button
@@ -146,7 +148,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             <div className="mt-5 grid gap-4">
               <div className="grid gap-2">
                 <label className="text-sm font-medium text-white/78" htmlFor="urge-habit">
-                  Which loop is calling right now?
+                  Which habit is tugging right now?
                 </label>
                 <select
                   id="urge-habit"
@@ -196,7 +198,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   >
                       <div className="text-base font-semibold">I resisted it</div>
                       <div className="mt-1 text-sm text-white/70">
-                      I interrupted the pull, even if it felt messy.
+                      I interrupted it, even if it was messy.
                       </div>
                   </button>
                   <button
@@ -210,7 +212,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   >
                       <div className="text-base font-semibold">I acted on it</div>
                       <div className="mt-1 text-sm text-white/70">
-                      No shame. Log it honestly and keep moving.
+                      I gave way. Mark it and keep going.
                       </div>
                   </button>
                 </div>
@@ -222,7 +224,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               disabled={!selectedHabitId || isPending}
               className="pressable app-btn-primary mt-5 min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Save this moment
+              Save note
             </button>
             {error ? <p className="mt-3 text-sm text-rose-400">{error}</p> : null}
           </form>

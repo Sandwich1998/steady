@@ -114,9 +114,9 @@ export function MobileShell({ data }: MobileShellProps) {
   const breakHabits = data.habits.filter((habit) => habit.type === "BREAK");
   const compactHeader = activeTab !== "today";
   const screenLabel =
-    activeTab === "today" ? "Daily companion" : activeTab === "progress" ? "Reflection" : "Craft";
+    activeTab === "today" ? "Today" : activeTab === "progress" ? "Week" : "Practices";
   const screenTitle =
-    activeTab === "today" ? "Steady" : activeTab === "progress" ? "Progress" : "Manage";
+    activeTab === "today" ? "Steady" : activeTab === "progress" ? "Week" : "Practice";
   return (
     <main className="min-h-screen px-0 text-white">
       <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-white/8 sm:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_40px_120px_-40px_rgba(5,14,18,0.85)]">
@@ -139,8 +139,8 @@ export function MobileShell({ data }: MobileShellProps) {
                 <p className={`text-white/72 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
                   {compactHeader
                     ? activeTab === "progress"
-                      ? "A calmer read of the week."
-                      : "Shape habits with cleaner intent."
+                      ? "Held days, pressure, mood."
+                      : "Write practices you can return to."
                     : data.today}
                 </p>
               </div>
@@ -186,26 +186,26 @@ export function MobileShell({ data }: MobileShellProps) {
             <div className="mt-5 grid gap-4">
               <section className="app-card-soft overflow-hidden rounded-[30px] px-5 py-5">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
-                  Habit studio
+                  Practices
                 </div>
                 <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-white">
-                  Shape what you want to repeat.
+                  Set up what you want to return to.
                 </h2>
                 <p className="mt-2 max-w-[16rem] text-sm leading-6 text-white/70">
-                  Add a rhythm with a tiny floor so the habit feels easy to begin and easy to keep.
+                  Keep each one plain, small, and doable on a rough day.
                 </p>
               </section>
               <CreateHabitForm />
               <section className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
-                  Gentle overview
+                  Counts
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/78">
-                    <span className="text-white">Growing:</span> {data.stats.buildHabits}
+                    <span className="text-white">Repeat:</span> {data.stats.buildHabits}
                   </div>
                   <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/78">
-                    <span className="text-white">Softening:</span> {breakHabits.length}
+                    <span className="text-white">Loosen:</span> {breakHabits.length}
                   </div>
                 </div>
               </section>
@@ -274,8 +274,8 @@ export function MobileShell({ data }: MobileShellProps) {
                   <IconManage />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">Build a good habit</div>
-                  <div className="text-sm text-white/70">Create a new build or break habit</div>
+                  <div className="text-lg font-semibold">New practice</div>
+                  <div className="text-sm text-white/70">Add something to repeat or loosen</div>
                 </div>
               </button>
               <button
@@ -290,8 +290,8 @@ export function MobileShell({ data }: MobileShellProps) {
                   <IconToday />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">Mood log</div>
-                  <div className="text-sm text-white/70">Start your day and log urges fast</div>
+                  <div className="text-lg font-semibold">Go to today</div>
+                  <div className="text-sm text-white/70">Check in and mark today&apos;s holds</div>
                 </div>
               </button>
               <button
@@ -306,8 +306,8 @@ export function MobileShell({ data }: MobileShellProps) {
                   <IconProgress />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">See your progress</div>
-                  <div className="text-sm text-white/70">Review wins, resets, and urges</div>
+                  <div className="text-lg font-semibold">Week view</div>
+                  <div className="text-sm text-white/70">See held days, pressure, and mood</div>
                 </div>
               </button>
             </div>

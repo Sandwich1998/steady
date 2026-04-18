@@ -61,7 +61,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     });
 
     if (!response.ok) {
-      setError("Unable to record the minimum action.");
+      setError("Couldn't save that hold.");
       return;
     }
 
@@ -69,7 +69,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     const habit = habits.find((currentHabit) => currentHabit.id === habitId);
     setSuccessMessage({
       habitId,
-      text: habit?.completedToday ? `${habit.name} is already locked in.` : `Nice. ${habit?.name ?? "That step"} landed.`,
+      text: habit?.completedToday
+        ? `${habit.name} was already held.`
+        : `Held: ${habit?.name ?? "That practice"}.`,
     });
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(16);
@@ -113,9 +115,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   if (habits.length === 0) {
     return (
       <section className="rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] p-5">
-        <div className="text-base font-semibold text-white">Nothing lives here yet</div>
+        <div className="text-base font-semibold text-white">No practice yet</div>
         <p className="mt-2 text-sm leading-6 text-white/68">
-          Add one habit and this space turns into a daily nudge instead of an empty screen.
+          Add one practice and this screen starts to work.
         </p>
       </section>
     );
@@ -127,10 +129,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         <div className="flex items-end justify-between gap-3">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/52">
-              One small promise
+              Next hold
             </div>
             <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">
-              {nextHabit?.completedToday ? "Everything feels settled." : "Your next step is enough."}
+              {nextHabit?.completedToday ? "Today's list is settled." : "One thing, then you're clear."}
             </h3>
           </div>
           <div className="rounded-full bg-white/[0.05] px-3 py-1.5 text-sm font-medium text-white/72">
@@ -170,7 +172,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     {nextHabit.type === "BUILD" ? "Build" : "Break"}
                   </span>
                   <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-xs font-semibold text-white/70">
-                    {nextHabit.completedToday ? "Already landed" : "Next up"}
+                    {nextHabit.completedToday ? "Held" : "On deck"}
                   </span>
                 </div>
                 <h4 className="mt-4 text-[1.7rem] font-semibold leading-[1.05] tracking-tight text-white">
@@ -186,7 +188,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 onClick={() => setSelectedHabitId(nextHabit.id)}
                 className="flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white/80"
               >
-                Open
+                View
               </button>
             </div>
 
@@ -201,10 +203,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     : "bg-[#3554d1] text-white shadow-[0_16px_42px_-24px_rgba(69,101,235,1)] hover:scale-[1.01] hover:bg-[#4565eb] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
-                {nextHabit.completedToday ? "Step landed" : "Take this step"}
+                {nextHabit.completedToday ? "Held today" : "Mark held"}
               </button>
               <div className="rounded-full bg-white/[0.05] px-3 py-2 text-sm text-white/72">
-                {nextHabit.type === "BUILD" ? "Keep growing" : "Hold the line"}
+                {nextHabit.type === "BUILD" ? "To repeat" : "To loosen"}
               </div>
             </div>
           </article>
@@ -213,9 +215,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         {queueHabits.length > 0 ? (
           <section className="rounded-[28px] border border-white/8 bg-white/[0.03] p-4">
             <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-white">If you want more</div>
+              <div className="text-sm font-semibold text-white">Later today</div>
               <div className="text-xs uppercase tracking-[0.18em] text-white/42">
-                Slide to choose
+                Swipe
               </div>
             </div>
             <div className="mt-3 grid gap-3">
@@ -235,14 +237,14 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                       disabled={habit.completedToday || isPending}
                       className="min-h-11 rounded-full bg-[#214635] px-4 py-2.5 text-sm font-semibold text-[#9be4b6] disabled:opacity-60"
                     >
-                      Land
+                      Hold
                     </button>
                     <button
                       type="button"
                       onClick={() => setSelectedHabitId(habit.id)}
                       className="min-h-11 rounded-full bg-[#24345f] px-4 py-2.5 text-sm font-semibold text-[#adc0ff]"
                     >
-                      Open
+                      View
                     </button>
                   </div>
                   <button
@@ -268,7 +270,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     <div className="min-w-0">
                       <div className="text-sm font-semibold text-white">{habit.name}</div>
                       <div className="mt-1 text-sm text-white/62">
-                        {habit.completedToday ? "Already done" : habit.minimumAction}
+                        {habit.completedToday ? "Held already" : habit.minimumAction}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -309,8 +311,8 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-white/15" />
             <div className="flex items-start justify-between gap-3">
               <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-xl font-semibold text-white">{selectedHabit.name}</h3>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-xl font-semibold text-white">{selectedHabit.name}</h3>
                   <span
                     className={`rounded-full px-2 py-1 text-xs font-semibold ${
                       selectedHabit.type === "BUILD"
@@ -322,7 +324,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   </span>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-white/72">
-                  Minimum action: {selectedHabit.minimumAction}
+                  Minimum step: {selectedHabit.minimumAction}
                 </p>
               </div>
               <button
@@ -336,19 +338,19 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
 
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Total reps</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/60">All-time holds</div>
                 <div className="mt-2 text-2xl font-semibold text-white">
                   {selectedHabit.stats.totalCompletions}
                 </div>
               </div>
               <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Last 7 days</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/60">This week</div>
                 <div className="mt-2 text-2xl font-semibold text-white">
                   {selectedHabit.stats.completionsLast7Days}
                 </div>
               </div>
               <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Urges</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Urge moments</div>
                 <div className="mt-2 text-2xl font-semibold text-white">
                   {selectedHabit.stats.totalUrges}
                 </div>
@@ -357,9 +359,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 </div>
               </div>
               <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">
-                  Avg intensity
-                </div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Avg urge</div>
                 <div className="mt-2 text-2xl font-semibold text-white">
                   {selectedHabit.stats.averageUrgeIntensity ?? "-"}
                 </div>
@@ -367,11 +367,11 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             </div>
 
             <div className="mt-4 rounded-2xl bg-white/[0.04] p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-white/60">Latest activity</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-white/60">Last hold</div>
               <div className="mt-2 text-sm text-white/72">
                 {selectedHabit.stats.lastCompletedAtLabel
-                  ? `Last completed ${selectedHabit.stats.lastCompletedAtLabel}`
-                  : "No completion logged yet."}
+                  ? `Marked ${selectedHabit.stats.lastCompletedAtLabel}`
+                  : "No hold yet."}
               </div>
             </div>
           </div>

@@ -71,34 +71,34 @@ export function TodayExperience({
   }, [progress]);
 
   const heroTitle = !dayReset
-    ? "Start soft. Set the tone first."
+    ? "Mark where you are."
     : dayCompleted
-      ? "Today is already yours."
+      ? "Today is held."
       : nextHabit
-        ? `Your next step is ${nextHabit.name}.`
-        : "One tiny action can still carry the day.";
+        ? `Next: ${nextHabit.name}.`
+        : "One hold still counts.";
 
   const heroSubtitle = !dayReset
-    ? "A quick check-in makes the rest of the day easier to hold."
+    ? "Pick the closest mood, then begin from there."
     : dayCompleted
-      ? "You already locked in a win. Anything else is a bonus."
+      ? "You have enough for today. Stop here or keep going."
       : nextHabit
         ? nextHabit.minimumAction
-        : "You can still win today with one small move.";
+        : "There is still one clean move left.";
 
   const heroStatus = !dayReset
-    ? "Check in first"
+    ? "Check-in missing"
     : dayCompleted
-      ? `${moodLabels[dayReset.mood]} mood • day already won`
+      ? `${moodLabels[dayReset.mood]} mood • day held`
       : nextHabit
-        ? `${moodLabels[dayReset.mood]} mood • next: ${nextHabit.name}`
-        : `${moodLabels[dayReset.mood]} mood • still open`;
+        ? `${moodLabels[dayReset.mood]} mood • next is ${nextHabit.name}`
+        : `${moodLabels[dayReset.mood]} mood • day open`;
 
   const primaryActionLabel = !dayReset
-    ? "Begin with a check-in"
+    ? "Mark today's mood"
     : nextHabit && !dayCompleted
-      ? `Take ${nextHabit.name}`
-      : "Take next step";
+      ? "Go to next hold"
+      : "Choose a practice";
 
   function handlePrimaryAction() {
     const targetId = dayReset ? "today-habits" : "daily-reset";
@@ -150,7 +150,7 @@ export function TodayExperience({
                 onClick={openUrgeSheet}
                 className="pressable app-btn-secondary min-h-11 w-full rounded-full px-5 py-3 text-sm font-medium text-white/86"
               >
-                Need urge support
+                I need steadier ground
               </button>
             ) : null}
           </div>
@@ -161,8 +161,8 @@ export function TodayExperience({
                 <div className="text-sm font-semibold text-white">Today</div>
                 <div className="mt-1 text-sm text-white/62">
                   {dayCompleted
-                    ? "You already held the day."
-                    : "One more small action can still lock in the win."}
+                    ? "Today is already covered."
+                    : "This ring only tracks today."}
                 </div>
               </div>
               <div className="app-chip rounded-full px-3 py-1.5 text-sm font-medium text-white/78">
@@ -221,7 +221,7 @@ export function TodayExperience({
                       />
                       <div className="min-w-0 text-sm text-white/76">
                         <span className="font-medium text-white">
-                          {habit.completedToday ? "Held" : "Open"}
+                          {habit.completedToday ? "Held" : "Not held"}
                         </span>{" "}
                         <span className="truncate">{habit.name}</span>
                       </div>

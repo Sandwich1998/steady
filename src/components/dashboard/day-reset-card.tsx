@@ -71,7 +71,7 @@ export function DayResetCard({
     });
 
     if (!response.ok) {
-      setError("Unable to start the day right now.");
+      setError("Couldn't save your check-in.");
       return;
     }
 
@@ -83,12 +83,12 @@ export function DayResetCard({
   return (
     <div id="daily-reset">
       <Card
-        title="Set your tone"
-        description="Check in with yourself first. Pick the point on the scale that feels honest, then begin from there."
+        title="Morning check-in"
+        description="Pick the closest mood and begin from there."
         action={
           currentMood ? (
             <div className="rounded-full bg-[rgba(121,219,198,0.16)] px-3 py-1 text-sm font-medium text-[var(--accent-mint)]">
-              Day started
+              Done
             </div>
           ) : null
         }
@@ -97,7 +97,7 @@ export function DayResetCard({
         <div className="flex items-end justify-between gap-4">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
-              Mood scale
+              Mood
             </div>
             <div className="mt-2 text-xl font-semibold text-white">
               {selectedMoodOption.label}
@@ -123,7 +123,7 @@ export function DayResetCard({
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
-                Today&apos;s check-in
+                Today&apos;s mood
               </div>
               <div className="mt-2 text-base font-semibold text-white">{selectedMoodOption.label}</div>
               <div className="mt-1 text-sm text-white/70">{selectedMoodOption.hint}</div>
@@ -166,8 +166,8 @@ export function DayResetCard({
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="text-sm text-white/70">
           {startedAt
-            ? `You checked in at ${startedAtLabel}.`
-            : "You have not checked in yet today."}
+            ? `Checked in ${startedAtLabel}.`
+            : "No check-in today yet."}
         </div>
         <button
           type="button"
@@ -175,7 +175,7 @@ export function DayResetCard({
           disabled={isPending || dayStarted}
           className="pressable app-btn-primary rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {dayStarted ? "Day started" : "Begin today"}
+          {dayStarted ? "Done" : "Start the day"}
         </button>
         </div>
         {error ? <p className="text-sm text-rose-400">{error}</p> : null}

@@ -18,7 +18,7 @@ export function StatsStrip({
     { label: "Build habits", value: buildHabits.toString() },
     { label: "Break habits", value: breakHabits.toString() },
     { label: "Urges resisted", value: urgesResisted.toString() },
-    { label: "Day status", value: dayCompleted ? "Won" : "Open" },
+    { label: "Day status", value: dayCompleted ? "Held" : "Unheld" },
   ];
 
   return (

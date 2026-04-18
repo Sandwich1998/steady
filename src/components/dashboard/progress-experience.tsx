@@ -52,10 +52,10 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
           Reflection
         </div>
         <h2 className="mt-3 text-[2rem] font-semibold leading-[1.02] tracking-tight text-white">
-          The week feels more shaped now.
+          Here&apos;s how the week is holding.
         </h2>
         <p className="mt-3 max-w-[18rem] text-sm leading-6 text-white/72">
-          Progress lives in return, not perfection. This view is for noticing the pattern, not judging it.
+          Three reads: days held, pressure, and mood.
         </p>
 
         <div className="mt-6 grid grid-cols-3 gap-3">
@@ -86,8 +86,8 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">lit</div>
               </div>
             </div>
-            <div className="mt-3 text-center text-sm font-semibold text-white">Week wins</div>
-            <div className="mt-1 text-center text-sm text-white/62">Days you showed up</div>
+            <div className="mt-3 text-center text-sm font-semibold text-white">Days held</div>
+            <div className="mt-1 text-center text-sm text-white/62">Days with at least one hold</div>
           </article>
 
           <article className="app-card-soft rounded-[24px] p-4">
@@ -118,7 +118,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
               </div>
             </div>
             <div className="mt-3 text-center text-sm font-semibold text-white">Pressure</div>
-            <div className="mt-1 text-center text-sm text-white/62">Days you held more than slipped</div>
+            <div className="mt-1 text-center text-sm text-white/62">Days you held more than you gave way</div>
           </article>
 
           <article className="app-card-soft rounded-[24px] p-4">
@@ -148,7 +148,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">tone</div>
               </div>
             </div>
-            <div className="mt-3 text-center text-sm font-semibold text-white">Mood tone</div>
+            <div className="mt-3 text-center text-sm font-semibold text-white">Mood</div>
             <div className="mt-1 text-center text-sm text-white/62">
               {moodAverage ? moodTone[moodAverage] : "Unmarked"}
             </div>
@@ -159,38 +159,38 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
       <section className="grid gap-3">
         <div className="flex flex-wrap gap-2">
           <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
-            <span className="text-white">Week energy:</span> {moodAverage ? moodTone[moodAverage] : "Unmarked"}
+            <span className="text-white">Mood:</span> {moodAverage ? moodTone[moodAverage] : "Unmarked"}
           </div>
           <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
-            <span className="text-white">Pressure:</span> {calmDays > 0 ? `${calmDays} calm days` : "Open"}
+            <span className="text-white">Pressure:</span> {calmDays > 0 ? `${calmDays} steady day${calmDays === 1 ? "" : "s"}` : "No read yet"}
           </div>
           <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
-            <span className="text-white">Wins:</span> {totalCompletions}
+            <span className="text-white">Holds:</span> {totalCompletions}
           </div>
         </div>
 
         <article className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-sm font-semibold text-white">What stood out</div>
+              <div className="text-sm font-semibold text-white">Week notes</div>
               <div className="mt-1 text-sm text-white/62">
-                A quick read on the week without opening a spreadsheet in your head.
+                A quick read, not a verdict.
               </div>
             </div>
             <div className="rounded-full bg-white/[0.06] px-3 py-1.5 text-sm font-medium text-white/78">
-              {totalCompletions} small wins
+              {totalCompletions} holds logged
             </div>
           </div>
 
           <div className="mt-4 grid gap-4">
             <div className="rounded-[22px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.02)_100%)] p-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/48">
-                Brightest moment
+                Most held
               </div>
               <div className="mt-2 text-base font-semibold text-white">
                 {bestDay && bestDay.completionsCount > 0
-                  ? `${bestDay.label} carried ${bestDay.completionsCount} meaningful step${bestDay.completionsCount === 1 ? "" : "s"}.`
-                  : "No standout day yet. The next one can still be enough."}
+                  ? `${bestDay.label} carried ${bestDay.completionsCount} held step${bestDay.completionsCount === 1 ? "" : "s"}.`
+                  : "No day pulled ahead yet."}
               </div>
             </div>
 
@@ -204,22 +204,22 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                     <div className="text-sm font-semibold text-white">{day.label}</div>
                     <div className="mt-1 text-sm text-white/62">
                       {day.completed
-                        ? `${day.completionsCount} step${day.completionsCount === 1 ? "" : "s"} landed`
+                        ? `${day.completionsCount} hold${day.completionsCount === 1 ? "" : "s"}`
                         : day.mood
-                          ? `${moodTone[day.mood]} tone, still open`
-                          : "Day stayed quiet"}
+                          ? `${moodTone[day.mood]} mood, no hold`
+                          : "No check-in"}
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span className="rounded-full bg-white/[0.05] px-3 py-1.5 text-sm text-white/74">
-                      {day.resistedCount} held
+                      {day.resistedCount} resisted
                     </span>
                     <span
                       className={`rounded-full px-3 py-1.5 text-sm font-medium ${
                         day.completed ? "bg-[#1d3b2a] text-[#72d397]" : "bg-white/[0.06] text-white/72"
                       }`}
                     >
-                      {day.completed ? "Lit" : "Open"}
+                      {day.completed ? "Held" : "Unheld"}
                     </span>
                   </div>
                 </div>
@@ -229,9 +229,9 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
         </article>
 
         <article className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
-          <div className="text-sm font-semibold text-white">Your practice mix</div>
+          <div className="text-sm font-semibold text-white">Practice mix</div>
           <div className="mt-1 text-sm text-white/62">
-            What you are building and what you are trying to soften.
+            What you are trying to repeat, and what you are trying to loosen.
           </div>
 
           <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
@@ -244,7 +244,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
               />
             </div>
             <div className="text-sm font-medium text-white/78">
-              {stats.buildHabits} grow / {stats.breakHabits} soften
+              {stats.buildHabits} repeat / {stats.breakHabits} loosen
             </div>
           </div>
         </article>

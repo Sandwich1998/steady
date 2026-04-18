@@ -18,10 +18,10 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
   const visibleUrges = recentUrges.slice(0, 4);
 
   return (
-    <Card title="Pressure notes" description="A clean line of recent urge moments." variant="soft">
+    <Card title="Urge notes" description="A short record of pull and response." variant="soft">
       {recentUrges.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-white/72">
-          No recent urge notes. When a moment spikes, log it and let it pass.
+          No urge notes yet. When one hits, mark it and keep moving.
         </p>
       ) : (
         <div className="relative">
@@ -44,7 +44,7 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-white/70">
-                    {urge.outcome === "RESISTED" ? "Held the line" : "Acted on it"} • intensity {urge.intensity}
+                    {urge.outcome === "RESISTED" ? "Resisted" : "Acted"} • {urge.intensity}/5
                   </p>
                 </div>
                 <div className="pt-0.5 text-right text-sm text-white/62">{urge.createdAtLabel}</div>
