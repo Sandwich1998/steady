@@ -118,8 +118,8 @@ export function MobileShell({ data }: MobileShellProps) {
   const screenTitle =
     activeTab === "today" ? "Steady" : activeTab === "progress" ? "Week" : "Practice";
   return (
-    <main className="min-h-screen px-0 text-white">
-      <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-white/8 sm:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_40px_120px_-40px_rgba(5,14,18,0.85)]">
+    <main className="min-h-screen px-0 text-slate-950">
+      <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-[#ecd9df] sm:shadow-[0_0_0_1px_rgba(239,220,226,0.9),0_40px_120px_-52px_rgba(214,173,183,0.38)]">
         <header
           className={`app-header sticky top-0 z-30 px-4 backdrop-blur ${compactHeader ? "pb-2.5" : "pb-3"}`}
           style={{ paddingTop: `calc(env(safe-area-inset-top) + ${compactHeader ? "10px" : "12px"})` }}
@@ -128,7 +128,7 @@ export function MobileShell({ data }: MobileShellProps) {
             <div className={`flex items-start ${compactHeader ? "gap-2.5" : "gap-3"}`}>
               <AppMark size="sm" />
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                   {screenLabel}
                 </div>
                 <h1
@@ -136,7 +136,7 @@ export function MobileShell({ data }: MobileShellProps) {
                 >
                   {screenTitle}
                 </h1>
-                <p className={`text-white/72 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
+                <p className={`text-slate-600 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
                   {compactHeader
                     ? activeTab === "progress"
                       ? "Held days, pressure, mood."
@@ -149,7 +149,7 @@ export function MobileShell({ data }: MobileShellProps) {
               <button
                 type="button"
                 onClick={() => setActiveTab("progress")}
-                className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-full text-white/80"
+                className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-full text-slate-700"
                 aria-label="Open progress"
               >
                 <IconProgress />
@@ -157,7 +157,7 @@ export function MobileShell({ data }: MobileShellProps) {
               <button
                 type="button"
                 onClick={() => setShowMenu((value) => !value)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white"
+                className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-[#ead6dd] bg-white/85 text-slate-700"
                 aria-label="Open quick actions"
               >
                 <IconManage />
@@ -185,27 +185,27 @@ export function MobileShell({ data }: MobileShellProps) {
           {activeTab === "manage" ? (
             <div className="mt-5 grid gap-4">
               <section className="app-card-soft overflow-hidden rounded-[30px] px-5 py-5">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Practices
                 </div>
-                <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-white">
+                <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
                   Set up what you want to return to.
                 </h2>
-                <p className="mt-2 max-w-[16rem] text-sm leading-6 text-white/70">
+                <p className="mt-2 max-w-[16rem] text-sm leading-6 text-slate-600">
                   Keep each one plain, small, and doable on a rough day.
                 </p>
               </section>
               <CreateHabitForm />
-              <section className="rounded-[28px] border border-white/8 bg-white/[0.025] p-5">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
+              <section className="rounded-[28px] border border-[#ecd9df] bg-white/70 p-5 shadow-[0_18px_40px_-34px_rgba(214,173,183,0.22)]">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Counts
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/78">
-                    <span className="text-white">Repeat:</span> {data.stats.buildHabits}
+                  <div className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-4 py-3 text-sm text-slate-700">
+                    <span className="text-slate-950">Repeat:</span> {data.stats.buildHabits}
                   </div>
-                  <div className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/78">
-                    <span className="text-white">Loosen:</span> {breakHabits.length}
+                  <div className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-4 py-3 text-sm text-slate-700">
+                    <span className="text-slate-950">Loosen:</span> {breakHabits.length}
                   </div>
                 </div>
               </section>
@@ -214,7 +214,7 @@ export function MobileShell({ data }: MobileShellProps) {
         </div>
 
         <nav className="app-nav fixed bottom-0 left-0 right-0 z-40 mx-auto w-full max-w-[430px] border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-          <div className="grid grid-cols-4 gap-2 rounded-[26px] border border-white/8 bg-[rgba(255,255,255,0.05)] p-2 shadow-[0_20px_40px_-24px_rgba(6,14,18,0.8)]">
+          <div className="grid grid-cols-4 gap-2 rounded-[26px] border border-[#ecd9df] bg-white/92 p-2 shadow-[0_20px_40px_-24px_rgba(214,173,183,0.26)]">
             {tabs.map((tab) => {
               const active = activeTab === tab.id;
 
@@ -229,12 +229,12 @@ export function MobileShell({ data }: MobileShellProps) {
                   }}
                   className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
                     active
-                      ? "bg-[rgba(255,255,255,0.12)] text-white shadow-[0_14px_30px_-24px_rgba(121,219,198,0.4)]"
-                      : "text-white/65 hover:bg-white/[0.05] hover:text-white/85"
+                      ? "bg-[#fff0f4] text-slate-950 shadow-[0_14px_30px_-24px_rgba(255,173,187,0.36)]"
+                      : "text-slate-500 hover:bg-[#fff4f7] hover:text-slate-800"
                   }`}
                 >
                   {active ? (
-                    <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#79dbc6_0%,#ffc89b_100%)]" />
+                    <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#69d7ca_0%,#ffc978_100%)]" />
                   ) : null}
                   {tab.icon}
                   <span>{tab.label}</span>
@@ -246,12 +246,12 @@ export function MobileShell({ data }: MobileShellProps) {
               onClick={() => setShowMenu((value) => !value)}
               className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
                 showMenu
-                  ? "app-btn-primary text-[#0d2327] shadow-[0_18px_36px_-24px_rgba(121,219,198,0.7)]"
-                  : "text-white/65 hover:bg-white/[0.05] hover:text-white/85"
+                  ? "app-btn-primary shadow-[0_18px_36px_-24px_rgba(109,201,238,0.48)]"
+                  : "text-slate-500 hover:bg-[#fff4f7] hover:text-slate-800"
               }`}
             >
               {showMenu ? (
-                <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#79dbc6_0%,#ffc89b_100%)]" />
+                <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#69d7ca_0%,#ffc978_100%)]" />
               ) : null}
               <IconManage />
               <span>Menu</span>
@@ -268,14 +268,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("manage");
                   setShowMenu(false);
                 }}
-                className="pressable flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-white/[0.04]"
+                className="pressable flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-[#fff4f7]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#3554d1] text-white">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-800">
                   <IconManage />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">New practice</div>
-                  <div className="text-sm text-white/70">Add something to repeat or loosen</div>
+                  <div className="text-sm text-slate-600">Add something to repeat or loosen</div>
                 </div>
               </button>
               <button
@@ -284,14 +284,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("today");
                   setShowMenu(false);
                 }}
-                className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-white/[0.04]"
+                className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-[#fff4f7]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/[0.08] text-white/75">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#fff1f5] text-slate-700">
                   <IconToday />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">Go to today</div>
-                  <div className="text-sm text-white/70">Check in and mark today&apos;s holds</div>
+                  <div className="text-sm text-slate-600">Check in and mark today&apos;s holds</div>
                 </div>
               </button>
               <button
@@ -300,14 +300,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("progress");
                   setShowMenu(false);
                 }}
-                className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-white/[0.04]"
+                className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-[#fff4f7]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffc89b_0%,#79dbc6_100%)] text-[#0d2327]">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffd68b_0%,#8be6dc_100%)] text-slate-800">
                   <IconProgress />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">Week view</div>
-                  <div className="text-sm text-white/70">See held days, pressure, and mood</div>
+                  <div className="text-sm text-slate-600">See held days, pressure, and mood</div>
                 </div>
               </button>
             </div>

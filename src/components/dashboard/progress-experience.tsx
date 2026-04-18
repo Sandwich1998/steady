@@ -48,13 +48,13 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
   return (
     <div className="grid gap-4">
       <section className="app-hero overflow-hidden rounded-[32px] px-5 py-6">
-        <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
+        <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
           Reflection
         </div>
-        <h2 className="mt-3 text-[2rem] font-semibold leading-[1.02] tracking-tight text-white">
+        <h2 className="mt-3 text-[2rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
           Here&apos;s how the week is holding.
         </h2>
-        <p className="mt-3 max-w-[18rem] text-sm leading-6 text-white/72">
+        <p className="mt-3 max-w-[18rem] text-sm leading-6 text-slate-600">
           Three reads: days held, pressure, and mood.
         </p>
 
@@ -82,12 +82,12 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 </defs>
               </svg>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-xl font-semibold text-white">{brightDays}</div>
-                <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">lit</div>
+                <div className="text-xl font-semibold text-slate-950">{brightDays}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-slate-400">lit</div>
               </div>
             </div>
-            <div className="mt-3 text-center text-sm font-semibold text-white">Days held</div>
-            <div className="mt-1 text-center text-sm text-white/62">Days with at least one hold</div>
+            <div className="mt-3 text-center text-sm font-semibold text-slate-950">Days held</div>
+            <div className="mt-1 text-center text-sm text-slate-600">Days with at least one hold</div>
           </article>
 
           <article className="app-card-soft rounded-[24px] p-4">
@@ -113,12 +113,12 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 </defs>
               </svg>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-xl font-semibold text-white">{calmDays}</div>
-                <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">calm</div>
+                <div className="text-xl font-semibold text-slate-950">{calmDays}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-slate-400">calm</div>
               </div>
             </div>
-            <div className="mt-3 text-center text-sm font-semibold text-white">Pressure</div>
-            <div className="mt-1 text-center text-sm text-white/62">Days you held more than you gave way</div>
+            <div className="mt-3 text-center text-sm font-semibold text-slate-950">Pressure</div>
+            <div className="mt-1 text-center text-sm text-slate-600">Days you held more than you gave way</div>
           </article>
 
           <article className="app-card-soft rounded-[24px] p-4">
@@ -144,12 +144,12 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 </defs>
               </svg>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-lg font-semibold text-white">{moodAverage ?? "-"}</div>
-                <div className="text-[9px] uppercase tracking-[0.18em] text-white/38">tone</div>
+                <div className="text-lg font-semibold text-slate-950">{moodAverage ?? "-"}</div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-slate-400">tone</div>
               </div>
             </div>
-            <div className="mt-3 text-center text-sm font-semibold text-white">Mood</div>
-            <div className="mt-1 text-center text-sm text-white/62">
+            <div className="mt-3 text-center text-sm font-semibold text-slate-950">Mood</div>
+            <div className="mt-1 text-center text-sm text-slate-600">
               {moodAverage ? moodTone[moodAverage] : "Unmarked"}
             </div>
           </article>
@@ -158,14 +158,14 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
 
       <section className="grid gap-3">
         <div className="flex flex-wrap gap-2">
-          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
-            <span className="text-white">Mood:</span> {moodAverage ? moodTone[moodAverage] : "Unmarked"}
+          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-slate-700">
+            <span className="text-slate-950">Mood:</span> {moodAverage ? moodTone[moodAverage] : "Unmarked"}
           </div>
-          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
-            <span className="text-white">Pressure:</span> {calmDays > 0 ? `${calmDays} steady day${calmDays === 1 ? "" : "s"}` : "No read yet"}
+          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-slate-700">
+            <span className="text-slate-950">Pressure:</span> {calmDays > 0 ? `${calmDays} steady day${calmDays === 1 ? "" : "s"}` : "No read yet"}
           </div>
-          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-white/78">
-            <span className="text-white">Holds:</span> {totalCompletions}
+          <div className="app-chip rounded-full px-4 py-2.5 text-sm text-slate-700">
+            <span className="text-slate-950">Holds:</span> {totalCompletions}
           </div>
         </div>
 

@@ -87,7 +87,7 @@ export function DayResetCard({
         description="Pick the closest mood and begin from there."
         action={
           currentMood ? (
-            <div className="rounded-full bg-[rgba(121,219,198,0.16)] px-3 py-1 text-sm font-medium text-[var(--accent-mint)]">
+            <div className="rounded-full bg-[#dcfff5] px-3 py-1 text-sm font-medium text-[#2f8f7d]">
               Done
             </div>
           ) : null
@@ -96,23 +96,23 @@ export function DayResetCard({
         <div className="app-card-soft rounded-[24px] p-4">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
+            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Mood
             </div>
-            <div className="mt-2 text-xl font-semibold text-white">
+            <div className="mt-2 text-xl font-semibold text-slate-950">
               {selectedMoodOption.label}
             </div>
-            <div className="mt-1 text-sm text-white/72">{selectedMoodOption.hint}</div>
+            <div className="mt-1 text-sm text-slate-600">{selectedMoodOption.hint}</div>
           </div>
           <div className="text-right">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
+            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Level
             </div>
-            <div className="mt-2 text-2xl font-semibold text-white">{selectedMood}/5</div>
+            <div className="mt-2 text-2xl font-semibold text-slate-950">{selectedMood}/5</div>
           </div>
         </div>
         <div className="mt-4 h-2 rounded-full bg-[linear-gradient(90deg,rgba(255,171,157,0.9)_0%,rgba(255,200,155,0.92)_38%,rgba(184,179,255,0.9)_72%,rgba(121,219,198,0.92)_100%)]" />
-        <div className="mt-2 flex items-center justify-between text-xs font-medium uppercase tracking-[0.18em] text-white/60">
+        <div className="mt-2 flex items-center justify-between text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
           <span>Low</span>
           <span>High</span>
         </div>
@@ -122,11 +122,11 @@ export function DayResetCard({
         <div className="app-card-soft rounded-[24px] px-4 py-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Today&apos;s mood
               </div>
-              <div className="mt-2 text-base font-semibold text-white">{selectedMoodOption.label}</div>
-              <div className="mt-1 text-sm text-white/70">{selectedMoodOption.hint}</div>
+              <div className="mt-2 text-base font-semibold text-slate-950">{selectedMoodOption.label}</div>
+              <div className="mt-1 text-sm text-slate-600">{selectedMoodOption.hint}</div>
             </div>
             <div className={`mt-1 h-3 w-3 rounded-full ${selectedMoodOption.dot}`} />
           </div>
@@ -145,17 +145,17 @@ export function DayResetCard({
                 className={`rounded-[24px] border px-4 py-4 text-left transition ${
                   active
                     ? mood.activeClass
-                    : "border-white/8 bg-[rgba(255,255,255,0.045)] text-white/72 hover:border-white/15 hover:bg-white/[0.07]"
+                    : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e4c7d0] hover:bg-[#fff8fb]"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-sm font-semibold">{mood.label}</div>
-                    <div className="mt-1 text-xs text-white/68">{mood.hint}</div>
+                    <div className="mt-1 text-xs text-slate-500">{mood.hint}</div>
                   </div>
                   <div className={`mt-0.5 h-3 w-3 rounded-full ${mood.dot}`} />
                 </div>
-                <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/65">
+                <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                   {mood.value}
                 </div>
               </button>
@@ -164,7 +164,7 @@ export function DayResetCard({
         </div>
       )}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="text-sm text-white/70">
+        <div className="text-sm text-slate-600">
           {startedAt
             ? `Checked in ${startedAtLabel}.`
             : "No check-in today yet."}

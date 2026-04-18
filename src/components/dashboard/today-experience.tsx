@@ -102,16 +102,16 @@ export function TodayExperience({
           <div className="max-w-[16rem]">
             <div className="flex items-center gap-2">
               <AppMark size="sm" />
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f7d98e]">
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f19a8d]">
                 Today
               </div>
             </div>
-            <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-white">
+            <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-slate-950">
               {heroTitle}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-white/74">{heroSubtitle}</p>
-            <div className="app-chip mt-4 inline-flex max-w-full items-center rounded-full px-3 py-2 text-sm font-medium text-white/82">
-              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(121,219,198,0.75)]" />
+            <p className="mt-3 text-sm leading-6 text-slate-600">{heroSubtitle}</p>
+            <div className="app-chip mt-4 inline-flex max-w-full items-center rounded-full px-3 py-2 text-sm font-medium text-slate-700">
+              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(105,215,202,0.5)]" />
               <span className="truncate">{heroStatus}</span>
             </div>
           </div>
@@ -134,7 +134,7 @@ export function TodayExperience({
               <button
                 type="button"
                 onClick={openUrgeSheet}
-                className="pressable app-btn-secondary min-h-11 w-full rounded-full px-5 py-3 text-sm font-medium text-white/86"
+                className="pressable app-btn-secondary min-h-11 w-full rounded-full px-5 py-3 text-sm font-medium"
               >
                 Urge help
               </button>

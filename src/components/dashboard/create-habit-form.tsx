@@ -44,7 +44,7 @@ export function CreateHabitForm() {
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
         <div className="grid gap-2">
-          <label className="text-sm font-medium text-white/78" htmlFor="habit-name">
+          <label className="text-sm font-medium text-slate-700" htmlFor="habit-name">
             Name
           </label>
           <input
@@ -52,41 +52,41 @@ export function CreateHabitForm() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Morning walk"
-            className="app-field rounded-2xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20"
+            className="app-field rounded-2xl px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#e6c7d3]"
             required
           />
         </div>
         <div className="grid gap-2">
-            <span className="text-sm font-medium text-white/78">Direction</span>
+            <span className="text-sm font-medium text-slate-700">Direction</span>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => setType("BUILD")}
               className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
                 type === "BUILD"
-                  ? "border-[#3554d1]/50 bg-[#1d2550] text-white shadow-[0_16px_34px_-22px_rgba(69,101,235,0.9)]"
-                  : "border-white/8 bg-[rgba(255,255,255,0.04)] text-white/78 hover:bg-white/[0.08]"
+                  ? "border-[#74c8f1] bg-[#edfaff] text-slate-950 shadow-[0_16px_34px_-22px_rgba(109,201,238,0.32)]"
+                  : "border-[#ecd9df] bg-white/86 text-slate-700 hover:bg-[#fff8fb]"
               }`}
               >
               <div className="text-sm font-semibold">Repeat</div>
-              <div className="mt-1 text-sm text-white/62">Something you want to do more often</div>
+              <div className="mt-1 text-sm text-slate-500">Something you want to do more often</div>
             </button>
             <button
               type="button"
               onClick={() => setType("BREAK")}
               className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
                 type === "BREAK"
-                  ? "border-[#88405a]/45 bg-[#301d25] text-white shadow-[0_16px_34px_-22px_rgba(136,64,90,0.9)]"
-                  : "border-white/8 bg-[rgba(255,255,255,0.04)] text-white/78 hover:bg-white/[0.08]"
+                  ? "border-[#ffb5bd] bg-[#fff2f3] text-slate-950 shadow-[0_16px_34px_-22px_rgba(255,158,165,0.24)]"
+                  : "border-[#ecd9df] bg-white/86 text-slate-700 hover:bg-[#fff8fb]"
               }`}
               >
               <div className="text-sm font-semibold">Loosen</div>
-              <div className="mt-1 text-sm text-white/62">Something you want to interrupt sooner</div>
+              <div className="mt-1 text-sm text-slate-500">Something you want to interrupt sooner</div>
             </button>
           </div>
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium text-white/78" htmlFor="habit-minimum-action">
+          <label className="text-sm font-medium text-slate-700" htmlFor="habit-minimum-action">
             Minimum step
           </label>
           <input
@@ -94,7 +94,7 @@ export function CreateHabitForm() {
             value={minimumAction}
             onChange={(event) => setMinimumAction(event.target.value)}
             placeholder="Put on shoes and walk 5 minutes"
-            className="app-field rounded-2xl px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-white/20"
+            className="app-field rounded-2xl px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#e6c7d3]"
             required
           />
         </div>

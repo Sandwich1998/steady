@@ -76,13 +76,13 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
       description="For the minute when the pull gets loud."
     >
       {breakHabits.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-4 text-sm text-white/72">
+        <p className="rounded-2xl border border-dashed border-[#ecd9df] bg-white/76 p-4 text-sm text-slate-600">
           Add one practice to loosen before you log urges here.
         </p>
       ) : !isOpen ? (
         hiddenUntilOpen ? (
           savedMessage ? (
-            <div className="animate-success-toast rounded-[18px] bg-[#1d3b2a] px-4 py-3 text-sm text-[#9be4b6]">
+            <div className="animate-success-toast rounded-[18px] bg-[#dcfff5] px-4 py-3 text-sm text-[#2f8f7d]">
               {savedMessage}
             </div>
           ) : null
@@ -90,8 +90,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
         <div className="app-card-soft rounded-[24px] p-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-sm font-semibold text-white">The pull is here.</div>
-              <p className="mt-1 text-sm leading-6 text-white/70">
+              <div className="text-sm font-semibold text-slate-950">The pull is here.</div>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
                 Mark what happened, then get out of here.
               </p>
             </div>
@@ -104,7 +104,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             </button>
           </div>
           {savedMessage ? (
-            <div className="animate-success-toast mt-4 rounded-[18px] bg-[rgba(121,219,198,0.14)] px-4 py-3 text-sm text-[var(--accent-mint)]">
+            <div className="animate-success-toast mt-4 rounded-[18px] bg-[#dcfff5] px-4 py-3 text-sm text-[#2f8f7d]">
               {savedMessage}
             </div>
           ) : null}
@@ -119,27 +119,27 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             className="absolute inset-0"
           />
           <form
-            className="app-card animate-sheet-rise relative z-10 w-full rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(7,16,20,0.95)]"
+            className="app-card animate-sheet-rise relative z-10 w-full rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(214,173,183,0.38)]"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
             onSubmit={handleSubmit}
           >
-            <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-white/15" />
+            <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-[#ead6dd]" />
             <div className="flex items-start justify-between gap-3">
               <div className="max-w-[15rem]">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#9bb0ff]">
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#f19a8d]">
                   Urge support
                 </div>
-                <div className="mt-3 text-[1.9rem] font-semibold leading-[1.02] tracking-tight text-white">
+                <div className="mt-3 text-[1.9rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
                   Mark the pull.
                 </div>
-                <div className="mt-3 text-sm leading-6 text-white/70">
+                <div className="mt-3 text-sm leading-6 text-slate-600">
                   Pick the habit, mark the pull, say what happened.
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="pressable min-h-11 rounded-full bg-white/[0.05] px-4 py-2.5 text-sm font-semibold text-white/78"
+                className="pressable min-h-11 rounded-full border border-[#ecd9df] bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 Close
               </button>
@@ -147,14 +147,14 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
 
             <div className="mt-5 grid gap-4">
               <div className="grid gap-2">
-                <label className="text-sm font-medium text-white/78" htmlFor="urge-habit">
+                <label className="text-sm font-medium text-slate-700" htmlFor="urge-habit">
                   Which habit is tugging right now?
                 </label>
                 <select
                   id="urge-habit"
                   value={selectedHabitId}
                   onChange={(event) => setHabitId(event.target.value)}
-                  className="app-field rounded-[20px] px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
+                  className="app-field rounded-[20px] px-4 py-3 text-sm text-slate-950 outline-none transition focus:border-[#e6c7d3]"
                 >
                   {breakHabits.map((habit) => (
                     <option key={habit.id} value={habit.id}>
@@ -165,7 +165,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               </div>
 
               <div className="grid gap-2">
-                <span className="text-sm font-medium text-white/78">How strong is it?</span>
+                <span className="text-sm font-medium text-slate-700">How strong is it?</span>
                 <div className="grid grid-cols-5 gap-2">
                   {intensities.map((value) => (
                     <button
@@ -174,8 +174,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                       onClick={() => setIntensity(value)}
                       className={`pressable min-h-11 rounded-[18px] border px-3 py-3 text-sm font-semibold ${
                         value === intensity
-                          ? "border-[var(--accent-mint)] bg-[rgba(121,219,198,0.18)] text-white shadow-[0_12px_30px_-18px_rgba(121,219,198,0.5)]"
-                          : "border-white/8 bg-white/[0.04] text-white/80 hover:border-white/15"
+                          ? "border-[#69d7ca] bg-[#dcfff5] text-slate-950 shadow-[0_12px_30px_-18px_rgba(105,215,202,0.28)]"
+                          : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e6c7d3]"
                       }`}
                     >
                       {value}
@@ -185,19 +185,19 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               </div>
 
               <div className="grid gap-2">
-                <span className="text-sm font-medium text-white/78">What happened?</span>
+                <span className="text-sm font-medium text-slate-700">What happened?</span>
                 <div className="grid gap-3">
                   <button
                     type="button"
                     onClick={() => setOutcome("RESISTED")}
                     className={`pressable min-h-11 rounded-[22px] border px-4 py-4 text-left ${
                       outcome === "RESISTED"
-                        ? "border-[var(--accent-mint)] bg-[rgba(121,219,198,0.16)] text-white shadow-[0_12px_30px_-20px_rgba(121,219,198,0.42)]"
-                        : "border-white/8 bg-white/[0.04] text-white/80 hover:border-white/15"
+                        ? "border-[#69d7ca] bg-[#dcfff5] text-slate-950 shadow-[0_12px_30px_-20px_rgba(105,215,202,0.28)]"
+                        : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e6c7d3]"
                     }`}
                   >
                       <div className="text-base font-semibold">I resisted it</div>
-                      <div className="mt-1 text-sm text-white/70">
+                      <div className="mt-1 text-sm text-slate-600">
                       I interrupted it, even if it was messy.
                       </div>
                   </button>
@@ -206,12 +206,12 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                     onClick={() => setOutcome("ACTED")}
                     className={`pressable min-h-11 rounded-[22px] border px-4 py-4 text-left ${
                       outcome === "ACTED"
-                        ? "border-[var(--accent-rose)] bg-[rgba(255,171,157,0.14)] text-white shadow-[0_12px_30px_-20px_rgba(255,171,157,0.34)]"
-                        : "border-white/8 bg-white/[0.04] text-white/80 hover:border-white/15"
+                        ? "border-[#ffb5bd] bg-[#fff0f1] text-slate-950 shadow-[0_12px_30px_-20px_rgba(255,158,165,0.22)]"
+                        : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e6c7d3]"
                     }`}
                   >
                       <div className="text-base font-semibold">I acted on it</div>
-                      <div className="mt-1 text-sm text-white/70">
+                      <div className="mt-1 text-sm text-slate-600">
                       I gave way. Mark it and keep going.
                       </div>
                   </button>
