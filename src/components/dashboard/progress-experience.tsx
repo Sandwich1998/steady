@@ -62,12 +62,19 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             </div>
           </div>
 
-          <div className="mt-5 flex items-center gap-2">
-            {weeklyHistory.map((day, index) => (
-              <div key={day.date} className="flex flex-1 items-center gap-2">
-                <div className="flex flex-col items-center gap-2">
+          <div className="relative mt-5">
+            <div className="pointer-events-none absolute inset-x-5 top-6 h-[2px] rounded-full bg-white/10" />
+            <div
+              className="pointer-events-none absolute left-5 top-6 h-[2px] rounded-full bg-[linear-gradient(90deg,rgba(247,201,91,0.52),rgba(124,108,255,0.35))]"
+              style={{
+                width: `${weeklyHistory.length > 1 ? ((brightDays - 1) / (weeklyHistory.length - 1)) * 100 : 0}%`,
+              }}
+            />
+            <div className="relative grid grid-cols-7 gap-1 sm:gap-2">
+              {weeklyHistory.map((day) => (
+                <div key={day.date} className="flex min-w-0 flex-col items-center gap-2">
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-full border text-sm font-semibold ${
+                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold sm:h-12 sm:w-12 ${
                       day.completed
                         ? "border-[#f7c85e]/55 bg-[radial-gradient(circle_at_35%_35%,#fff5c4_0%,#f7bf4c_42%,#f08c35_100%)] text-black shadow-[0_18px_44px_-24px_rgba(251,191,36,0.9)]"
                         : day.mood
@@ -77,19 +84,12 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                   >
                     {day.completed ? "✦" : day.mood ?? "·"}
                   </div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-white/40">
+                  <div className="text-center text-[10px] uppercase tracking-[0.16em] text-white/40 sm:text-[11px] sm:tracking-[0.18em]">
                     {day.label.slice(0, 3)}
                   </div>
                 </div>
-                {index < weeklyHistory.length - 1 ? (
-                  <div
-                    className={`h-[2px] flex-1 rounded-full ${
-                      day.completed ? "bg-[linear-gradient(90deg,rgba(247,201,91,0.5),rgba(124,108,255,0.35))]" : "bg-white/10"
-                    }`}
-                  />
-                ) : null}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
