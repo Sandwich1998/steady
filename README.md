@@ -1,6 +1,6 @@
-# Habit Reset MVP
+# Steady
 
-Simple MVP habit system built with Next.js, Tailwind CSS, Prisma, and SQLite.
+Simple habit companion built with Next.js, Tailwind CSS, Prisma, and Postgres.
 
 ## Core loop
 
@@ -15,35 +15,56 @@ Simple MVP habit system built with Next.js, Tailwind CSS, Prisma, and SQLite.
 - Next.js App Router
 - Tailwind CSS
 - Prisma ORM
-- SQLite
+- Postgres
 
 ## Run locally
 
-1. Install dependencies:
+1. Add a database URL:
+
+```bash
+cp .env.example .env
+```
+
+Use a hosted Postgres database such as Neon or Supabase.
+
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Create the database and generate the Prisma client:
+3. Push the schema:
 
 ```bash
 npm run db:push
 ```
 
-3. Seed the app with sample data:
+4. Seed the app with sample data:
 
 ```bash
 npm run db:seed
 ```
 
-4. Start the app:
+5. Start the app:
 
 ```bash
 npm run dev
 ```
 
-5. Open `http://localhost:3000`
+6. Open `http://localhost:3000`
+
+## Deploy to Vercel
+
+1. Create a hosted Postgres database.
+2. In Vercel, add `DATABASE_URL` in your project environment variables.
+3. Redeploy.
+
+Recommended providers:
+
+- Neon
+- Supabase
+
+This app is configured for Postgres. Do not use a local SQLite file on Vercel.
 
 ## Main files
 
