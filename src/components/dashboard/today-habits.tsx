@@ -186,7 +186,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 onClick={() => setSelectedHabitId(nextHabit.id)}
                 className="flex h-11 min-w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white/80"
               >
-                Details
+                Open
               </button>
             </div>
 
@@ -201,10 +201,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     : "bg-[#3554d1] text-white shadow-[0_16px_42px_-24px_rgba(69,101,235,1)] hover:scale-[1.01] hover:bg-[#4565eb] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
-                {nextHabit.completedToday ? "Tiny step complete" : "Complete tiny step"}
+                {nextHabit.completedToday ? "Step landed" : "Take this step"}
               </button>
               <div className="rounded-full bg-white/[0.05] px-3 py-2 text-sm text-white/72">
-                {nextHabit.stats.totalCompletions} total wins
+                {nextHabit.type === "BUILD" ? "Keep growing" : "Hold the line"}
               </div>
             </div>
           </article>
@@ -213,7 +213,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         {queueHabits.length > 0 ? (
           <section className="rounded-[28px] border border-white/8 bg-white/[0.03] p-4">
             <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-white">Later today</div>
+              <div className="text-sm font-semibold text-white">If you want more</div>
               <div className="text-xs uppercase tracking-[0.18em] text-white/42">
                 Slide to choose
               </div>
@@ -235,14 +235,14 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                       disabled={habit.completedToday || isPending}
                       className="min-h-11 rounded-full bg-[#214635] px-4 py-2.5 text-sm font-semibold text-[#9be4b6] disabled:opacity-60"
                     >
-                      Done
+                      Land
                     </button>
                     <button
                       type="button"
                       onClick={() => setSelectedHabitId(habit.id)}
                       className="min-h-11 rounded-full bg-[#24345f] px-4 py-2.5 text-sm font-semibold text-[#adc0ff]"
                     >
-                      Details
+                      Open
                     </button>
                   </div>
                   <button
@@ -282,6 +282,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                           habit.completedToday ? "bg-emerald-400" : "bg-white/28"
                         }`}
                       />
+                      <div className="text-base text-white/36">›</div>
                     </div>
                   </button>
                 </div>
