@@ -12,6 +12,7 @@ type ProgressExperienceProps = {
     mood: number | null;
     completed: boolean;
     completionsCount: number;
+    restCount: number;
     urgesCount: number;
     resistedCount: number;
     actedCount: number;
@@ -46,6 +47,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
   const brightDays = weeklyHistory.filter((day) => day.completed).length;
   const calmDays = weeklyHistory.filter((day) => day.resistedCount >= day.actedCount).length;
   const totalCompletions = weeklyHistory.reduce((sum, day) => sum + day.completionsCount, 0);
+  const totalRestDays = weeklyHistory.reduce((sum, day) => sum + day.restCount, 0);
   const totalResisted = weeklyHistory.reduce((sum, day) => sum + day.resistedCount, 0);
   const totalUrges = weeklyHistory.reduce((sum, day) => sum + day.urgesCount, 0);
   const averageMoodSource = weeklyHistory.filter((day) => day.mood !== null);
@@ -62,7 +64,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
   const supportCopy = getWeekSupportCopy(brightDays, calmDays, totalCompletions, moodAverage);
   const practiceMixLabel =
     stats.totalHabits > 0
-      ? `${stats.buildHabits} felt supportive, ${stats.breakHabits} may need loosening`
+      ? `${stats.buildHabits} practices felt supportive. ${stats.breakHabits} may need a gentler approach`
       : "No habits set yet";
 
   return (
@@ -95,8 +97,8 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 <div className="mt-2 text-[1.7rem] font-semibold leading-none text-slate-950">
                   {calmDays}
                 </div>
-                <div className="mt-3 text-xs text-slate-500">
-                  Days you resisted as much as, or more than, you acted.
+              <div className="mt-3 text-xs text-slate-500">
+                  Days when urges felt more manageable.
                 </div>
               </article>
 
@@ -166,8 +168,15 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
         </div>
 
         <div className="mt-5 rounded-[22px] bg-[#fff8fb] px-4 py-3 text-sm text-slate-600">
-          <span className="font-semibold text-slate-900">{totalResisted}</span>
-          {totalUrges > 0 ? ` of ${totalUrges}` : ""} urge moments were handled well.
+          {totalUrges > 0 ? (
+            <>
+              You handled <span className="font-semibold text-slate-900">{totalResisted}</span> of{" "}
+              <span className="font-semibold text-slate-900">{totalUrges}</span> urge moments well.
+            </>
+          ) : (
+            "No urge moments were logged this week."
+          )}
+          {totalRestDays > 0 ? ` You also kept ${totalRestDays} planned rest day${totalRestDays === 1 ? "" : "s"}.` : ""}
         </div>
       </article>
 
@@ -195,7 +204,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             />
           </div>
           <div className="mt-3 text-sm text-slate-600">
-            Keep the supportive ones easy to return to. Make the harder ones easier to notice.
+            Keep the supportive ones easy to return to. Keep the harder ones easier to spot.
           </div>
         </article>
       </section>

@@ -20,6 +20,7 @@ type TodayExperienceProps = {
     type: HabitType;
     minimumAction: string;
     completedToday: boolean;
+    restedToday: boolean;
     stats: {
       totalCompletions: number;
       completionsLast7Days: number;
@@ -47,7 +48,7 @@ export function TodayExperience({
   habits,
 }: TodayExperienceProps) {
   const breakHabits = habits.filter((habit) => habit.type === "BREAK");
-  const nextHabit = habits.find((habit) => !habit.completedToday) ?? null;
+  const nextHabit = habits.find((habit) => !habit.completedToday && !habit.restedToday) ?? null;
 
   const heroTitle = !dayReset
     ? "Set the day."

@@ -23,7 +23,7 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
       title="Recent urge moments"
       description={
         recentUrges.length > 0
-          ? `${resistedCount} of ${recentUrges.length} recent moments were resisted.`
+          ? `You got through ${resistedCount} of the last ${recentUrges.length}.`
           : "A gentle record of how hard moments went."
       }
       variant="soft"
@@ -49,17 +49,19 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
                   }`}
                 />
                 <div className="min-w-0 border-b border-[#f1dde4] pb-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="truncate text-sm font-semibold text-slate-950">
-                      {urge.habitName}
-                    </h3>
-                    <span className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
-                      {urge.habitType === "BREAK" ? "Break" : "Build"}
-                    </span>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-sm font-semibold text-slate-950">
+                        {urge.habitName}
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-600">
+                        {urge.outcome === "RESISTED" ? "You got through it" : "It got the better of you"}
+                      </p>
+                    </div>
+                    <div className="shrink-0 rounded-full bg-[#fff7fb] px-2.5 py-1 text-xs font-medium text-slate-500">
+                      {urge.intensity}/5
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm text-slate-600">
-                    {urge.outcome === "RESISTED" ? "You got through it" : "It got the better of you"} • intensity {urge.intensity}/5
-                  </p>
                 </div>
                 <div className="pt-0.5 text-right text-sm text-slate-500">
                   {urge.createdAtLabel}

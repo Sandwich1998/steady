@@ -46,8 +46,22 @@ export async function getDashboardData() {
   const startDate = new Date();
   startDate.setHours(0, 0, 0, 0);
   startDate.setDate(startDate.getDate() - 6);
+  const prismaWithRestDays = prisma as typeof prisma & {
+    habitRestDay?: {
+      findMany: (args: {
+        where:
+          | { date: string }
+          | {
+              date: {
+                in: string[];
+              };
+            };
+        select: { habitId?: true; date?: true };
+      }) => Promise<{ habitId?: string; date?: string }[]>;
+    };
+  };
 
-  const [dayReset, habits, completions, recentUrges, weeklyResets, weeklyCompletions, weeklyUrges] =
+  const [dayReset, habits, completions, restDays, recentUrges, weeklyResets, weeklyCompletions, weeklyRestDays, weeklyUrges] =
     await Promise.all([
     prisma.dayReset.findUnique({
       where: { date: today },
@@ -76,6 +90,10 @@ export async function getDashboardData() {
       where: { date: today },
       select: { habitId: true },
     }),
+    prismaWithRestDays.habitRestDay?.findMany({
+      where: { date: today },
+      select: { habitId: true },
+    }) ?? Promise.resolve([]),
     prisma.urgeLog.findMany({
       orderBy: { createdAt: "desc" },
       take: 8,
@@ -103,6 +121,14 @@ export async function getDashboardData() {
       },
       select: { date: true },
     }),
+    prismaWithRestDays.habitRestDay?.findMany({
+      where: {
+        date: {
+          in: lastSevenDays.map((day) => day.key),
+        },
+      },
+      select: { date: true },
+    }) ?? Promise.resolve([]),
     prisma.urgeLog.findMany({
       where: {
         createdAt: {
@@ -117,10 +143,20 @@ export async function getDashboardData() {
   ]);
 
   const completedHabitIds = new Set(completions.map((completion) => completion.habitId));
-  const dayCompleted = habits.length > 0 && habits.every((habit) => completedHabitIds.has(habit.id));
+  const restedHabitIds = new Set(restDays.map((restDay) => restDay.habitId));
+  const dayCompleted =
+    habits.length > 0 &&
+    habits.every(
+      (habit) => completedHabitIds.has(habit.id) || restedHabitIds.has(habit.id),
+    );
   const resetMap = new Map(weeklyResets.map((reset) => [reset.date, reset.mood]));
   const completionCounts = weeklyCompletions.reduce<Map<string, number>>((map, completion) => {
     map.set(completion.date, (map.get(completion.date) ?? 0) + 1);
+    return map;
+  }, new Map());
+  const weeklyRestCounts = weeklyRestDays.reduce<Map<string, number>>((map, restDay) => {
+    if (!restDay.date) return map;
+    map.set(restDay.date, (map.get(restDay.date) ?? 0) + 1);
     return map;
   }, new Map());
   const urgeCounts = weeklyUrges.reduce<
@@ -160,6 +196,7 @@ export async function getDashboardData() {
       type: habit.type,
       minimumAction: habit.minimumAction,
       completedToday: completedHabitIds.has(habit.id),
+      restedToday: restedHabitIds.has(habit.id),
       stats: {
         totalCompletions: habit.completions.length,
         completionsLast7Days: habit.completions.filter((completion) =>
@@ -196,6 +233,7 @@ export async function getDashboardData() {
     weeklyHistory: lastSevenDays.map((day) => {
       const urgeSummary = urgeCounts.get(day.key) ?? { total: 0, resisted: 0, acted: 0 };
       const completionsCount = completionCounts.get(day.key) ?? 0;
+      const restCount = weeklyRestCounts.get(day.key) ?? 0;
 
       return {
         date: day.key,
@@ -203,6 +241,7 @@ export async function getDashboardData() {
         mood: resetMap.get(day.key) ?? null,
         completed: completionsCount > 0,
         completionsCount,
+        restCount,
         urgesCount: urgeSummary.total,
         resistedCount: urgeSummary.resisted,
         actedCount: urgeSummary.acted,

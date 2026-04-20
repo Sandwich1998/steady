@@ -6,6 +6,7 @@ type TodayOrbitProps = {
     name: string;
     type: HabitType;
     completedToday: boolean;
+    restedToday: boolean;
     minimumAction: string;
   }[];
   nextHabit:
@@ -22,8 +23,9 @@ type TodayOrbitProps = {
 
 export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps) {
   const completedCount = habits.filter((habit) => habit.completedToday).length;
+  const restedCount = habits.filter((habit) => habit.restedToday).length;
   const totalHabits = Math.max(habits.length, 1);
-  const progress = Math.min(completedCount / totalHabits, 1);
+  const progress = Math.min((completedCount + restedCount) / totalHabits, 1);
   const radius = 52;
   const circumference = 2 * Math.PI * radius;
   const strokeOffset = circumference - circumference * progress;
@@ -76,7 +78,7 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
         </svg>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <div className="text-[1.55rem] font-semibold text-slate-950">
-            {completedCount}/{totalHabits}
+            {completedCount + restedCount}/{totalHabits}
           </div>
           <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.22em] text-slate-500">
             done
@@ -98,8 +100,13 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
-            {totalHabits - completedCount} left
+            {Math.max(totalHabits - completedCount - restedCount, 0)} left
           </span>
+          {restedCount > 0 ? (
+            <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
+              {restedCount} resting
+            </span>
+          ) : null}
           {nextHabit && !dayCompleted ? (
             <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
               {nextHabit.type === "BUILD" ? "Repeat" : "Loosen"}

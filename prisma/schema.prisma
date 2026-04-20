@@ -25,6 +25,7 @@ model Habit {
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   completions   HabitCompletion[]
+  restDays      HabitRestDay[]
   urgeLogs      UrgeLog[]
 }
 
@@ -41,6 +42,16 @@ model HabitCompletion {
   completedAt DateTime @default(now())
   habitId     String
   habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+}
+
+model HabitRestDay {
+  id        String   @id @default(cuid())
+  date      String
+  restedAt  DateTime @default(now())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
   @@unique([habitId, date])
 }

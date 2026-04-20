@@ -11,6 +11,7 @@ type TodayHabitsProps = {
     type: HabitType;
     minimumAction: string;
     completedToday: boolean;
+    restedToday: boolean;
     stats: {
       totalCompletions: number;
       completionsLast7Days: number;
@@ -34,9 +35,11 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
   const completedCount = habits.filter((habit) => habit.completedToday).length;
+  const restedCount = habits.filter((habit) => habit.restedToday).length;
   const selectedHabit = habits.find((habit) => habit.id === selectedHabitId) ?? null;
-  const nextHabit = habits.find((habit) => !habit.completedToday) ?? habits[0] ?? null;
-  const allHeld = habits.length > 0 && completedCount === habits.length;
+  const nextHabit =
+    habits.find((habit) => !habit.completedToday && !habit.restedToday) ?? habits[0] ?? null;
+  const allHeld = habits.length > 0 && completedCount + restedCount === habits.length;
 
   useEffect(() => {
     if (!successMessage) return;
@@ -82,6 +85,29 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     });
   }
 
+  async function restHabit(habitId: string) {
+    setError("");
+
+    const response = await fetch(`/api/habits/${habitId}/rest`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      setError("Couldn't save that rest day.");
+      return;
+    }
+
+    const habit = habits.find((currentHabit) => currentHabit.id === habitId);
+    setSuccessMessage({
+      habitId,
+      text: `Resting today: ${habit?.name ?? "That habit"}.`,
+    });
+
+    startTransition(() => {
+      router.refresh();
+    });
+  }
+
   if (habits.length === 0) {
     return (
       <section className="rounded-[28px] border border-dashed border-[#ecd9df] bg-white/70 p-5">
@@ -99,7 +125,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         {allHeld ? (
           <article className="rounded-[30px] border border-[#ecd9df] bg-white/74 px-5 py-5 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.22)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              All done
+              {restedCount > 0 ? "Done for today" : "All done"}
             </div>
             <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-slate-950">
               Nothing else needs doing here.
@@ -161,21 +187,36 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               </button>
             </div>
 
-            <div className="relative mt-5 flex items-center gap-3">
+            <div className="relative mt-5 grid gap-3">
               <button
                 type="button"
                 onClick={() => completeHabit(nextHabit.id)}
-                disabled={nextHabit.completedToday || isPending}
+                disabled={nextHabit.completedToday || nextHabit.restedToday || isPending}
                 className={`min-h-11 flex-1 rounded-full px-5 py-3 text-sm font-semibold transition ${
                   nextHabit.completedToday
                     ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"
+                    : nextHabit.restedToday
+                      ? "cursor-not-allowed bg-[#fff4d9] text-[#9b7a2d]"
                     : "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-900 shadow-[0_16px_42px_-24px_rgba(109,201,238,0.45)] hover:scale-[1.01] hover:brightness-[1.02] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
-                {nextHabit.completedToday ? "Done today" : "Mark as done"}
+                {nextHabit.completedToday ? "Done today" : nextHabit.restedToday ? "Resting today" : "Mark as done"}
               </button>
-              <div className="rounded-full bg-[#fff2f6] px-3 py-2 text-sm text-slate-600">
-                {habits.filter((habit) => !habit.completedToday).length - 1} more open
+              <div className="grid grid-cols-[1fr_auto] gap-3">
+                <button
+                  type="button"
+                  onClick={() => restHabit(nextHabit.id)}
+                  disabled={nextHabit.restedToday || nextHabit.completedToday || isPending}
+                  className="min-h-11 rounded-full bg-white/62 px-5 py-3 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-22px_rgba(214,173,183,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {nextHabit.restedToday ? "Resting today" : "Rest today"}
+                </button>
+                <div className="rounded-full bg-[#fff2f6] px-3 py-2 text-sm text-slate-600">
+                  {Math.max(
+                    habits.filter((habit) => !habit.completedToday && !habit.restedToday).length - 1,
+                    0,
+                  )} more open
+                </div>
               </div>
             </div>
           </article>
@@ -203,27 +244,47 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     <div className="min-w-0">
                       <div className="text-sm font-semibold text-slate-950">{habit.name}</div>
                       <div className="mt-1 text-sm text-slate-600">
-                        {habit.completedToday ? "Already done today" : habit.minimumAction}
+                        {habit.completedToday
+                          ? "Already done today"
+                          : habit.restedToday
+                            ? "Resting today"
+                            : habit.minimumAction}
                       </div>
                     </div>
                   </button>
                   <div className="flex items-center gap-2">
                     <div
                       className={`h-3 w-3 shrink-0 rounded-full ${
-                        habit.completedToday ? "bg-[#69d7ca]" : "bg-[#f0d6de]"
+                        habit.completedToday
+                          ? "bg-[#69d7ca]"
+                          : habit.restedToday
+                            ? "bg-[#ffd68b]"
+                            : "bg-[#f0d6de]"
                       }`}
                     />
+                    {!habit.completedToday && !habit.restedToday ? (
+                      <button
+                        type="button"
+                        onClick={() => restHabit(habit.id)}
+                        disabled={isPending}
+                        className="min-h-11 rounded-full bg-white/62 px-3 py-2.5 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        Rest
+                      </button>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => completeHabit(habit.id)}
-                      disabled={habit.completedToday || isPending}
+                      disabled={habit.completedToday || habit.restedToday || isPending}
                       className={`min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
                         habit.completedToday
                           ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"
+                          : habit.restedToday
+                            ? "cursor-not-allowed bg-[#fff4d9] text-[#9b7a2d]"
                           : "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
                       }`}
                     >
-                      {habit.completedToday ? "Done" : "Mark done"}
+                      {habit.completedToday ? "Done" : habit.restedToday ? "Resting" : "Mark done"}
                     </button>
                   </div>
                 </article>

@@ -20,15 +20,15 @@ export async function POST(_: Request, context: RouteContext) {
     return NextResponse.json({ error: "Habit not found." }, { status: 404 });
   }
 
-  const completion = await prisma.$transaction(async (tx) => {
-    await tx.habitRestDay.deleteMany({
+  const restDay = await prisma.$transaction(async (tx) => {
+    await tx.habitCompletion.deleteMany({
       where: {
         habitId: id,
         date: today,
       },
     });
 
-    return tx.habitCompletion.upsert({
+    return tx.habitRestDay.upsert({
       where: {
         habitId_date: {
           habitId: id,
@@ -43,5 +43,5 @@ export async function POST(_: Request, context: RouteContext) {
     });
   });
 
-  return NextResponse.json(completion, { status: 201 });
+  return NextResponse.json(restDay, { status: 201 });
 }

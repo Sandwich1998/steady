@@ -28,6 +28,7 @@ type DashboardData = {
     type: HabitType;
     minimumAction: string;
     completedToday: boolean;
+    restedToday: boolean;
     stats: {
       totalCompletions: number;
       completionsLast7Days: number;
@@ -54,6 +55,7 @@ type DashboardData = {
     mood: number | null;
     completed: boolean;
     completionsCount: number;
+    restCount: number;
     urgesCount: number;
     resistedCount: number;
     actedCount: number;
@@ -116,6 +118,12 @@ export function MobileShell({ data }: MobileShellProps) {
     activeTab === "today" ? "Today" : activeTab === "progress" ? "Week" : "Practices";
   const screenTitle =
     activeTab === "today" ? "Steady" : activeTab === "progress" ? "Week" : "Practice";
+  const screenSubtitle =
+    activeTab === "today"
+      ? data.today
+      : activeTab === "progress"
+        ? "See your week at a glance."
+        : "Shape the practices you want to keep.";
   return (
     <main className="min-h-screen px-0 text-slate-950">
       <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-[#ecd9df] sm:shadow-[0_0_0_1px_rgba(239,220,226,0.9),0_40px_120px_-52px_rgba(214,173,183,0.38)]">
@@ -135,11 +143,7 @@ export function MobileShell({ data }: MobileShellProps) {
                   {screenTitle}
                 </h1>
                 <p className={`text-slate-600 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
-                  {compactHeader
-                    ? activeTab === "progress"
-                      ? "Held days, pressure, mood."
-                      : "Write practices you can return to."
-                    : data.today}
+                  {compactHeader ? screenSubtitle : data.today}
                 </p>
               </div>
             </div>
@@ -182,28 +186,26 @@ export function MobileShell({ data }: MobileShellProps) {
 
           {activeTab === "manage" ? (
             <div className="mt-5 grid gap-4">
-              <section className="app-card-soft overflow-hidden rounded-[30px] px-5 py-5">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Practices
-                </div>
+              <section className="app-card-soft overflow-hidden rounded-[32px] px-5 py-6">
+                <div className="text-sm font-semibold text-slate-700">Practices</div>
                 <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
-                  Set up what you want to return to.
+                  Set up what you want to come back to.
                 </h2>
                 <p className="mt-2 max-w-[16rem] text-sm leading-6 text-slate-600">
                   Keep each one plain, small, and doable on a rough day.
                 </p>
               </section>
               <CreateHabitForm />
-              <section className="rounded-[28px] border border-[#ecd9df] bg-white/70 p-5 shadow-[0_18px_40px_-34px_rgba(214,173,183,0.22)]">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Counts
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <div className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-4 py-3 text-sm text-slate-700">
-                    <span className="text-slate-950">Repeat:</span> {data.stats.buildHabits}
+              <section className="rounded-[28px] bg-white/62 p-5 shadow-[0_12px_28px_-26px_rgba(214,173,183,0.14)]">
+                <div className="text-sm font-semibold text-slate-700">Practice balance</div>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-[22px] bg-[#fff8fb] px-4 py-4">
+                    <div className="text-xs text-slate-500">Repeat</div>
+                    <div className="mt-2 text-2xl font-semibold text-slate-950">{data.stats.buildHabits}</div>
                   </div>
-                  <div className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-4 py-3 text-sm text-slate-700">
-                    <span className="text-slate-950">Loosen:</span> {breakHabits.length}
+                  <div className="rounded-[22px] bg-[#fff8fb] px-4 py-4">
+                    <div className="text-xs text-slate-500">Loosen</div>
+                    <div className="mt-2 text-2xl font-semibold text-slate-950">{breakHabits.length}</div>
                   </div>
                 </div>
               </section>
@@ -266,14 +268,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("manage");
                   setShowMenu(false);
                 }}
-                className="pressable flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-[#fff4f7]"
+                className="pressable flex w-full items-center gap-4 rounded-[24px] bg-[#fff7fb] px-3 py-3 text-left shadow-[0_14px_30px_-26px_rgba(214,173,183,0.16)]"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-800">
                   <IconManage />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">New practice</div>
-                  <div className="text-sm text-slate-600">Add something to repeat or loosen</div>
+                  <div className="text-sm text-slate-600">Add something to repeat or loosen.</div>
                 </div>
               </button>
               <button
@@ -282,14 +284,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("today");
                   setShowMenu(false);
                 }}
-                className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-[#fff4f7]"
+                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-[#fff7fb]"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#fff1f5] text-slate-700">
                   <IconToday />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">Go to today</div>
-                  <div className="text-sm text-slate-600">Check in and mark today&apos;s holds</div>
+                  <div className="text-sm text-slate-600">Check in and move through today.</div>
                 </div>
               </button>
               <button
@@ -298,14 +300,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("progress");
                   setShowMenu(false);
                 }}
-                className="pressable mt-1 flex w-full items-center gap-4 rounded-[22px] px-3 py-3 text-left hover:bg-[#fff4f7]"
+                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-[#fff7fb]"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffd68b_0%,#8be6dc_100%)] text-slate-800">
                   <IconProgress />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">Week view</div>
-                  <div className="text-sm text-slate-600">See held days, pressure, and mood</div>
+                  <div className="text-sm text-slate-600">See your week, mood, and patterns.</div>
                 </div>
               </button>
             </div>

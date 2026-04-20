@@ -39,7 +39,7 @@ export function CreateHabitForm() {
   return (
     <Card
       title="New practice"
-      description="Name it plainly, set the smallest version, choose repeat or loosen."
+      description="Name it plainly, choose repeat or loosen, then set the smallest version."
       variant="soft"
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
