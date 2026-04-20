@@ -97,7 +97,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
                 <div className="mt-2 text-[1.7rem] font-semibold leading-none text-slate-950">
                   {calmDays}
                 </div>
-              <div className="mt-3 text-xs text-slate-500">
+                <div className="mt-3 text-xs text-slate-500">
                   Days when urges felt more manageable.
                 </div>
               </article>

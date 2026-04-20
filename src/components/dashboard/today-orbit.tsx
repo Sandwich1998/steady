@@ -91,11 +91,11 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
           {dayCompleted ? "Done today" : "Still open today"}
         </div>
         <div className="mt-2 text-lg font-semibold leading-tight text-slate-950">
-          {dayCompleted ? "You're done for today." : "Keep going today."}
+          {dayCompleted ? "You're done for today." : "Keep today steady."}
         </div>
         <div className="mt-2 text-sm leading-6 text-slate-600">
           {dayCompleted
-            ? "Come back tomorrow. Urge help is still here if the day gets wobbly."
+            ? "Come back tomorrow. Support is still here if the day gets wobbly."
             : nextHabit?.minimumAction ?? "Set one practice and the ring will start to fill."}
         </div>
         <div className="mt-3 flex flex-wrap gap-2">

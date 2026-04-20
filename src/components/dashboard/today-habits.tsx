@@ -113,7 +113,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
       <section className="rounded-[28px] border border-dashed border-[#ecd9df] bg-white/70 p-5">
         <div className="text-base font-semibold text-slate-950">No practice yet</div>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          Add one practice and this screen starts to work.
+          Add one supportive practice and today will start to make sense.
         </p>
       </section>
     );
@@ -128,10 +128,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               {restedCount > 0 ? "Done for today" : "All done"}
             </div>
             <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-slate-950">
-              Nothing else needs doing here.
+              You did enough for today.
             </h3>
             <p className="mt-2 max-w-[18rem] text-sm leading-6 text-slate-600">
-              If the day turns slippery later, urge help is still one tap away.
+              If the day gets slippery later, support is still one tap away.
             </p>
           </article>
         ) : nextHabit ? (
@@ -155,7 +155,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <div className="max-w-[14rem]">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[#fff2f6] px-2.5 py-1 text-xs font-semibold text-slate-600">
-                    Suggested next
+                    Start here
                   </span>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
@@ -174,7 +174,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   {nextHabit.minimumAction}
                 </p>
                 <p className="mt-2 text-xs leading-5 text-slate-500">
-                  You can also do another one first.
+                  Or choose another practice below.
                 </p>
               </div>
 
@@ -183,7 +183,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 onClick={() => setSelectedHabitId(nextHabit.id)}
                 className="flex h-11 min-w-11 items-center justify-center rounded-full bg-white/58 px-4 text-sm font-medium text-slate-600 shadow-[0_10px_24px_-22px_rgba(214,173,183,0.2)]"
               >
-                Details
+                More
               </button>
             </div>
 

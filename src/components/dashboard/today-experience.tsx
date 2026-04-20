@@ -55,13 +55,13 @@ export function TodayExperience({
     : dayCompleted
       ? "You're done for today."
       : nextHabit
-        ? "Get your habits done."
+        ? "Return to what helps."
         : "One hold still counts.";
 
   const heroSubtitle = !dayReset
-    ? "Check in once, then the day becomes simpler."
+    ? "Check in once, return to supportive practices, and catch harder patterns earlier."
     : dayCompleted
-      ? "Come back tomorrow."
+      ? "Come back tomorrow and start small again."
       : nextHabit
         ? nextHabit.minimumAction
         : "There is still one clean move left.";
@@ -71,13 +71,13 @@ export function TodayExperience({
     : dayCompleted
       ? `${moodLabels[dayReset.mood]} mood • done for today`
       : nextHabit
-        ? `${moodLabels[dayReset.mood]} mood • start anywhere`
+        ? `${moodLabels[dayReset.mood]} mood • one step at a time`
         : `${moodLabels[dayReset.mood]} mood • day open`;
 
   const primaryActionLabel = !dayReset
     ? "Open the day"
     : nextHabit && !dayCompleted
-      ? "Mark one habit done"
+      ? "Do one small step"
       : "See today's habits";
 
   function handlePrimaryAction() {

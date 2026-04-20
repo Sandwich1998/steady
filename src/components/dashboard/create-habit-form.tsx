@@ -39,7 +39,7 @@ export function CreateHabitForm() {
   return (
     <Card
       title="New practice"
-      description="Name it plainly, choose repeat or loosen, then set the smallest version."
+      description="Choose something to return to more often, or something to interrupt earlier."
       variant="soft"
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
@@ -57,7 +57,7 @@ export function CreateHabitForm() {
           />
         </div>
         <div className="grid gap-2">
-            <span className="text-sm font-medium text-slate-700">Direction</span>
+          <span className="text-sm font-medium text-slate-700">Direction</span>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -69,7 +69,7 @@ export function CreateHabitForm() {
               }`}
               >
               <div className="text-sm font-semibold">Repeat</div>
-              <div className="mt-1 text-sm text-slate-500">Something you want to do more often</div>
+              <div className="mt-1 text-sm text-slate-500">A practice you want to come back to.</div>
             </button>
             <button
               type="button"
@@ -81,7 +81,7 @@ export function CreateHabitForm() {
               }`}
               >
               <div className="text-sm font-semibold">Loosen</div>
-              <div className="mt-1 text-sm text-slate-500">Something you want to interrupt sooner</div>
+              <div className="mt-1 text-sm text-slate-500">A pattern you want to catch earlier.</div>
             </button>
           </div>
         </div>
