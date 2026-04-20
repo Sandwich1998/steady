@@ -6,7 +6,6 @@ import { DayResetCard } from "@/components/dashboard/day-reset-card";
 import { TodayHabits } from "@/components/dashboard/today-habits";
 import { TodayOrbit } from "@/components/dashboard/today-orbit";
 import { UrgeForm } from "@/components/dashboard/urge-form";
-import { AppMark } from "@/components/ui/app-mark";
 
 type TodayExperienceProps = {
   dayReset: {
@@ -55,7 +54,7 @@ export function TodayExperience({
     : dayCompleted
       ? "You're done for today."
       : nextHabit
-        ? `Hold ${nextHabit.name}.`
+        ? "Get your habits done."
         : "One hold still counts.";
 
   const heroSubtitle = !dayReset
@@ -71,14 +70,14 @@ export function TodayExperience({
     : dayCompleted
       ? `${moodLabels[dayReset.mood]} mood • done for today`
       : nextHabit
-        ? `${moodLabels[dayReset.mood]} mood • next ${nextHabit.name}`
+        ? `${moodLabels[dayReset.mood]} mood • start anywhere`
         : `${moodLabels[dayReset.mood]} mood • day open`;
 
   const primaryActionLabel = !dayReset
     ? "Open the day"
     : nextHabit && !dayCompleted
-      ? "Hold this next"
-      : "See today's holds";
+      ? "See today's habits"
+      : "See today's habits";
 
   function handlePrimaryAction() {
     const targetId = dayReset ? "today-habits" : "daily-reset";
@@ -100,11 +99,8 @@ export function TodayExperience({
 
         <div className="relative">
           <div className="max-w-[16rem]">
-            <div className="flex items-center gap-2">
-              <AppMark size="sm" />
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f19a8d]">
-                Today
-              </div>
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f19a8d]">
+              Today
             </div>
             <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-slate-950">
               {heroTitle}

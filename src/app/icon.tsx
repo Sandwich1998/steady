@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-import { SteadyLogo } from "@/components/ui/steady-logo";
-
 export const size = {
   width: 512,
   height: 512,
@@ -19,11 +17,10 @@ export default function Icon() {
           height: "100%",
           alignItems: "center",
           justifyContent: "center",
-          background: "#f5f1ea",
+          background:
+            "radial-gradient(circle at 30% 30%, #fff5ed 0%, #f8e4d5 45%, #efc9ae 100%)",
         }}
-      >
-        <SteadyLogo className="h-[420px] w-[420px]" />
-      </div>
+      />
     ),
     size,
   );

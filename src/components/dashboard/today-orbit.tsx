@@ -86,10 +86,10 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
 
       <div className="min-w-0">
         <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-          {dayCompleted ? "Done today" : "Next hold"}
+          {dayCompleted ? "Done today" : "Open habits"}
         </div>
         <div className="mt-2 text-lg font-semibold leading-tight text-slate-950">
-          {dayCompleted ? "You're done for today." : nextHabit?.name ?? "Pick one practice."}
+          {dayCompleted ? "You're done for today." : "Keep going today."}
         </div>
         <div className="mt-2 text-sm leading-6 text-slate-600">
           {dayCompleted

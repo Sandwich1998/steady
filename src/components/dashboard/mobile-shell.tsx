@@ -7,7 +7,6 @@ import { CreateHabitForm } from "@/components/dashboard/create-habit-form";
 import { ProgressExperience } from "@/components/dashboard/progress-experience";
 import { TodayExperience } from "@/components/dashboard/today-experience";
 import { UrgeFeed } from "@/components/dashboard/urge-feed";
-import { AppMark } from "@/components/ui/app-mark";
 
 type DashboardData = {
   today: string;
@@ -125,8 +124,7 @@ export function MobileShell({ data }: MobileShellProps) {
           style={{ paddingTop: `calc(env(safe-area-inset-top) + ${compactHeader ? "10px" : "12px"})` }}
         >
           <div className="flex items-start justify-between gap-4">
-            <div className={`flex items-start ${compactHeader ? "gap-2.5" : "gap-3"}`}>
-              <AppMark size="sm" />
+            <div>
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                   {screenLabel}

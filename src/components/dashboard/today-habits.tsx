@@ -28,10 +28,6 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   const router = useRouter();
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null);
   const [celebratingHabitId, setCelebratingHabitId] = useState<string | null>(null);
-  const [dragXById, setDragXById] = useState<Record<string, number>>({});
-  const [dragStartXById, setDragStartXById] = useState<Record<string, number>>({});
-  const [draggingHabitId, setDraggingHabitId] = useState<string | null>(null);
-  const [swipedOpenId, setSwipedOpenId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<{ habitId: string; text: string } | null>(
     null,
   );
@@ -40,9 +36,6 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   const completedCount = habits.filter((habit) => habit.completedToday).length;
   const selectedHabit = habits.find((habit) => habit.id === selectedHabitId) ?? null;
   const nextHabit = habits.find((habit) => !habit.completedToday) ?? habits[0] ?? null;
-  const queueHabits = habits.filter(
-    (habit) => !habit.completedToday && habit.id !== nextHabit?.id,
-  );
   const allHeld = habits.length > 0 && completedCount === habits.length;
 
   useEffect(() => {
@@ -65,7 +58,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     });
 
     if (!response.ok) {
-      setError("Couldn't save that hold.");
+      setError("Couldn't save that completion.");
       return;
     }
 
@@ -74,8 +67,8 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     setSuccessMessage({
       habitId,
       text: habit?.completedToday
-        ? `${habit.name} was already held.`
-        : `Held: ${habit?.name ?? "That practice"}.`,
+        ? `${habit.name} was already completed today.`
+        : `Done: ${habit?.name ?? "That habit"}.`,
     });
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(16);
@@ -86,33 +79,6 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
 
     startTransition(() => {
       router.refresh();
-    });
-  }
-
-  function startSwipe(habitId: string, clientX: number) {
-    setDraggingHabitId(habitId);
-    setSwipedOpenId((current) => (current === habitId ? current : null));
-    setDragStartXById((current) => ({ ...current, [habitId]: clientX }));
-  }
-
-  function moveSwipe(habitId: string, clientX: number) {
-    const startX = dragStartXById[habitId];
-    if (startX === undefined) return;
-    const delta = clientX - startX;
-    const next = Math.max(Math.min(delta, 0), -108);
-    setDragXById((current) => ({ ...current, [habitId]: next }));
-  }
-
-  function endSwipe(habitId: string) {
-    const currentX = dragXById[habitId] ?? 0;
-    const open = currentX <= -52;
-    setDraggingHabitId(null);
-    setSwipedOpenId(open ? habitId : null);
-    setDragXById((current) => ({ ...current, [habitId]: open ? -108 : 0 }));
-    setDragStartXById((current) => {
-      const next = { ...current };
-      delete next[habitId];
-      return next;
     });
   }
 
@@ -133,7 +99,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         {allHeld ? (
           <article className="rounded-[30px] border border-[#ecd9df] bg-white/74 px-5 py-5 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.22)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              All held
+              All done
             </div>
             <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-slate-950">
               Nothing else needs doing here.
@@ -154,7 +120,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <>
                 <div className="animate-success-burst pointer-events-none absolute inset-0 rounded-[30px] border border-emerald-300/35" />
                 <div className="pointer-events-none absolute right-5 top-5 rounded-full bg-[#dbfff6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#2f8f7d]">
-                  Held
+                  Done
                 </div>
               </>
             ) : null}
@@ -163,7 +129,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <div className="max-w-[14rem]">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[#fff2f6] px-2.5 py-1 text-xs font-semibold text-slate-600">
-                    Right now
+                    Suggested next
                   </span>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
@@ -180,6 +146,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 </h4>
                 <p className="mt-3 text-sm leading-6 text-slate-600">
                   {nextHabit.minimumAction}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  You can also complete any other habit below first.
                 </p>
               </div>
 
@@ -203,89 +172,61 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     : "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-900 shadow-[0_16px_42px_-24px_rgba(109,201,238,0.45)] hover:scale-[1.01] hover:brightness-[1.02] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
-                {nextHabit.completedToday ? "Held today" : "Hold this"}
+                {nextHabit.completedToday ? "Done today" : "Mark as done"}
               </button>
               <div className="rounded-full bg-[#fff2f6] px-3 py-2 text-sm text-slate-600">
-                {queueHabits.length} more after this
+                {habits.filter((habit) => !habit.completedToday).length - 1} more open
               </div>
             </div>
           </article>
         ) : null}
 
-        {queueHabits.length > 0 ? (
+        {habits.some((habit) => habit.id !== nextHabit?.id) ? (
           <section className="grid gap-3">
             <div className="flex items-center justify-between gap-3 px-1">
-              <div className="text-sm font-semibold text-slate-900">Still there</div>
-              <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Swipe</div>
+              <div className="text-sm font-semibold text-slate-900">Other habits</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Any order</div>
             </div>
             <div className="grid gap-3">
-              {queueHabits.map((habit) => (
-                <div
+              {habits
+                .filter((habit) => habit.id !== nextHabit?.id)
+                .map((habit) => (
+                <article
                   key={habit.id}
-                  className={`relative overflow-hidden rounded-[22px] border bg-white/80 transition-shadow ${
-                    swipedOpenId === habit.id
-                      ? "border-[#6cc8f4] shadow-[0_18px_50px_-34px_rgba(109,201,238,0.45)]"
-                      : "border-[#ecd9df]"
-                  }`}
+                  className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[22px] border border-[#ecd9df] bg-white/80 px-4 py-3"
                 >
-                  <div className="absolute inset-y-0 right-0 flex items-center gap-2 px-3">
-                    <button
-                      type="button"
-                      onClick={() => completeHabit(habit.id)}
-                      disabled={habit.completedToday || isPending}
-                      className="min-h-11 rounded-full bg-[#dcfff5] px-4 py-2.5 text-sm font-semibold text-[#2f8f7d] disabled:opacity-60"
-                    >
-                      Hold
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedHabitId(habit.id)}
-                      className="min-h-11 rounded-full bg-[#ebf6ff] px-4 py-2.5 text-sm font-semibold text-[#3c78a3]"
-                    >
-                      Details
-                    </button>
-                  </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      if ((dragXById[habit.id] ?? 0) < -8 || swipedOpenId === habit.id) return;
-                      setSelectedHabitId(habit.id);
-                    }}
-                    onPointerDown={(event) => startSwipe(habit.id, event.clientX)}
-                    onPointerMove={(event) => moveSwipe(habit.id, event.clientX)}
-                    onPointerUp={() => endSwipe(habit.id)}
-                    onPointerCancel={() => endSwipe(habit.id)}
-                    className={`relative flex min-h-11 w-full items-center justify-between gap-3 bg-transparent px-4 py-3 text-left will-change-transform ${
-                      draggingHabitId === habit.id
-                        ? ""
-                        : "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    }`}
-                    style={{
-                      transform: `translateX(${dragXById[habit.id] ?? (swipedOpenId === habit.id ? -108 : 0)}px)`,
-                      touchAction: "pan-y",
-                    }}
+                    onClick={() => setSelectedHabitId(habit.id)}
+                    className="min-w-0 text-left"
                   >
                     <div className="min-w-0">
                       <div className="text-sm font-semibold text-slate-950">{habit.name}</div>
                       <div className="mt-1 text-sm text-slate-600">
-                        {habit.completedToday ? "Held already" : habit.minimumAction}
+                        {habit.completedToday ? "Already done today" : habit.minimumAction}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {swipedOpenId === habit.id ? (
-                        <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                          Release
-                        </div>
-                      ) : null}
-                      <div
-                        className={`h-3 w-3 shrink-0 rounded-full ${
-                          habit.completedToday ? "bg-[#69d7ca]" : "bg-[#f0d6de]"
-                        }`}
-                      />
-                      <div className="text-base text-slate-400">›</div>
-                    </div>
                   </button>
-                </div>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`h-3 w-3 shrink-0 rounded-full ${
+                        habit.completedToday ? "bg-[#69d7ca]" : "bg-[#f0d6de]"
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => completeHabit(habit.id)}
+                      disabled={habit.completedToday || isPending}
+                      className={`min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+                        habit.completedToday
+                          ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"
+                          : "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+                      }`}
+                    >
+                      {habit.completedToday ? "Done" : "Mark done"}
+                    </button>
+                  </div>
+                </article>
               ))}
             </div>
           </section>
@@ -309,8 +250,8 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-white/15" />
             <div className="flex items-start justify-between gap-3">
               <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-xl font-semibold text-white">{selectedHabit.name}</h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-xl font-semibold text-white">{selectedHabit.name}</h3>
                   <span
                     className={`rounded-full px-2 py-1 text-xs font-semibold ${
                       selectedHabit.type === "BUILD"
@@ -336,7 +277,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
 
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">All-time holds</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/60">All-time completions</div>
                 <div className="mt-2 text-2xl font-semibold text-white">
                   {selectedHabit.stats.totalCompletions}
                 </div>
@@ -365,11 +306,11 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             </div>
 
             <div className="mt-4 rounded-2xl bg-white/[0.04] p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-white/60">Last hold</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-white/60">Last completion</div>
               <div className="mt-2 text-sm text-white/72">
                 {selectedHabit.stats.lastCompletedAtLabel
                   ? `Marked ${selectedHabit.stats.lastCompletedAtLabel}`
-                  : "No hold yet."}
+                  : "No completion yet."}
               </div>
             </div>
           </div>

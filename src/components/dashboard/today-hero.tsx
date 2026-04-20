@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppMark } from "@/components/ui/app-mark";
 
 type TodayHeroProps = {
   title: string;
@@ -56,11 +55,8 @@ export function TodayHero({
 
       <div className="relative flex items-start justify-between gap-4">
         <div className="max-w-[14rem]">
-          <div className="flex items-center gap-2">
-            <AppMark size="sm" />
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f7d98e]">
-              Your daily spark
-            </div>
+          <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f7d98e]">
+            Your daily spark
           </div>
           <h2 className="mt-3 text-[2rem] font-semibold leading-[1.02] tracking-tight text-white">
             {title}

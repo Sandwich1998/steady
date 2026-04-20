@@ -117,7 +117,7 @@ export async function getDashboardData() {
   ]);
 
   const completedHabitIds = new Set(completions.map((completion) => completion.habitId));
-  const dayCompleted = completedHabitIds.size > 0;
+  const dayCompleted = habits.length > 0 && habits.every((habit) => completedHabitIds.has(habit.id));
   const resetMap = new Map(weeklyResets.map((reset) => [reset.date, reset.mood]));
   const completionCounts = weeklyCompletions.reduce<Map<string, number>>((map, completion) => {
     map.set(completion.date, (map.get(completion.date) ?? 0) + 1);
