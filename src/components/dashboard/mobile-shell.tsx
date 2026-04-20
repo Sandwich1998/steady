@@ -123,7 +123,7 @@ export function MobileShell({ data }: MobileShellProps) {
       ? data.today
       : activeTab === "progress"
         ? "See your week at a glance."
-        : "Shape the practices you want to keep.";
+        : "Set up practices to return to, or patterns to catch earlier.";
   return (
     <main className="min-h-screen px-0 text-slate-950">
       <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-[#ecd9df] sm:shadow-[0_0_0_1px_rgba(239,220,226,0.9),0_40px_120px_-52px_rgba(214,173,183,0.38)]">
@@ -189,10 +189,10 @@ export function MobileShell({ data }: MobileShellProps) {
               <section className="app-card-soft overflow-hidden rounded-[32px] px-5 py-6">
                 <div className="text-sm font-semibold text-slate-700">Practices</div>
                 <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
-                  Set up what you want to come back to.
+                  Set up what you want to return to.
                 </h2>
                 <p className="mt-2 max-w-[16rem] text-sm leading-6 text-slate-600">
-                  Keep each one plain, small, and doable on a rough day.
+                  Keep each one plain, small, and easy to reach for on a hard day.
                 </p>
               </section>
               <CreateHabitForm />
@@ -275,7 +275,7 @@ export function MobileShell({ data }: MobileShellProps) {
                 </div>
                 <div>
                   <div className="text-lg font-semibold">New practice</div>
-                  <div className="text-sm text-slate-600">Add something to repeat or loosen.</div>
+                  <div className="text-sm text-slate-600">Add a practice to return to, or a pattern to catch earlier.</div>
                 </div>
               </button>
               <button

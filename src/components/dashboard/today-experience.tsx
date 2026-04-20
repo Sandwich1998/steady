@@ -51,7 +51,7 @@ export function TodayExperience({
   const nextHabit = habits.find((habit) => !habit.completedToday && !habit.restedToday) ?? null;
 
   const heroTitle = !dayReset
-    ? "Set the day."
+    ? "Start with one check-in."
     : dayCompleted
       ? "You're done for today."
       : nextHabit
@@ -59,7 +59,7 @@ export function TodayExperience({
         : "One hold still counts.";
 
   const heroSubtitle = !dayReset
-    ? "Check in once, return to supportive practices, and catch harder patterns earlier."
+    ? "Check in, return to supportive practices, and catch harder patterns earlier."
     : dayCompleted
       ? "Come back tomorrow and start small again."
       : nextHabit
@@ -67,7 +67,7 @@ export function TodayExperience({
         : "There is still one clean move left.";
 
   const heroStatus = !dayReset
-    ? "Day unopened"
+    ? "Not checked in yet"
     : dayCompleted
       ? `${moodLabels[dayReset.mood]} mood • done for today`
       : nextHabit
@@ -75,7 +75,7 @@ export function TodayExperience({
         : `${moodLabels[dayReset.mood]} mood • day open`;
 
   const primaryActionLabel = !dayReset
-    ? "Open the day"
+    ? "Start check-in"
     : nextHabit && !dayCompleted
       ? "Do one small step"
       : "See today's habits";

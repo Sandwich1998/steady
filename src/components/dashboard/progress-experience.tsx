@@ -40,7 +40,7 @@ function getWeekSupportCopy(
   moodAverage: number | null,
 ) {
   const moodText = moodAverage ? getMoodLabel(moodAverage).toLowerCase() : "unmarked";
-  return `${totalCompletions} completions. ${calmDays} calmer day${calmDays === 1 ? "" : "s"}. Mood felt ${moodText}.`;
+  return `${totalCompletions} steps completed. ${calmDays} calmer day${calmDays === 1 ? "" : "s"}. Mood felt ${moodText}.`;
 }
 
 export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceProps) {
@@ -64,7 +64,7 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
   const supportCopy = getWeekSupportCopy(brightDays, calmDays, totalCompletions, moodAverage);
   const practiceMixLabel =
     stats.totalHabits > 0
-      ? `${stats.buildHabits} practices felt supportive. ${stats.breakHabits} may need a gentler approach`
+      ? `${stats.buildHabits} repeat practice${stats.buildHabits === 1 ? "" : "s"} felt supportive. ${stats.breakHabits} loosen practice${stats.breakHabits === 1 ? "" : "s"} may need a gentler approach`
       : "No habits set yet";
 
   return (
@@ -82,12 +82,12 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
 
           <div className="mt-6 grid gap-3">
             <article className="rounded-[30px] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(255,245,250,0.92)_100%)] px-5 py-6 shadow-[0_26px_58px_-36px_rgba(214,173,183,0.34)]">
-              <div className="text-sm font-semibold text-slate-700">This week</div>
+              <div className="text-sm font-semibold text-slate-700">Steps completed</div>
               <div className="mt-2 text-[2.35rem] font-semibold leading-none tracking-tight text-slate-950">
                 {totalCompletions}
               </div>
               <div className="mt-3 text-sm text-slate-600">
-                {brightDays} day{brightDays === 1 ? "" : "s"} with at least one completion.
+                {brightDays} day{brightDays === 1 ? "" : "s"} with at least one step completed.
               </div>
             </article>
 
@@ -170,8 +170,8 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
         <div className="mt-5 rounded-[22px] bg-[#fff8fb] px-4 py-3 text-sm text-slate-600">
           {totalUrges > 0 ? (
             <>
-              You handled <span className="font-semibold text-slate-900">{totalResisted}</span> of{" "}
-              <span className="font-semibold text-slate-900">{totalUrges}</span> urge moments well.
+              You got through <span className="font-semibold text-slate-900">{totalResisted}</span> of{" "}
+              <span className="font-semibold text-slate-900">{totalUrges}</span> urge moments.
             </>
           ) : (
             "No urge moments were logged this week."

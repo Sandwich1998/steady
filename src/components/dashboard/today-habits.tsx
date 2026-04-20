@@ -70,8 +70,8 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     setSuccessMessage({
       habitId,
       text: habit?.completedToday
-        ? `${habit.name} was already completed today.`
-        : `Done: ${habit?.name ?? "That habit"}.`,
+        ? `${habit.name} is already done today.`
+        : `${habit?.name ?? "That practice"} is done for today.`,
     });
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(16);
@@ -113,7 +113,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
       <section className="rounded-[28px] border border-dashed border-[#ecd9df] bg-white/70 p-5">
         <div className="text-base font-semibold text-slate-950">No practice yet</div>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          Add one supportive practice and today will start to make sense.
+          Add one practice and this screen will guide you through today.
         </p>
       </section>
     );
@@ -183,7 +183,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 onClick={() => setSelectedHabitId(nextHabit.id)}
                 className="flex h-11 min-w-11 items-center justify-center rounded-full bg-white/58 px-4 text-sm font-medium text-slate-600 shadow-[0_10px_24px_-22px_rgba(214,173,183,0.2)]"
               >
-                More
+                Details
               </button>
             </div>
 

@@ -72,12 +72,12 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
 
   return (
     <Card
-      title="Urge support"
+      title="Support for hard moments"
       description="For the minute when the pull gets loud."
     >
       {breakHabits.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-[#ecd9df] bg-white/76 p-4 text-sm text-slate-600">
-          Add one practice to loosen before you log urges here.
+          Add one loosen practice before you use this.
         </p>
       ) : !isOpen ? (
         hiddenUntilOpen ? (
