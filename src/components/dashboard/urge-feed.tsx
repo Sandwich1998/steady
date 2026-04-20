@@ -23,14 +23,14 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
       title="Recent urge moments"
       description={
         recentUrges.length > 0
-          ? `You got through ${resistedCount} of the last ${recentUrges.length}.`
-          : "A gentle record of how hard moments went."
+          ? `You got through ${resistedCount} of the last ${recentUrges.length} urge moments.`
+          : "A gentle place to notice how hard moments went."
       }
       variant="soft"
     >
       {recentUrges.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-[#ecd9df] bg-white/76 p-4 text-sm text-slate-600">
-          No urge moments yet. When one hits, mark it and keep moving.
+          No urge moments yet. If one hits, you can log it here.
         </p>
       ) : (
         <div className="relative">
@@ -55,7 +55,8 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
                         {urge.habitName}
                       </h3>
                       <p className="mt-1 text-sm text-slate-600">
-                        {urge.outcome === "RESISTED" ? "You got through it" : "It got the better of you"}
+                        {urge.outcome === "RESISTED" ? "Got through it" : "Acted on it"}{" "}
+                        <span className="text-slate-400">· {urge.createdAtLabel}</span>
                       </p>
                     </div>
                     <div className="shrink-0 rounded-full bg-[#fff7fb] px-2.5 py-1 text-xs font-medium text-slate-500">
@@ -63,8 +64,8 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
                     </div>
                   </div>
                 </div>
-                <div className="pt-0.5 text-right text-sm text-slate-500">
-                  {urge.createdAtLabel}
+                <div className="pt-0.5 text-right text-xs font-medium text-slate-400">
+                  {urge.outcome === "RESISTED" ? "Resisted" : "Acted"}
                 </div>
               </article>
             ))}

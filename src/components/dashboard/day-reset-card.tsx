@@ -57,27 +57,36 @@ export function DayResetCard({
   const router = useRouter();
   const [selectedMood, setSelectedMood] = useState(currentMood ?? 3);
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [isPending, startTransition] = useTransition();
   const selectedMoodOption = moods.find((mood) => mood.value === selectedMood) ?? moods[2];
   const dayStarted = currentMood !== null;
 
   async function startDay() {
+    if (isSaving) return;
     setError("");
+    setIsSaving(true);
 
-    const response = await fetch("/api/day-reset", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mood: selectedMood }),
-    });
+    try {
+      const response = await fetch("/api/day-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mood: selectedMood }),
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Couldn't save your check-in.");
+        return;
+      }
+
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch {
       setError("Couldn't save your check-in.");
-      return;
+    } finally {
+      setIsSaving(false);
     }
-
-    startTransition(() => {
-      router.refresh();
-    });
   }
 
   return (
@@ -140,7 +149,8 @@ export function DayResetCard({
               <button
                 key={mood.value}
                 type="button"
-                onClick={() => setSelectedMood(mood.value)}
+                  onClick={() => setSelectedMood(mood.value)}
+                  disabled={isSaving}
                 aria-pressed={active}
                 className={`rounded-[24px] border px-4 py-4 text-left transition ${
                   active
@@ -172,7 +182,7 @@ export function DayResetCard({
         <button
           type="button"
           onClick={startDay}
-          disabled={isPending || dayStarted}
+          disabled={isPending || isSaving || dayStarted}
           className="pressable app-btn-primary rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           {dayStarted ? "Done" : "Start the day"}

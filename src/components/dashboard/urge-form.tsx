@@ -26,6 +26,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [savedMessage, setSavedMessage] = useState("");
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [isPending, startTransition] = useTransition();
   const selectedHabitId =
     breakHabits.find((habit) => habit.id === habitId)?.id ?? breakHabits[0]?.id ?? "";
@@ -43,31 +44,39 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSaving) return;
     setError("");
+    setIsSaving(true);
 
-    const response = await fetch("/api/urges", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ habitId: selectedHabitId, intensity, outcome }),
-    });
+    try {
+      const response = await fetch("/api/urges", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ habitId: selectedHabitId, intensity, outcome }),
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Couldn't save this urge.");
+        return;
+      }
+
+      setIntensity(3);
+      setOutcome("RESISTED");
+      setSavedMessage(
+        outcome === "RESISTED" ? "Saved. You resisted it." : "Saved. Pick back up from here.",
+      );
+      window.setTimeout(() => {
+        setSavedMessage("");
+      }, 2200);
+      setIsOpen(false);
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch {
       setError("Couldn't save this urge.");
-      return;
+    } finally {
+      setIsSaving(false);
     }
-
-    setIntensity(3);
-    setOutcome("RESISTED");
-    setSavedMessage(
-      outcome === "RESISTED" ? "Saved. You resisted it." : "Saved. Pick back up from here.",
-    );
-    window.setTimeout(() => {
-      setSavedMessage("");
-    }, 2200);
-    setIsOpen(false);
-    startTransition(() => {
-      router.refresh();
-    });
   }
 
   return (
@@ -98,6 +107,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             <button
               type="button"
               onClick={() => setIsOpen(true)}
+              disabled={isSaving}
               className="pressable app-btn-primary shrink-0 rounded-full px-4 py-3 text-sm font-semibold"
             >
               Note the urge
@@ -138,8 +148,9 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               </div>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
-                className="pressable min-h-11 rounded-full border border-[#ecd9df] bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700"
+            onClick={() => setIsOpen(false)}
+            disabled={isSaving}
+            className="pressable min-h-11 rounded-full border border-[#ecd9df] bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 Close
               </button>
@@ -154,6 +165,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   id="urge-habit"
                   value={selectedHabitId}
                   onChange={(event) => setHabitId(event.target.value)}
+                  disabled={isSaving}
                   className="app-field rounded-[20px] px-4 py-3 text-sm text-slate-950 outline-none transition focus:border-[#e6c7d3]"
                 >
                   {breakHabits.map((habit) => (
@@ -172,6 +184,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                       key={value}
                       type="button"
                       onClick={() => setIntensity(value)}
+                      disabled={isSaving}
                       className={`pressable min-h-11 rounded-[18px] border px-3 py-3 text-sm font-semibold ${
                         value === intensity
                           ? "border-[#69d7ca] bg-[#dcfff5] text-slate-950 shadow-[0_12px_30px_-18px_rgba(105,215,202,0.28)]"
@@ -190,6 +203,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   <button
                     type="button"
                     onClick={() => setOutcome("RESISTED")}
+                    disabled={isSaving}
                     className={`pressable min-h-11 rounded-[22px] border px-4 py-4 text-left ${
                       outcome === "RESISTED"
                         ? "border-[#69d7ca] bg-[#dcfff5] text-slate-950 shadow-[0_12px_30px_-20px_rgba(105,215,202,0.28)]"
@@ -204,6 +218,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   <button
                     type="button"
                     onClick={() => setOutcome("ACTED")}
+                    disabled={isSaving}
                     className={`pressable min-h-11 rounded-[22px] border px-4 py-4 text-left ${
                       outcome === "ACTED"
                         ? "border-[#ffb5bd] bg-[#fff0f1] text-slate-950 shadow-[0_12px_30px_-20px_rgba(255,158,165,0.22)]"
@@ -221,7 +236,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
 
             <button
               type="submit"
-              disabled={!selectedHabitId || isPending}
+              disabled={!selectedHabitId || isPending || isSaving}
               className="pressable app-btn-primary mt-5 min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
               Save note

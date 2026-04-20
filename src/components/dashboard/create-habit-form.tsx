@@ -4,6 +4,10 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Card } from "@/components/ui/card";
+import {
+  HABIT_MINIMUM_ACTION_MAX_LENGTH,
+  HABIT_NAME_MAX_LENGTH,
+} from "@/lib/validation";
 
 export function CreateHabitForm() {
   const router = useRouter();
@@ -11,29 +15,38 @@ export function CreateHabitForm() {
   const [minimumAction, setMinimumAction] = useState("");
   const [type, setType] = useState<"BUILD" | "BREAK">("BUILD");
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSaving) return;
     setError("");
+    setIsSaving(true);
 
-    const response = await fetch("/api/habits", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, minimumAction, type }),
-    });
+    try {
+      const response = await fetch("/api/habits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, minimumAction, type }),
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Couldn't save this practice.");
+        return;
+      }
+
+      setName("");
+      setMinimumAction("");
+      setType("BUILD");
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch {
       setError("Couldn't save this practice.");
-      return;
+    } finally {
+      setIsSaving(false);
     }
-
-    setName("");
-    setMinimumAction("");
-    setType("BUILD");
-    startTransition(() => {
-      router.refresh();
-    });
   }
 
   return (
@@ -52,6 +65,7 @@ export function CreateHabitForm() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="Morning walk"
+            maxLength={HABIT_NAME_MAX_LENGTH}
             className="app-field rounded-2xl px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#e6c7d3]"
             required
           />
@@ -62,6 +76,7 @@ export function CreateHabitForm() {
             <button
               type="button"
               onClick={() => setType("BUILD")}
+              disabled={isSaving}
               className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
                 type === "BUILD"
                   ? "border-[#74c8f1] bg-[#edfaff] text-slate-950 shadow-[0_16px_34px_-22px_rgba(109,201,238,0.32)]"
@@ -74,6 +89,7 @@ export function CreateHabitForm() {
             <button
               type="button"
               onClick={() => setType("BREAK")}
+              disabled={isSaving}
               className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
                 type === "BREAK"
                   ? "border-[#ffb5bd] bg-[#fff2f3] text-slate-950 shadow-[0_16px_34px_-22px_rgba(255,158,165,0.24)]"
@@ -94,13 +110,14 @@ export function CreateHabitForm() {
             value={minimumAction}
             onChange={(event) => setMinimumAction(event.target.value)}
             placeholder="Put on shoes and walk 5 minutes"
+            maxLength={HABIT_MINIMUM_ACTION_MAX_LENGTH}
             className="app-field rounded-2xl px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#e6c7d3]"
             required
           />
         </div>
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isSaving}
           className="pressable app-btn-primary min-h-11 rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           Save practice

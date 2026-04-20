@@ -33,6 +33,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     null,
   );
   const [error, setError] = useState("");
+  const [activeMutationHabitId, setActiveMutationHabitId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const completedCount = habits.filter((habit) => habit.completedToday).length;
   const restedCount = habits.filter((habit) => habit.restedToday).length;
@@ -54,58 +55,74 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   }, [successMessage]);
 
   async function completeHabit(habitId: string) {
+    if (activeMutationHabitId) return;
     setError("");
+    setActiveMutationHabitId(habitId);
 
-    const response = await fetch(`/api/habits/${habitId}/complete`, {
-      method: "POST",
-    });
+    try {
+      const response = await fetch(`/api/habits/${habitId}/complete`, {
+        method: "POST",
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Couldn't save that completion.");
+        return;
+      }
+
+      setCelebratingHabitId(habitId);
+      const habit = habits.find((currentHabit) => currentHabit.id === habitId);
+      setSuccessMessage({
+        habitId,
+        text: habit?.completedToday
+          ? `${habit.name} is already done today.`
+          : `${habit?.name ?? "That practice"} is done for today.`,
+      });
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate(16);
+      }
+      setTimeout(() => {
+        setCelebratingHabitId((current) => (current === habitId ? null : current));
+      }, 700);
+
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch {
       setError("Couldn't save that completion.");
-      return;
+    } finally {
+      setActiveMutationHabitId(null);
     }
-
-    setCelebratingHabitId(habitId);
-    const habit = habits.find((currentHabit) => currentHabit.id === habitId);
-    setSuccessMessage({
-      habitId,
-      text: habit?.completedToday
-        ? `${habit.name} is already done today.`
-        : `${habit?.name ?? "That practice"} is done for today.`,
-    });
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(16);
-    }
-    setTimeout(() => {
-      setCelebratingHabitId((current) => (current === habitId ? null : current));
-    }, 700);
-
-    startTransition(() => {
-      router.refresh();
-    });
   }
 
   async function restHabit(habitId: string) {
+    if (activeMutationHabitId) return;
     setError("");
+    setActiveMutationHabitId(habitId);
 
-    const response = await fetch(`/api/habits/${habitId}/rest`, {
-      method: "POST",
-    });
+    try {
+      const response = await fetch(`/api/habits/${habitId}/rest`, {
+        method: "POST",
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Couldn't save that rest day.");
+        return;
+      }
+
+      const habit = habits.find((currentHabit) => currentHabit.id === habitId);
+      setSuccessMessage({
+        habitId,
+        text: `${habit?.name ?? "That practice"} is resting today.`,
+      });
+
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch {
       setError("Couldn't save that rest day.");
-      return;
+    } finally {
+      setActiveMutationHabitId(null);
     }
-
-    const habit = habits.find((currentHabit) => currentHabit.id === habitId);
-    setSuccessMessage({
-      habitId,
-      text: `Resting today: ${habit?.name ?? "That habit"}.`,
-    });
-
-    startTransition(() => {
-      router.refresh();
-    });
   }
 
   if (habits.length === 0) {
@@ -128,7 +145,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               {restedCount > 0 ? "Done for today" : "All done"}
             </div>
             <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-slate-950">
-              You did enough for today.
+              You&apos;ve done enough for today.
             </h3>
             <p className="mt-2 max-w-[18rem] text-sm leading-6 text-slate-600">
               If the day gets slippery later, support is still one tap away.
@@ -191,7 +208,12 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <button
                 type="button"
                 onClick={() => completeHabit(nextHabit.id)}
-                disabled={nextHabit.completedToday || nextHabit.restedToday || isPending}
+                disabled={
+                  nextHabit.completedToday ||
+                  nextHabit.restedToday ||
+                  isPending ||
+                  activeMutationHabitId !== null
+                }
                 className={`min-h-11 flex-1 rounded-full px-5 py-3 text-sm font-semibold transition ${
                   nextHabit.completedToday
                     ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"
@@ -206,7 +228,12 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 <button
                   type="button"
                   onClick={() => restHabit(nextHabit.id)}
-                  disabled={nextHabit.restedToday || nextHabit.completedToday || isPending}
+                  disabled={
+                    nextHabit.restedToday ||
+                    nextHabit.completedToday ||
+                    isPending ||
+                    activeMutationHabitId !== null
+                  }
                   className="min-h-11 rounded-full bg-white/62 px-5 py-3 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-22px_rgba(214,173,183,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {nextHabit.restedToday ? "Resting today" : "Rest today"}
@@ -215,7 +242,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   {Math.max(
                     habits.filter((habit) => !habit.completedToday && !habit.restedToday).length - 1,
                     0,
-                  )} more open
+                  )} still open
                 </div>
               </div>
             </div>
@@ -266,7 +293,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                       <button
                         type="button"
                         onClick={() => restHabit(habit.id)}
-                        disabled={isPending}
+                        disabled={isPending || activeMutationHabitId !== null}
                         className="min-h-11 rounded-full bg-white/62 px-3 py-2.5 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         Rest
@@ -275,7 +302,12 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     <button
                       type="button"
                       onClick={() => completeHabit(habit.id)}
-                      disabled={habit.completedToday || habit.restedToday || isPending}
+                      disabled={
+                        habit.completedToday ||
+                        habit.restedToday ||
+                        isPending ||
+                        activeMutationHabitId !== null
+                      }
                       className={`min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
                         habit.completedToday
                           ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"

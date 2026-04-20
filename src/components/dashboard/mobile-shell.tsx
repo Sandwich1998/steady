@@ -60,6 +60,14 @@ type DashboardData = {
     resistedCount: number;
     actedCount: number;
   }[];
+  previousWeekSummary: {
+    completions: number;
+    brightDays: number;
+    calmDays: number;
+    moodAverage: number | null;
+    urgesResisted: number;
+    urgesCount: number;
+  };
 };
 
 type MobileShellProps = {
@@ -179,7 +187,11 @@ export function MobileShell({ data }: MobileShellProps) {
 
           {activeTab === "progress" ? (
             <div className="mt-5 grid gap-4">
-              <ProgressExperience stats={data.stats} weeklyHistory={data.weeklyHistory} />
+              <ProgressExperience
+                stats={data.stats}
+                weeklyHistory={data.weeklyHistory}
+                previousWeekSummary={data.previousWeekSummary}
+              />
               <UrgeFeed recentUrges={data.recentUrges} />
             </div>
           ) : null}

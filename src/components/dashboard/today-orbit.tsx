@@ -104,7 +104,7 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
           </span>
           {restedCount > 0 ? (
             <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
-              {restedCount} resting
+              {restedCount} rest day{restedCount === 1 ? "" : "s"}
             </span>
           ) : null}
           {nextHabit && !dayCompleted ? (

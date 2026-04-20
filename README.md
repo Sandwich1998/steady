@@ -26,6 +26,7 @@ cp .env.example .env
 ```
 
 Use a hosted Postgres database such as Neon or Supabase.
+Set `APP_TIME_ZONE` to the timezone you want daily check-ins and weekly history to follow.
 
 2. Install dependencies:
 
@@ -52,6 +53,16 @@ npm run dev
 ```
 
 6. Open `http://localhost:3000`
+
+## Smoke test
+
+After the app is running and seeded:
+
+```bash
+npm run test:smoke
+```
+
+This runs a small mobile smoke check through Today, Progress, and Manage using Playwright.
 
 ## Deploy to Vercel
 
