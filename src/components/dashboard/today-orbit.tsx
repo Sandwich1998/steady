@@ -79,14 +79,14 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
             {completedCount}/{totalHabits}
           </div>
           <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.22em] text-slate-500">
-            held
+            done
           </div>
         </div>
       </div>
 
       <div className="min-w-0">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-          {dayCompleted ? "Done today" : "Open habits"}
+        <div className="text-sm font-semibold text-slate-700">
+          {dayCompleted ? "Done today" : "Still open today"}
         </div>
         <div className="mt-2 text-lg font-semibold leading-tight text-slate-950">
           {dayCompleted ? "You're done for today." : "Keep going today."}

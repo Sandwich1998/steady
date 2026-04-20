@@ -148,14 +148,14 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   {nextHabit.minimumAction}
                 </p>
                 <p className="mt-2 text-xs leading-5 text-slate-500">
-                  You can also complete any other habit below first.
+                  You can also do another one first.
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={() => setSelectedHabitId(nextHabit.id)}
-                className="flex h-11 min-w-11 items-center justify-center rounded-full border border-[#ecd9df] bg-white/85 px-4 text-sm font-medium text-slate-700"
+                className="flex h-11 min-w-11 items-center justify-center rounded-full bg-white/58 px-4 text-sm font-medium text-slate-600 shadow-[0_10px_24px_-22px_rgba(214,173,183,0.2)]"
               >
                 Details
               </button>
@@ -184,8 +184,8 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         {habits.some((habit) => habit.id !== nextHabit?.id) ? (
           <section className="grid gap-3">
             <div className="flex items-center justify-between gap-3 px-1">
-              <div className="text-sm font-semibold text-slate-900">Other habits</div>
-              <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Any order</div>
+              <div className="text-sm font-semibold text-slate-900">You can also do these</div>
+              <div className="text-xs text-slate-500">Any order</div>
             </div>
             <div className="grid gap-3">
               {habits

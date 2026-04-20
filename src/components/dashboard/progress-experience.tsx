@@ -18,19 +18,36 @@ type ProgressExperienceProps = {
   }[];
 };
 
-const moodTone = ["Quiet", "Low", "Steady", "Good", "Bright", "Strong"];
+const moodTone = ["Quiet", "Low", "Steady", "Good", "Bright", "Strong"] as const;
 
-function getProgress(value: number, total: number) {
-  if (total <= 0) return 0;
-  return Math.min(value / total, 1);
+function getMoodLabel(mood: number | null) {
+  return mood ? moodTone[mood] : "Unmarked";
+}
+
+function getWeekHeadline(brightDays: number, calmDays: number, moodAverage: number | null) {
+  if (brightDays >= 5 && calmDays >= 4) return "You had a steady week";
+  if (brightDays >= 4) return "You stayed consistent this week";
+  if (moodAverage !== null && moodAverage >= 4) return "This week felt a little lighter";
+  if (brightDays >= 2) return "You kept showing up this week";
+  return "This week was a reset week";
+}
+
+function getWeekSupportCopy(
+  brightDays: number,
+  calmDays: number,
+  totalCompletions: number,
+  moodAverage: number | null,
+) {
+  const moodText = moodAverage ? getMoodLabel(moodAverage).toLowerCase() : "unmarked";
+  return `${totalCompletions} completions. ${calmDays} calmer day${calmDays === 1 ? "" : "s"}. Mood felt ${moodText}.`;
 }
 
 export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceProps) {
   const brightDays = weeklyHistory.filter((day) => day.completed).length;
   const calmDays = weeklyHistory.filter((day) => day.resistedCount >= day.actedCount).length;
-  const bestDay = [...weeklyHistory].sort((a, b) => b.completionsCount - a.completionsCount)[0] ?? null;
   const totalCompletions = weeklyHistory.reduce((sum, day) => sum + day.completionsCount, 0);
-  const maxCompletions = Math.max(...weeklyHistory.map((day) => day.completionsCount), 1);
+  const totalResisted = weeklyHistory.reduce((sum, day) => sum + day.resistedCount, 0);
+  const totalUrges = weeklyHistory.reduce((sum, day) => sum + day.urgesCount, 0);
   const averageMoodSource = weeklyHistory.filter((day) => day.mood !== null);
   const moodAverage =
     averageMoodSource.length > 0
@@ -39,165 +56,148 @@ export function ProgressExperience({ stats, weeklyHistory }: ProgressExperienceP
             averageMoodSource.length,
         )
       : null;
-  const ringRadius = 34;
-  const ringCircumference = 2 * Math.PI * ringRadius;
-  const completionOffset = ringCircumference - ringCircumference * getProgress(brightDays, 7);
+  const maxCompletions = Math.max(...weeklyHistory.map((day) => day.completionsCount), 1);
+  const bestDay = [...weeklyHistory].sort((a, b) => b.completionsCount - a.completionsCount)[0] ?? null;
+  const headline = getWeekHeadline(brightDays, calmDays, moodAverage);
+  const supportCopy = getWeekSupportCopy(brightDays, calmDays, totalCompletions, moodAverage);
+  const practiceMixLabel =
+    stats.totalHabits > 0
+      ? `${stats.buildHabits} felt supportive, ${stats.breakHabits} may need loosening`
+      : "No habits set yet";
 
   return (
     <div className="grid gap-4">
-      <section className="app-hero overflow-hidden rounded-[32px] px-5 py-6">
-        <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-          Reflection
-        </div>
-        <h2 className="mt-3 text-[2rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
-          Here&apos;s how the week is holding.
-        </h2>
-        <p className="mt-3 max-w-[18rem] text-sm leading-6 text-slate-600">
-          Three reads: days held, pressure, and mood.
-        </p>
+      <section className="app-hero relative overflow-hidden rounded-[32px] px-5 py-6">
+        <div className="pointer-events-none absolute -right-14 top-0 h-32 w-32 rounded-full bg-[rgba(184,166,255,0.14)] blur-3xl" />
+        <div className="pointer-events-none absolute -left-10 bottom-0 h-28 w-28 rounded-full bg-[rgba(255,201,120,0.16)] blur-3xl" />
 
-        <div className="mt-6 rounded-[28px] border border-[#ecd9df] bg-white/78 p-4 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.22)]">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4">
-            <div className="relative h-[6.2rem] w-[6.2rem] shrink-0">
-              <svg viewBox="0 0 84 84" className="-rotate-90">
-                <circle cx="42" cy="42" r={ringRadius} stroke="rgba(223,199,208,0.78)" strokeWidth="8" fill="none" />
-                <circle
-                  cx="42"
-                  cy="42"
-                  r={ringRadius}
-                  stroke="url(#weekHeroRing)"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                  fill="none"
-                  strokeDasharray={ringCircumference}
-                  strokeDashoffset={completionOffset}
-                />
-                <defs>
-                  <linearGradient id="weekHeroRing" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#ffd68b" />
-                    <stop offset="100%" stopColor="#69d7ca" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-xl font-semibold text-slate-950">{brightDays}/7</div>
-                <div className="text-[9px] uppercase tracking-[0.18em] text-slate-400">days held</div>
+        <div className="relative">
+          <div className="text-sm font-semibold text-slate-700">Your week at a glance</div>
+          <h2 className="mt-3 max-w-[15rem] text-[2.1rem] font-semibold leading-[0.98] tracking-tight text-slate-950">
+            {headline}
+          </h2>
+          <p className="mt-4 max-w-[18rem] text-sm leading-6 text-slate-600">{supportCopy}</p>
+
+          <div className="mt-6 grid gap-3">
+            <article className="rounded-[30px] bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(255,245,250,0.92)_100%)] px-5 py-6 shadow-[0_26px_58px_-36px_rgba(214,173,183,0.34)]">
+              <div className="text-sm font-semibold text-slate-700">This week</div>
+              <div className="mt-2 text-[2.35rem] font-semibold leading-none tracking-tight text-slate-950">
+                {totalCompletions}
               </div>
-            </div>
-            <div className="min-w-0">
-              <div className="text-sm font-semibold text-slate-950">This week, at a glance</div>
-              <div className="mt-1 text-sm leading-6 text-slate-600">
-                {brightDays} days held, {calmDays} steadier day{calmDays === 1 ? "" : "s"}, mood {moodAverage ? moodTone[moodAverage].toLowerCase() : "unmarked"}.
+              <div className="mt-3 text-sm text-slate-600">
+                {brightDays} day{brightDays === 1 ? "" : "s"} with at least one completion.
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm font-medium text-slate-700">
-                  {totalCompletions} holds
-                </span>
-                <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm font-medium text-slate-700">
-                  {calmDays} steady
-                </span>
-                <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm font-medium text-slate-700">
-                  Mood {moodAverage ?? "-"}
-                </span>
-              </div>
+            </article>
+
+            <div className="grid grid-cols-2 gap-3">
+              <article className="rounded-[24px] bg-white/58 px-4 py-4 shadow-[0_14px_34px_-30px_rgba(214,173,183,0.16)]">
+                <div className="text-sm font-semibold text-slate-700">Calmer days</div>
+                <div className="mt-2 text-[1.7rem] font-semibold leading-none text-slate-950">
+                  {calmDays}
+                </div>
+                <div className="mt-3 text-xs text-slate-500">
+                  Days you resisted as much as, or more than, you acted.
+                </div>
+              </article>
+
+              <article className="rounded-[24px] bg-white/58 px-4 py-4 shadow-[0_14px_34px_-30px_rgba(214,173,183,0.16)]">
+                <div className="text-sm font-semibold text-slate-700">Average mood</div>
+                <div className="mt-2 text-[1.7rem] font-semibold leading-none text-slate-950">
+                  {moodAverage ?? "-"}
+                </div>
+                <div className="mt-3 text-xs text-slate-500">
+                  {moodAverage ? getMoodLabel(moodAverage) : "No check-ins yet"}
+                </div>
+              </article>
             </div>
           </div>
         </div>
       </section>
-      <section className="grid gap-3">
-        <article className="rounded-[28px] border border-[#ecd9df] bg-white/78 p-5 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.22)]">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-sm font-semibold text-slate-950">Week at a glance</div>
-              <div className="mt-1 text-sm text-slate-600">
-                Taller bars mean more holds. Dots show mood. Small chips show resisted urges.
-              </div>
-            </div>
-            <div className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm font-medium text-slate-700">
-              {totalCompletions} holds
+
+      <article className="rounded-[30px] bg-white/74 px-5 py-5 shadow-[0_16px_38px_-34px_rgba(214,173,183,0.18)]">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-base font-semibold text-slate-950">This week, day by day</div>
+            <div className="mt-3 text-xs leading-5 text-slate-500">
+              Taller bars mean more completions.
             </div>
           </div>
+          <div className="rounded-full bg-[#fff7fb] px-3 py-1.5 text-sm font-medium text-slate-700">
+            {totalCompletions} this week
+          </div>
+        </div>
 
-          <div className="mt-5 grid grid-cols-7 gap-2">
-            {weeklyHistory.map((day) => {
-              const barHeight = `${Math.max((day.completionsCount / maxCompletions) * 100, day.completionsCount > 0 ? 18 : 8)}%`;
-              const moodColor =
-                day.mood === null
-                  ? "bg-[#f1dde4]"
-                  : day.mood <= 2
-                    ? "bg-[#ffb5bd]"
-                    : day.mood === 3
-                      ? "bg-[#ffd98f]"
-                      : "bg-[#69d7ca]";
+        <div className="mt-6 grid grid-cols-7 gap-2">
+          {weeklyHistory.map((day) => {
+            const barHeight = `${Math.max((day.completionsCount / maxCompletions) * 100, day.completionsCount > 0 ? 16 : 6)}%`;
+            const moodColor =
+              day.mood === null
+                ? "bg-[#f0dfe5]"
+                : day.mood <= 2
+                  ? "bg-[#ffb7bf]"
+                  : day.mood === 3
+                    ? "bg-[#ffd68b]"
+                    : "bg-[#69d7ca]";
 
-              return (
-                <div
-                  key={day.date}
-                  className="rounded-[22px] border border-[#ecd9df] bg-[#fff9fb] px-2 py-3"
-                >
-                  <div className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                    {day.label.split(",")[0]}
-                  </div>
-                  <div className="mt-3 flex h-28 items-end justify-center">
-                    <div className="flex h-full w-8 items-end rounded-full bg-[#f7e9ee] p-1">
-                      <div
-                        className={`w-full rounded-full ${
-                          day.completed
-                            ? "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)]"
-                            : "bg-[linear-gradient(180deg,#ffd68b_0%,#ffb5bd_100%)]"
-                        }`}
-                        style={{ height: barHeight }}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-center gap-1.5">
-                    <span className={`h-2.5 w-2.5 rounded-full ${moodColor}`} />
-                    <span className="text-xs font-medium text-slate-600">
-                      {day.completionsCount}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex items-center justify-center">
-                    <span className="rounded-full border border-[#ecd9df] bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-                      {day.resistedCount}R
-                    </span>
+            return (
+              <div key={day.date} className="flex flex-col items-center">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {day.label.slice(0, 3)}
+                </div>
+                <div className="mt-3 flex h-32 w-full items-end justify-center rounded-[22px] bg-[#fff8fb] px-2 py-3">
+                  <div className="flex h-full w-9 items-end rounded-full bg-[#f6e7ed] p-1">
+                    <div
+                      className={`w-full rounded-full transition-all ${
+                        day.completionsCount > 0
+                          ? "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)]"
+                          : "bg-[linear-gradient(180deg,#ffe3b4_0%,#ffd3d8_100%)]"
+                      }`}
+                      style={{ height: barHeight }}
+                    />
                   </div>
                 </div>
-              );
-            })}
+                <div className="mt-3 text-sm font-semibold text-slate-900">{day.completionsCount}</div>
+                <div className="mt-1 flex items-center gap-1.5">
+                  <span className={`h-2.5 w-2.5 rounded-full ${moodColor}`} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 rounded-[22px] bg-[#fff8fb] px-4 py-3 text-sm text-slate-600">
+          <span className="font-semibold text-slate-900">{totalResisted}</span>
+          {totalUrges > 0 ? ` of ${totalUrges}` : ""} urge moments were handled well.
+        </div>
+      </article>
+
+      <section className="grid gap-3 sm:grid-cols-2">
+        <article className="rounded-[28px] bg-white/58 px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
+          <div className="text-base font-semibold text-slate-950">Best day</div>
+          <div className="mt-3 text-sm leading-6 text-slate-600">
+            {bestDay && bestDay.completionsCount > 0
+              ? `${bestDay.label} felt strongest with ${bestDay.completionsCount} completion${bestDay.completionsCount === 1 ? "" : "s"}.`
+              : "No single day stood out yet."}
           </div>
         </article>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <article className="rounded-[28px] border border-[#ecd9df] bg-white/78 p-5 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.2)]">
-            <div className="text-sm font-semibold text-slate-950">Best day</div>
-            <div className="mt-2 text-base leading-7 text-slate-700">
-              {bestDay && bestDay.completionsCount > 0
-                ? `${bestDay.label} carried ${bestDay.completionsCount} hold${bestDay.completionsCount === 1 ? "" : "s"}.`
-                : "No single day stood out yet."}
-            </div>
-          </article>
-
-          <article className="rounded-[28px] border border-[#ecd9df] bg-white/78 p-5 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.2)]">
-            <div className="text-sm font-semibold text-slate-950">Practice mix</div>
-            <div className="mt-1 text-sm text-slate-600">
-              What you are trying to repeat, and what you are trying to loosen.
-            </div>
-
-            <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-              <div className="h-3 overflow-hidden rounded-full bg-[#f7e9ee]">
-                <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#8be6dc_0%,#ffd68b_100%)]"
-                  style={{
-                    width: `${stats.totalHabits > 0 ? (stats.buildHabits / stats.totalHabits) * 100 : 0}%`,
-                  }}
-                />
-              </div>
-              <div className="text-sm font-medium text-slate-700">
-                {stats.buildHabits} repeat / {stats.breakHabits} loosen
-              </div>
-            </div>
-          </article>
-        </div>
+        <article className="rounded-[28px] bg-white/58 px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
+          <div className="text-base font-semibold text-slate-950">What helped</div>
+          <div className="mt-3 text-sm leading-6 text-slate-600">
+            {practiceMixLabel}.
+          </div>
+          <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#f6e7ed]">
+            <div
+              className="h-full rounded-full bg-[linear-gradient(90deg,#8be6dc_0%,#ffd68b_100%)]"
+              style={{
+                width: `${stats.totalHabits > 0 ? (stats.buildHabits / stats.totalHabits) * 100 : 0}%`,
+              }}
+            />
+          </div>
+          <div className="mt-3 text-sm text-slate-600">
+            Keep the supportive ones easy to return to. Make the harder ones easier to notice.
+          </div>
+        </article>
       </section>
     </div>
   );

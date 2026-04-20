@@ -16,12 +16,21 @@ type UrgeFeedProps = {
 
 export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
   const visibleUrges = recentUrges.slice(0, 4);
+  const resistedCount = recentUrges.filter((urge) => urge.outcome === "RESISTED").length;
 
   return (
-    <Card title="Urge notes" description="A short record of pull and response." variant="soft">
+    <Card
+      title="Recent urge moments"
+      description={
+        recentUrges.length > 0
+          ? `${resistedCount} of ${recentUrges.length} recent moments were resisted.`
+          : "A gentle record of how hard moments went."
+      }
+      variant="soft"
+    >
       {recentUrges.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-[#ecd9df] bg-white/76 p-4 text-sm text-slate-600">
-          No urge notes yet. When one hits, mark it and keep moving.
+          No urge moments yet. When one hits, mark it and keep moving.
         </p>
       ) : (
         <div className="relative">
@@ -49,7 +58,7 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-slate-600">
-                    {urge.outcome === "RESISTED" ? "Resisted" : "Acted"} • {urge.intensity}/5
+                    {urge.outcome === "RESISTED" ? "You got through it" : "It got the better of you"} • intensity {urge.intensity}/5
                   </p>
                 </div>
                 <div className="pt-0.5 text-right text-sm text-slate-500">
@@ -59,7 +68,7 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
             ))}
           </div>
           {recentUrges.length > visibleUrges.length ? (
-            <div className="text-center text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+            <div className="text-center text-xs font-medium text-slate-500">
               Showing latest {visibleUrges.length}
             </div>
           ) : null}

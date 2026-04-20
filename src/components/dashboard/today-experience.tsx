@@ -76,7 +76,7 @@ export function TodayExperience({
   const primaryActionLabel = !dayReset
     ? "Open the day"
     : nextHabit && !dayCompleted
-      ? "See today's habits"
+      ? "Mark one habit done"
       : "See today's habits";
 
   function handlePrimaryAction() {
@@ -130,9 +130,9 @@ export function TodayExperience({
               <button
                 type="button"
                 onClick={openUrgeSheet}
-                className="pressable app-btn-secondary min-h-11 w-full rounded-full px-5 py-3 text-sm font-medium"
+                className="pressable min-h-11 w-full rounded-full bg-white/62 px-5 py-3 text-sm font-medium text-slate-700 shadow-[0_14px_32px_-26px_rgba(214,173,183,0.22)]"
               >
-                Urge help
+                Support for hard moments
               </button>
             ) : null}
           </div>
