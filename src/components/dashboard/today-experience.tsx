@@ -69,7 +69,7 @@ export function TodayExperience({
   const heroStatus = !dayReset
     ? "Not checked in yet"
     : dayCompleted
-      ? `${moodLabels[dayReset.mood]} mood • done for today`
+      ? `${moodLabels[dayReset.mood]} mood • wrapped for today`
       : nextHabit
         ? `${moodLabels[dayReset.mood]} mood • one step at a time`
         : `${moodLabels[dayReset.mood]} mood • day open`;

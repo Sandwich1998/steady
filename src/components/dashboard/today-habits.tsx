@@ -128,7 +128,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   if (habits.length === 0) {
     return (
       <section className="rounded-[28px] border border-dashed border-[#ecd9df] bg-white/70 p-5">
-        <div className="text-base font-semibold text-slate-950">No practice yet</div>
+        <div className="text-base font-semibold text-slate-950">No practices yet</div>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           Add one practice and this screen will guide you through today.
         </p>
@@ -142,10 +142,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         {allHeld ? (
           <article className="rounded-[30px] border border-[#ecd9df] bg-white/74 px-5 py-5 shadow-[0_18px_40px_-30px_rgba(214,173,183,0.22)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              {restedCount > 0 ? "Done for today" : "All done"}
+              {restedCount > 0 ? "Wrapped for today" : "All done"}
             </div>
             <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-slate-950">
-              You&apos;ve done enough for today.
+              You can leave it here for today.
             </h3>
             <p className="mt-2 max-w-[18rem] text-sm leading-6 text-slate-600">
               If the day gets slippery later, support is still one tap away.

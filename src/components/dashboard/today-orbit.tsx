@@ -88,14 +88,14 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
 
       <div className="min-w-0">
         <div className="text-sm font-semibold text-slate-700">
-          {dayCompleted ? "Done today" : "Still open today"}
+          {dayCompleted ? "Wrapped for today" : "Still open today"}
         </div>
         <div className="mt-2 text-lg font-semibold leading-tight text-slate-950">
-          {dayCompleted ? "You're done for today." : "Keep today steady."}
+          {dayCompleted ? "All set for today." : "Keep today steady."}
         </div>
         <div className="mt-2 text-sm leading-6 text-slate-600">
           {dayCompleted
-            ? "Come back tomorrow. Support is still here if the day gets wobbly."
+            ? "Come back tomorrow. If the day gets wobbly later, support is still here."
             : nextHabit?.minimumAction ?? "Set one practice and the ring will start to fill."}
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
