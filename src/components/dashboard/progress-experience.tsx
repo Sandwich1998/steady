@@ -33,20 +33,6 @@ function getMoodLabel(mood: number | null) {
   return mood ? moodTone[mood] : "Unmarked";
 }
 
-function getSparklinePath(values: number[], width: number, height: number) {
-  if (values.length === 0) return "";
-  if (values.length === 1) return `M 0 ${height / 2} L ${width} ${height / 2}`;
-
-  const max = Math.max(...values, 1);
-  return values
-    .map((value, index) => {
-      const x = (index / (values.length - 1)) * width;
-      const y = height - (value / max) * height;
-      return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
-    })
-    .join(" ");
-}
-
 function isSteadierDay(day: {
   mood: number | null;
   completed: boolean;
@@ -66,7 +52,7 @@ function isSteadierDay(day: {
 }
 
 function getWeekHeadline(brightDays: number, calmDays: number, moodAverage: number | null) {
-  if (brightDays >= 5 && calmDays >= 4) return "You gave this week something to build on";
+  if (brightDays >= 5 && calmDays >= 4) return "You gave this week something solid";
   if (brightDays >= 4) return "You kept coming back this week";
   if (moodAverage !== null && moodAverage >= 4) return "This week felt a little lighter";
   if (brightDays >= 2) return "You kept showing up this week";
@@ -107,7 +93,7 @@ function getDeltaLabel(current: number, previous: number) {
 
 function getMoodShiftLabel(current: number | null, previous: number | null) {
   if (current === null || previous === null) return "No compare yet";
-  if (current === previous) return "Same feel";
+  if (current === previous) return "About the same as last week";
   return current > previous ? "A little lighter" : "A little heavier";
 }
 
@@ -142,11 +128,6 @@ export function ProgressExperience({
           ? `The harder patterns need a little more support right now.`
           : `Your repeat and loosen practices both mattered this week.`
       : "No practices set yet.";
-  const sparklinePath = getSparklinePath(
-    weeklyHistory.map((day) => day.completionsCount),
-    160,
-    44,
-  );
   const calmRingRadius = 34;
   const calmRingCircumference = 2 * Math.PI * calmRingRadius;
   const calmRingOffset = calmRingCircumference - (calmDays / 7) * calmRingCircumference;
@@ -261,21 +242,11 @@ export function ProgressExperience({
 
             <div className="grid grid-cols-2 gap-3">
               <article className="rounded-[24px] bg-white/58 px-4 py-4 shadow-[0_14px_34px_-30px_rgba(214,173,183,0.16)]">
-                <div className="text-sm font-semibold text-slate-700">Times you showed up</div>
+                <div className="text-sm font-semibold text-slate-700">Times you came back</div>
                 <div className="mt-2 text-[1.9rem] font-semibold leading-none text-slate-950">
                   {totalCompletions}
                 </div>
-                <svg viewBox="0 0 160 44" className="mt-4 h-11 w-full">
-                  <path
-                    d={sparklinePath}
-                    fill="none"
-                    stroke="#ff5ea8"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <div className="mt-2 text-xs text-slate-500">
+                <div className="mt-3 text-xs text-slate-500">
                   How many times you came back to a practice this week.
                 </div>
               </article>
