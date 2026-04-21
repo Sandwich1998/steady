@@ -41,52 +41,6 @@ function getMoodLabel(mood: number | null) {
   return mood ? moodTone[mood] : "Unmarked";
 }
 
-function isSteadierDay(day: {
-  mood: number | null;
-  completed: boolean;
-  urgesCount: number;
-  resistedCount: number;
-  actedCount: number;
-}) {
-  if (day.urgesCount > 0) {
-    return day.resistedCount > day.actedCount;
-  }
-
-  if (day.mood !== null) {
-    return day.mood >= 3 && day.completed;
-  }
-
-  return day.completed;
-}
-
-function getWeekHeadline(brightDays: number, calmDays: number, moodAverage: number | null) {
-  if (brightDays >= 5 && calmDays >= 4) return "You gave this week something solid";
-  if (brightDays >= 4) return "You kept coming back this week";
-  if (moodAverage !== null && moodAverage >= 4) return "This week felt a little lighter";
-  if (brightDays >= 2) return "You kept showing up this week";
-  return "This week was a reset week";
-}
-
-function getWeekSupportCopy(
-  brightDays: number,
-  calmDays: number,
-  totalCompletions: number,
-  moodAverage: number | null,
-) {
-  if (brightDays > 0 || calmDays > 0 || totalCompletions > 0 || moodAverage !== null) {
-    return "You kept coming back, and most days had something to build on.";
-  }
-
-  return "A quieter week still counts. You can begin again from here.";
-}
-
-function getDeltaLabel(current: number, previous: number) {
-  const delta = current - previous;
-  if (delta === 0) return "Same as last week";
-  if (delta > 0) return `${delta} more than last week`;
-  return `${Math.abs(delta)} less than last week`;
-}
-
 function getMoodShiftLabel(current: number | null, previous: number | null) {
   if (current === null || previous === null) return "No compare yet";
   if (current === previous) return "About the same as last week";
@@ -101,14 +55,44 @@ function getMoodColorClass(mood: number | null) {
   return "bg-[#69d7ca]";
 }
 
+function getPrimarySignal(totalResisted: number, totalUrges: number, totalCompletions: number) {
+  if (totalUrges > 0 && totalResisted > 0) {
+    return {
+      eyebrow: "Strongest signal",
+      line: `${totalResisted} urge interruption${totalResisted === 1 ? "" : "s"}`,
+      note: `${totalUrges} urge moment${totalUrges === 1 ? "" : "s"} logged in the last 7 days.`,
+    };
+  }
+
+  if (totalUrges > 0) {
+    return {
+      eyebrow: "Next signal to build",
+      line: "Delay the next urge",
+      note: `${totalUrges} urge moment${totalUrges === 1 ? "" : "s"} logged. One 10-minute delay counts.`,
+    };
+  }
+
+  if (totalCompletions > 0) {
+    return {
+      eyebrow: "Strongest signal",
+      line: `${totalCompletions} practice return${totalCompletions === 1 ? "" : "s"}`,
+      note: "Completions in the last 7 days. Small returns are the point.",
+    };
+  }
+
+  return {
+    eyebrow: "Next signal to build",
+    line: "One small return",
+    note: "Log one practice or one delayed urge to make this screen useful.",
+  };
+}
+
 export function ProgressExperience({
   stats,
   weeklyHistory,
   previousWeekSummary,
   habits,
 }: ProgressExperienceProps) {
-  const brightDays = weeklyHistory.filter((day) => day.completed).length;
-  const calmDays = weeklyHistory.filter(isSteadierDay).length;
   const totalCompletions = weeklyHistory.reduce((sum, day) => sum + day.completionsCount, 0);
   const totalRestDays = weeklyHistory.reduce((sum, day) => sum + day.restCount, 0);
   const totalResisted = weeklyHistory.reduce((sum, day) => sum + day.resistedCount, 0);
@@ -125,8 +109,7 @@ export function ProgressExperience({
   const moodShiftLabel = getMoodShiftLabel(moodAverage, previousWeekSummary.moodAverage);
   const maxCompletions = Math.max(...weeklyHistory.map((day) => day.completionsCount), 1);
   const bestDay = [...weeklyHistory].sort((a, b) => b.completionsCount - a.completionsCount)[0] ?? null;
-  const headline = getWeekHeadline(brightDays, calmDays, moodAverage);
-  const supportCopy = getWeekSupportCopy(brightDays, calmDays, totalCompletions, moodAverage);
+  const primarySignal = getPrimarySignal(totalResisted, totalUrges, totalCompletions);
   const practiceMixLabel =
     stats.totalHabits > 0
       ? stats.buildHabits > stats.breakHabits
@@ -135,9 +118,6 @@ export function ProgressExperience({
           ? `The harder patterns need a little more support right now.`
           : `Your repeat and loosen practices both mattered this week.`
       : "No practices set yet.";
-  const calmRingRadius = 34;
-  const calmRingCircumference = 2 * Math.PI * calmRingRadius;
-  const calmRingOffset = calmRingCircumference - (calmDays / 7) * calmRingCircumference;
   const bestDayCopy =
     bestDay && bestDay.completionsCount > 0
       ? `${bestDay.label} felt strongest. You showed up ${bestDay.completionsCount} time${bestDay.completionsCount === 1 ? "" : "s"}.`
@@ -151,141 +131,113 @@ export function ProgressExperience({
         ? `${totalResisted} interruptions and ${totalActed} slip${totalActed === 1 ? "" : "s"}. Keep practicing the quick return.`
         : `${totalResisted} urge interruption${totalResisted === 1 ? "" : "s"} logged. You are building delay.`
       : "No urge moments logged yet. Use the button when the pull shows up.";
-  const comparisonItems = [
+  const heroStats = [
     {
-      label: "Steadier days",
-      value: calmDays,
-      sublabel: getDeltaLabel(calmDays, previousWeekSummary.calmDays),
+      label: "Urges interrupted",
+      value: totalUrges > 0 ? `${totalResisted}/${totalUrges}` : "0",
+      sublabel: totalUrges > 0 ? "Handled before acting" : "Use support when one hits",
     },
     {
-      label: "Showed up",
+      label: "Practice returns",
       value: totalCompletions,
-      sublabel: getDeltaLabel(totalCompletions, previousWeekSummary.completions),
+      sublabel: "Completed in 7 days",
     },
     {
-      label: "Interrupted",
-      value: totalResisted,
-      sublabel: totalUrges > 0 ? `${totalResisted} of ${totalUrges} urges` : "No urges logged",
+      label: "Mood check-ins",
+      value: averageMoodSource.length,
+      sublabel: "Days with a mood note",
     },
   ];
 
   return (
     <div className="grid gap-4">
-      <section className="app-hero relative overflow-hidden rounded-[32px] px-5 py-6">
-        <div className="pointer-events-none absolute right-0 top-0 h-28 w-28 rounded-full bg-[rgba(184,166,255,0.13)] blur-3xl" />
-        <div className="pointer-events-none absolute left-0 bottom-0 h-24 w-24 rounded-full bg-[rgba(255,201,120,0.14)] blur-3xl" />
+      <section className="app-hero relative overflow-hidden rounded-[28px] px-5 py-5">
+        <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-[rgba(184,166,255,0.1)] blur-3xl" />
+        <div className="pointer-events-none absolute left-0 bottom-0 h-20 w-20 rounded-full bg-[rgba(255,201,120,0.12)] blur-3xl" />
 
         <div className="relative">
-          <div className="text-sm font-semibold text-slate-700">Your week at a glance</div>
-          <h2 className="mt-3 max-w-[15rem] text-[2.1rem] font-semibold leading-[0.98] tracking-tight text-slate-950">
-            {headline}
-          </h2>
-          <p className="mt-4 max-w-[18rem] text-sm leading-6 text-slate-600">{supportCopy}</p>
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+                Last 7 days
+              </div>
+              <div className="mt-3 text-sm font-semibold text-slate-700">{primarySignal.eyebrow}</div>
+              <h2 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-tight text-slate-950">
+                {primarySignal.line}
+              </h2>
+              <p className="mt-3 max-w-[19rem] text-sm leading-6 text-slate-600">{primarySignal.note}</p>
+            </div>
+            <div className="shrink-0 rounded-full bg-white/72 px-3 py-1.5 text-xs font-semibold text-slate-600">
+              Week
+            </div>
+          </div>
 
-          <div className="mt-6 grid grid-cols-3 gap-2">
-            {comparisonItems.map((item) => (
+          <div className="mt-5 grid grid-cols-3 gap-2.5">
+            {heroStats.map((item) => (
               <div
                 key={item.label}
-                className="rounded-[22px] bg-white/56 px-3 py-3 shadow-[0_12px_28px_-28px_rgba(214,173,183,0.22)]"
+                className="rounded-[20px] bg-white/62 px-3 py-3 shadow-[0_12px_28px_-28px_rgba(214,173,183,0.22)]"
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                <div className="min-h-8 text-[11px] font-semibold uppercase leading-4 tracking-[0.11em] text-slate-500">
                   {item.label}
                 </div>
-                <div className="mt-2 text-lg font-semibold leading-none text-slate-950">
+                <div className="mt-2 text-[1.45rem] font-semibold leading-none text-slate-950">
                   {item.value}
                 </div>
-                <div className="mt-2 text-[11px] leading-4 text-slate-500">{item.sublabel}</div>
+                <div className="mt-1.5 text-[11px] leading-4 text-slate-500">{item.sublabel}</div>
               </div>
             ))}
           </div>
-
-          <article className="mt-6 rounded-[30px] bg-[linear-gradient(180deg,rgba(255,255,255,0.97)_0%,rgba(255,244,249,0.92)_100%)] px-5 py-5 shadow-[0_28px_60px_-36px_rgba(214,173,183,0.34)]">
-            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4">
-              <div className="relative h-[6.75rem] w-[6.75rem] shrink-0">
-                <svg viewBox="0 0 92 92" className="-rotate-90">
-                  <circle
-                    cx="46"
-                    cy="46"
-                    r={calmRingRadius}
-                    stroke="rgba(233,217,224,0.92)"
-                    strokeWidth="8"
-                    fill="none"
-                  />
-                  <circle
-                    cx="46"
-                    cy="46"
-                    r={calmRingRadius}
-                    stroke="url(#steadyWeekRing)"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    fill="none"
-                    strokeDasharray={calmRingCircumference}
-                    strokeDashoffset={calmRingOffset}
-                  />
-                  <defs>
-                    <linearGradient id="steadyWeekRing" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#69d7ca" />
-                      <stop offset="100%" stopColor="#ffc978" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-[1.8rem] font-semibold leading-none text-slate-950">
-                    {calmDays}
-                  </div>
-                  <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">
-                    steady
-                  </div>
-                </div>
-              </div>
-
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-slate-700">Days that felt steadier</div>
-                <div className="mt-2 text-[1.95rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
-                  {calmDays} day{calmDays === 1 ? "" : "s"} felt steadier.
-                </div>
-                <div className="mt-3 text-sm leading-6 text-slate-600">
-                  Days when things felt a little more manageable.
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article className="mt-3 rounded-[28px] bg-white/62 px-5 py-5 shadow-[0_18px_42px_-34px_rgba(214,173,183,0.22)]">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-slate-700">Mood</div>
-                <div className="mt-2 text-[1.45rem] font-semibold leading-tight tracking-tight text-slate-950">
-                  Mood felt mostly steady
-                </div>
-                <div className="mt-1.5 text-sm leading-6 text-slate-600">{moodShiftLabel}</div>
-              </div>
-              <div className="shrink-0 rounded-full bg-[#fff7fb] px-3 py-1.5 text-xs font-semibold text-slate-600">
-                {averageMoodSource.length} check-in{averageMoodSource.length === 1 ? "" : "s"}
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-7 gap-2" aria-label="Mood check-ins by day">
-              {weeklyHistory.map((day) => (
-                <div
-                  key={day.date}
-                  className={`h-5 rounded-full ${getMoodColorClass(day.mood)} ${
-                    day.mood === null
-                      ? "opacity-55"
-                      : "shadow-[0_12px_24px_-18px_rgba(105,215,202,0.72)]"
-                  }`}
-                  title={day.mood === null ? `${day.label}: no mood check-in` : `${day.label}: ${getMoodLabel(day.mood)}`}
-                />
-              ))}
-            </div>
-
-            <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-500">
-              <span>Heavier</span>
-              <span>Steady</span>
-              <span>Brighter</span>
-            </div>
-          </article>
         </div>
+      </section>
+
+      <section className="grid gap-3">
+        <article className="rounded-[28px] bg-white/70 px-5 py-5 shadow-[0_12px_30px_-28px_rgba(214,173,183,0.16)]">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-slate-700">Mood</div>
+              <div className="mt-2 text-[1.35rem] font-semibold leading-tight tracking-tight text-slate-950">
+                Mood felt mostly steady
+              </div>
+              <div className="mt-1.5 text-sm leading-6 text-slate-600">{moodShiftLabel}</div>
+            </div>
+            <div className="shrink-0 rounded-full bg-[#fff7fb] px-3 py-1.5 text-xs font-semibold text-slate-600">
+              {averageMoodSource.length} check-in{averageMoodSource.length === 1 ? "" : "s"}
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-7 gap-2" aria-label="Mood check-ins by day">
+            {weeklyHistory.map((day) => (
+              <div
+                key={day.date}
+                className={`h-5 rounded-full ${getMoodColorClass(day.mood)} ${
+                  day.mood === null
+                    ? "opacity-55"
+                    : "shadow-[0_12px_24px_-18px_rgba(105,215,202,0.72)]"
+                }`}
+                title={day.mood === null ? `${day.label}: no mood check-in` : `${day.label}: ${getMoodLabel(day.mood)}`}
+              />
+            ))}
+          </div>
+
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-500">
+            <span>Heavier</span>
+            <span>Steady</span>
+            <span>Brighter</span>
+          </div>
+        </article>
+
+        <article className="rounded-[28px] bg-[#fff8fb] px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="text-base font-semibold text-slate-950">Urge moments</div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{controlCopy}</p>
+            </div>
+            <div className="shrink-0 rounded-full bg-white/78 px-3 py-1.5 text-sm font-semibold text-slate-700">
+              {totalUrges > 0 ? `${totalResisted}/${totalUrges}` : "0"}
+            </div>
+          </div>
+        </article>
       </section>
 
       <article className="rounded-[30px] bg-white/74 px-5 py-5 shadow-[0_16px_38px_-34px_rgba(214,173,183,0.18)]">
@@ -338,12 +290,6 @@ export function ProgressExperience({
               {bestDay && bestDay.completionsCount > 0
                 ? `${bestDay.label} with ${bestDay.completionsCount} completion${bestDay.completionsCount === 1 ? "" : "s"}`
                 : "No day stood out yet"}
-            </span>
-          </div>
-          <div className="flex items-start justify-between gap-3 text-sm">
-            <span className="text-slate-500">Urges</span>
-            <span className="text-right font-medium text-slate-900">
-              {controlCopy}
             </span>
           </div>
           {totalRestDays > 0 ? (

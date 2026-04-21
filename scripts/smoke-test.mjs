@@ -11,7 +11,7 @@ try {
   await page.goto(baseUrl, { waitUntil: "networkidle" });
 
   await page.locator("#bottom-nav-progress").click();
-  await page.getByText("Your week at a glance", { exact: true }).waitFor({ state: "visible" });
+  await page.getByText("Last 7 days", { exact: true }).waitFor({ state: "visible" });
 
   await page.getByRole("button", { name: /manage/i }).click();
   await page.getByText(/set up what you want to return to/i).waitFor({ state: "visible" });
