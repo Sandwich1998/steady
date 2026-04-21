@@ -16,6 +16,8 @@ type UrgeFormProps = {
 };
 
 const intensities = [1, 2, 3, 4, 5];
+const interruptionSteps = ["Stand up", "Leave the room", "Drink water", "Do 10 slow breaths"];
+const replacements = ["Walk outside", "Shower", "Text someone", "Tea", "Gym", "Non-triggering show"];
 
 export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
   const router = useRouter();
@@ -27,6 +29,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
   const [savedMessage, setSavedMessage] = useState("");
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [delayStarted, setDelayStarted] = useState(false);
+  const [delaySeconds, setDelaySeconds] = useState(10 * 60);
   const [isPending, startTransition] = useTransition();
   const selectedHabitId =
     breakHabits.find((habit) => habit.id === habitId)?.id ?? breakHabits[0]?.id ?? "";
@@ -34,6 +38,8 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
   useEffect(() => {
     function openFromOutside() {
       setIsOpen(true);
+      setDelayStarted(false);
+      setDelaySeconds(10 * 60);
     }
 
     window.addEventListener("steady:open-urge-sheet", openFromOutside as EventListener);
@@ -41,6 +47,16 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
       window.removeEventListener("steady:open-urge-sheet", openFromOutside as EventListener);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isOpen || !delayStarted || delaySeconds <= 0) return;
+
+    const interval = window.setInterval(() => {
+      setDelaySeconds((seconds) => Math.max(seconds - 1, 0));
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [delaySeconds, delayStarted, isOpen]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,12 +79,16 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
       setIntensity(3);
       setOutcome("RESISTED");
       setSavedMessage(
-        outcome === "RESISTED" ? "Saved. You resisted it." : "Saved. Pick back up from here.",
+        outcome === "RESISTED"
+          ? "Saved. You interrupted the pattern."
+          : "Saved. One moment is not the whole day.",
       );
       window.setTimeout(() => {
         setSavedMessage("");
       }, 2200);
       setIsOpen(false);
+      setDelayStarted(false);
+      setDelaySeconds(10 * 60);
       startTransition(() => {
         router.refresh();
       });
@@ -91,7 +111,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
       ) : !isOpen ? (
         hiddenUntilOpen ? (
           savedMessage ? (
-            <div className="animate-success-toast rounded-[18px] bg-[#dcfff5] px-4 py-3 text-sm text-[#2f8f7d]">
+            <div className="animate-success-toast rounded-[18px] bg-[#dcfff5] px-4 py-3 text-sm text-[#176857]">
               {savedMessage}
             </div>
           ) : null
@@ -114,7 +134,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             </button>
           </div>
           {savedMessage ? (
-            <div className="animate-success-toast mt-4 rounded-[18px] bg-[#dcfff5] px-4 py-3 text-sm text-[#2f8f7d]">
+            <div className="animate-success-toast mt-4 rounded-[18px] bg-[#dcfff5] px-4 py-3 text-sm text-[#176857]">
               {savedMessage}
             </div>
           ) : null}
@@ -129,7 +149,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             className="absolute inset-0"
           />
           <form
-            className="app-card animate-sheet-rise relative z-10 w-full rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(214,173,183,0.38)]"
+            className="app-card animate-sheet-rise relative z-10 max-h-[92svh] w-full overflow-y-auto rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(214,173,183,0.38)]"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
             onSubmit={handleSubmit}
           >
@@ -140,26 +160,70 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                   Urge support
                 </div>
                 <div className="mt-3 text-[1.9rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
-                  Mark the pull.
+                  Delay it first.
                 </div>
                 <div className="mt-3 text-sm leading-6 text-slate-600">
-                  Pick the habit, mark the pull, say what happened.
+                  You can decide later. For 10 minutes, just move and change the scene.
                 </div>
               </div>
               <button
                 type="button"
-            onClick={() => setIsOpen(false)}
-            disabled={isSaving}
-            className="pressable min-h-11 rounded-full border border-[#ecd9df] bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700"
+                onClick={() => setIsOpen(false)}
+                disabled={isSaving}
+                className="pressable min-h-11 rounded-full border border-[#ecd9df] bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700"
               >
                 Close
               </button>
             </div>
 
             <div className="mt-5 grid gap-4">
+              <section className="rounded-[26px] bg-[#fff8fb] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-semibold text-slate-950">10-minute rule</div>
+                    <div className="mt-1 text-sm text-slate-600">
+                      I can do it, but not right now.
+                    </div>
+                  </div>
+                  <div className="rounded-full bg-white/80 px-3 py-2 text-sm font-semibold text-slate-800">
+                    {Math.floor(delaySeconds / 60)}:{String(delaySeconds % 60).padStart(2, "0")}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDelayStarted(true)}
+                  disabled={delayStarted}
+                  className="pressable app-btn-primary mt-4 min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {delayStarted ? "Timer running. Move now." : "Start 10-minute delay"}
+                </button>
+              </section>
+
+              <section className="grid gap-3 rounded-[26px] bg-white/70 p-4">
+                <div className="text-sm font-semibold text-slate-950">Do this now</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {interruptionSteps.map((step) => (
+                    <div key={step} className="rounded-[18px] bg-[#f7fffd] px-3 py-3 text-sm font-medium text-slate-700">
+                      {step}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="grid gap-3">
+                <div className="text-sm font-medium text-slate-700">Replacement if the pull stays loud</div>
+                <div className="flex flex-wrap gap-2">
+                  {replacements.map((replacement) => (
+                    <span key={replacement} className="rounded-full bg-[#fff2f6] px-3 py-2 text-sm text-slate-700">
+                      {replacement}
+                    </span>
+                  ))}
+                </div>
+              </section>
+
               <div className="grid gap-2">
                 <label className="text-sm font-medium text-slate-700" htmlFor="urge-habit">
-                  Which habit is tugging right now?
+                  Which pattern is tugging?
                 </label>
                 <select
                   id="urge-habit"
@@ -210,10 +274,10 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                         : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e6c7d3]"
                     }`}
                   >
-                      <div className="text-base font-semibold">I resisted it</div>
-                      <div className="mt-1 text-sm text-slate-600">
-                      I interrupted it, even if it was messy.
-                      </div>
+                    <div className="text-base font-semibold">I delayed or redirected it</div>
+                    <div className="mt-1 text-sm text-slate-600">
+                      I interrupted the pattern, even if it was messy.
+                    </div>
                   </button>
                   <button
                     type="button"
@@ -225,10 +289,10 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                         : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e6c7d3]"
                     }`}
                   >
-                      <div className="text-base font-semibold">I acted on it</div>
-                      <div className="mt-1 text-sm text-slate-600">
-                      I gave way. Mark it and keep going.
-                      </div>
+                    <div className="text-base font-semibold">I slipped</div>
+                    <div className="mt-1 text-sm text-slate-600">
+                      Mark it without shame. Then take one next step.
+                    </div>
                   </button>
                 </div>
               </div>
@@ -239,7 +303,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               disabled={!selectedHabitId || isPending || isSaving}
               className="pressable app-btn-primary mt-5 min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Save note
+              {outcome === "RESISTED" ? "Save interruption" : "Save and restart"}
             </button>
             {error ? <p className="mt-3 text-sm text-rose-400">{error}</p> : null}
           </form>

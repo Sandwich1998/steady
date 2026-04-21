@@ -17,35 +17,35 @@ const moods = [
     label: "Drained",
     hint: "Very low energy",
     dot: "bg-rose-400",
-    activeClass: "border-rose-400/60 bg-rose-500/18 text-white shadow-[0_10px_30px_-18px_rgba(251,113,133,0.8)]",
+    activeClass: "border-rose-300 bg-rose-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(251,113,133,0.45)]",
   },
   {
     value: 2,
     label: "Off",
     hint: "A bit flat",
     dot: "bg-orange-400",
-    activeClass: "border-orange-400/60 bg-orange-500/18 text-white shadow-[0_10px_30px_-18px_rgba(251,146,60,0.75)]",
+    activeClass: "border-orange-300 bg-orange-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(251,146,60,0.42)]",
   },
   {
     value: 3,
     label: "Steady",
     hint: "Neutral and stable",
     dot: "bg-amber-300",
-    activeClass: "border-amber-300/60 bg-amber-400/18 text-white shadow-[0_10px_30px_-18px_rgba(252,211,77,0.65)]",
+    activeClass: "border-amber-300 bg-amber-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(252,211,77,0.4)]",
   },
   {
     value: 4,
     label: "Good",
     hint: "Clear and positive",
     dot: "bg-lime-400",
-    activeClass: "border-lime-400/60 bg-lime-500/18 text-white shadow-[0_10px_30px_-18px_rgba(163,230,53,0.7)]",
+    activeClass: "border-lime-300 bg-lime-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(163,230,53,0.38)]",
   },
   {
     value: 5,
     label: "Great",
     hint: "Strong and ready",
     dot: "bg-emerald-400",
-    activeClass: "border-emerald-400/60 bg-emerald-500/18 text-white shadow-[0_10px_30px_-18px_rgba(52,211,153,0.75)]",
+    activeClass: "border-emerald-300 bg-emerald-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(52,211,153,0.42)]",
   },
 ] as const;
 
@@ -96,7 +96,7 @@ export function DayResetCard({
         description="Pick the closest mood and begin from there."
         action={
           currentMood ? (
-            <div className="rounded-full bg-[#dcfff5] px-3 py-1 text-sm font-medium text-[#2f8f7d]">
+            <div className="rounded-full bg-[#dcfff5] px-3 py-1 text-sm font-medium text-[#176857]">
               Done
             </div>
           ) : null
@@ -141,37 +141,47 @@ export function DayResetCard({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
-          {moods.map((mood) => {
-            const active = mood.value === selectedMood;
+        <>
+          <div className="rounded-[24px] bg-[#fff8fb] px-4 py-4">
+            <div className="text-sm font-semibold text-slate-950">First 30 minutes</div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {["Water", "No scrolling", "Move a little", "Eat something real"].map((step) => (
+                <div key={step} className="rounded-[18px] bg-white/78 px-3 py-3 text-sm text-slate-700">
+                  {step}
+                </div>
+              ))}
+            </div>
+          </div>
 
-            return (
-              <button
-                key={mood.value}
-                type="button"
+          <div className="grid grid-cols-5 gap-2">
+            {moods.map((mood) => {
+              const active = mood.value === selectedMood;
+
+              return (
+                <button
+                  key={mood.value}
+                  type="button"
                   onClick={() => setSelectedMood(mood.value)}
                   disabled={isSaving}
-                aria-pressed={active}
-                className={`rounded-[24px] border px-4 py-4 text-left transition ${
-                  active
-                    ? mood.activeClass
-                    : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e4c7d0] hover:bg-[#fff8fb]"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-semibold">{mood.label}</div>
-                    <div className="mt-1 text-xs text-slate-500">{mood.hint}</div>
+                  aria-pressed={active}
+                  className={`min-h-[4.7rem] rounded-[20px] border px-2.5 py-3 text-center transition ${
+                    active
+                      ? mood.activeClass
+                      : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e4c7d0] hover:bg-[#fff8fb]"
+                  }`}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`h-3 w-3 rounded-full ${mood.dot}`} />
+                    <div className="text-[11px] font-semibold leading-tight">{mood.label}</div>
                   </div>
-                  <div className={`mt-0.5 h-3 w-3 rounded-full ${mood.dot}`} />
-                </div>
-                <div className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  {mood.value}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                    {mood.value}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </>
       )}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="text-sm text-slate-600">

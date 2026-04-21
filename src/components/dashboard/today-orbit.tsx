@@ -80,7 +80,7 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
           <div className="text-[1.55rem] font-semibold text-slate-950">
             {completedCount + restedCount}/{totalHabits}
           </div>
-          <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.22em] text-slate-500">
+          <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.22em] text-slate-500">
             done
           </div>
         </div>

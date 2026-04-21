@@ -125,6 +125,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
     }
   }
 
+  function openUrgeSupport() {
+    window.dispatchEvent(new CustomEvent("steady:open-urge-sheet"));
+  }
+
   if (habits.length === 0) {
     return (
       <section className="rounded-[28px] border border-dashed border-[#ecd9df] bg-white/70 p-5">
@@ -162,12 +166,12 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             {celebratingHabitId === nextHabit.id ? (
               <>
                 <div className="animate-success-burst pointer-events-none absolute inset-0 rounded-[30px] border border-emerald-300/35" />
-                <div className="pointer-events-none absolute right-5 top-5 rounded-full bg-[#dbfff6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#2f8f7d]">
+                <div className="pointer-events-none absolute right-5 top-5 rounded-full bg-[#dbfff6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#176857]">
                   Done
                 </div>
               </>
             ) : null}
-            <div className="pointer-events-none absolute -right-6 top-0 h-24 w-24 rounded-full bg-[#ffc978]/20 blur-3xl" />
+            <div className="pointer-events-none absolute right-0 top-0 h-20 w-20 rounded-full bg-[#ffc978]/18 blur-3xl" />
             <div className="relative flex items-start justify-between gap-4">
               <div className="max-w-[14rem]">
                 <div className="flex flex-wrap items-center gap-2">
@@ -177,7 +181,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                       nextHabit.type === "BUILD"
-                        ? "bg-[#ebf6ff] text-[#3c78a3]"
+                        ? "bg-[#ebf6ff] text-[#2f668d]"
                         : "bg-[#fff0f1] text-[#c86f7c]"
                     }`}
                   >
@@ -190,6 +194,15 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 <p className="mt-3 text-sm leading-6 text-slate-600">
                   {nextHabit.minimumAction}
                 </p>
+                {nextHabit.type === "BREAK" ? (
+                  <button
+                    type="button"
+                    onClick={openUrgeSupport}
+                    className="pressable mt-3 min-h-11 rounded-full bg-white/72 px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-[0_12px_26px_-24px_rgba(214,173,183,0.22)]"
+                  >
+                    Use 10-minute support
+                  </button>
+                ) : null}
                 <p className="mt-2 text-xs leading-5 text-slate-500">
                   Or choose another practice below.
                 </p>
@@ -216,9 +229,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                 }
                 className={`min-h-11 flex-1 rounded-full px-5 py-3 text-sm font-semibold transition ${
                   nextHabit.completedToday
-                    ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"
+                    ? "cursor-not-allowed bg-[#dcfff5] text-[#176857]"
                     : nextHabit.restedToday
-                      ? "cursor-not-allowed bg-[#fff4d9] text-[#9b7a2d]"
+                      ? "cursor-not-allowed bg-[#fff4d9] text-[#6f5415]"
                     : "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-900 shadow-[0_16px_42px_-24px_rgba(109,201,238,0.45)] hover:scale-[1.01] hover:brightness-[1.02] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
@@ -258,69 +271,75 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             <div className="grid gap-3">
               {habits
                 .filter((habit) => habit.id !== nextHabit?.id)
-                .map((habit) => (
-                <article
-                  key={habit.id}
-                  className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[22px] border border-[#ecd9df] bg-white/80 px-4 py-3"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelectedHabitId(habit.id)}
-                    className="min-w-0 text-left"
-                  >
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-slate-950">{habit.name}</div>
-                      <div className="mt-1 text-sm text-slate-600">
-                        {habit.completedToday
-                          ? "Already done today"
-                          : habit.restedToday
-                            ? "Resting today"
-                            : habit.minimumAction}
-                      </div>
-                    </div>
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`h-3 w-3 shrink-0 rounded-full ${
-                        habit.completedToday
-                          ? "bg-[#69d7ca]"
-                          : habit.restedToday
-                            ? "bg-[#ffd68b]"
-                            : "bg-[#f0d6de]"
-                      }`}
-                    />
-                    {!habit.completedToday && !habit.restedToday ? (
-                      <button
-                        type="button"
-                        onClick={() => restHabit(habit.id)}
-                        disabled={isPending || activeMutationHabitId !== null}
-                        className="min-h-11 rounded-full bg-white/62 px-3 py-2.5 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        Rest
-                      </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={() => completeHabit(habit.id)}
-                      disabled={
-                        habit.completedToday ||
-                        habit.restedToday ||
-                        isPending ||
-                        activeMutationHabitId !== null
-                      }
-                      className={`min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
-                        habit.completedToday
-                          ? "cursor-not-allowed bg-[#dcfff5] text-[#2f8f7d]"
-                          : habit.restedToday
-                            ? "cursor-not-allowed bg-[#fff4d9] text-[#9b7a2d]"
-                          : "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+                .map((habit) => {
+                  const isClosed = habit.completedToday || habit.restedToday;
+
+                  return (
+                    <article
+                      key={habit.id}
+                      className={`rounded-[22px] border px-4 py-3 ${
+                        isClosed
+                          ? "border-[#ecd9df] bg-white/62"
+                          : "border-[#ecd9df] bg-white/84 shadow-[0_12px_28px_-26px_rgba(214,173,183,0.16)]"
                       }`}
                     >
-                      {habit.completedToday ? "Done" : habit.restedToday ? "Resting" : "Mark done"}
-                    </button>
-                  </div>
-                </article>
-              ))}
+                      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+                        <div
+                          className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                            habit.completedToday
+                              ? "bg-[#69d7ca]"
+                              : habit.restedToday
+                                ? "bg-[#ffd68b]"
+                                : "bg-[#f0d6de]"
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setSelectedHabitId(habit.id)}
+                          className="min-w-0 text-left"
+                        >
+                          <div className="truncate text-sm font-semibold text-slate-950">
+                            {habit.name}
+                          </div>
+                          <div className="mt-1 truncate text-sm text-slate-600">
+                            {isClosed ? "Held for today" : habit.minimumAction}
+                          </div>
+                        </button>
+                        {isClosed ? (
+                          <div
+                            className={`rounded-full px-3 py-1.5 text-sm font-semibold ${
+                              habit.completedToday
+                                ? "bg-[#dcfff5] text-[#176857]"
+                                : "bg-[#fff4d9] text-[#6f5415]"
+                            }`}
+                          >
+                            {habit.completedToday ? "Done" : "Resting"}
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => completeHabit(habit.id)}
+                            disabled={isPending || activeMutationHabitId !== null}
+                            className="min-h-11 rounded-full bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] px-4 py-2.5 text-sm font-semibold text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            Mark
+                          </button>
+                        )}
+                      </div>
+
+                      {!isClosed ? (
+                        <button
+                          type="button"
+                          onClick={() => restHabit(habit.id)}
+                          disabled={isPending || activeMutationHabitId !== null}
+                          className="mt-3 min-h-11 w-full rounded-full bg-white/72 px-3 py-2.5 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          Rest today
+                        </button>
+                      ) : null}
+                    </article>
+                  );
+                })}
             </div>
           </section>
         ) : null}
@@ -337,70 +356,70 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             className="absolute inset-0"
           />
           <div
-            className="relative z-10 w-full rounded-t-[34px] border border-white/8 bg-[#1a1a1a] p-5 shadow-[0_-30px_80px_-30px_rgba(0,0,0,0.95)]"
+            className="app-card animate-sheet-rise relative z-10 max-h-[88svh] w-full overflow-y-auto rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(214,173,183,0.38)]"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
           >
-            <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-white/15" />
+            <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-[#ead6dd]" />
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-xl font-semibold text-white">{selectedHabit.name}</h3>
+                  <h3 className="text-xl font-semibold text-slate-950">{selectedHabit.name}</h3>
                   <span
                     className={`rounded-full px-2 py-1 text-xs font-semibold ${
                       selectedHabit.type === "BUILD"
-                        ? "bg-[#1d2d4e] text-[#8fb0ff]"
-                        : "bg-[#3b1e23] text-[#f18da0]"
+                        ? "bg-[#ebf6ff] text-[#2f668d]"
+                        : "bg-[#fff0f1] text-[#c86f7c]"
                     }`}
                   >
-                    {selectedHabit.type === "BUILD" ? "Build" : "Break"}
+                    {selectedHabit.type === "BUILD" ? "Repeat" : "Loosen"}
                   </span>
                 </div>
-                <p className="mt-3 text-sm leading-6 text-white/72">
+                <p className="mt-3 text-sm leading-6 text-slate-600">
                   Minimum step: {selectedHabit.minimumAction}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedHabitId(null)}
-                className="min-h-11 rounded-full bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-white/78"
+                className="min-h-11 rounded-full border border-[#ecd9df] bg-white/84 px-4 py-2.5 text-sm font-medium text-slate-700"
               >
                 Close
               </button>
             </div>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">All-time completions</div>
-                <div className="mt-2 text-2xl font-semibold text-white">
+              <div className="rounded-2xl bg-[#fff8fb] p-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">All-time</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-950">
                   {selectedHabit.stats.totalCompletions}
                 </div>
               </div>
-              <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">This week</div>
-                <div className="mt-2 text-2xl font-semibold text-white">
+              <div className="rounded-2xl bg-[#fff8fb] p-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">This week</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-950">
                   {selectedHabit.stats.completionsLast7Days}
                 </div>
               </div>
-              <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Urge moments</div>
-                <div className="mt-2 text-2xl font-semibold text-white">
+              <div className="rounded-2xl bg-[#fff8fb] p-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Urges</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-950">
                   {selectedHabit.stats.totalUrges}
                 </div>
-                <div className="mt-1 text-xs text-white/70">
+                <div className="mt-1 text-xs text-slate-500">
                   {selectedHabit.stats.resistedUrges} resisted, {selectedHabit.stats.actedUrges} acted
                 </div>
               </div>
-              <div className="rounded-2xl bg-white/[0.04] p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Avg urge</div>
-                <div className="mt-2 text-2xl font-semibold text-white">
+              <div className="rounded-2xl bg-[#fff8fb] p-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Avg urge</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-950">
                   {selectedHabit.stats.averageUrgeIntensity ?? "-"}
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 rounded-2xl bg-white/[0.04] p-4">
-              <div className="text-xs uppercase tracking-[0.18em] text-white/60">Last completion</div>
-              <div className="mt-2 text-sm text-white/72">
+            <div className="mt-4 rounded-2xl bg-[#fff8fb] p-4">
+              <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Last completion</div>
+              <div className="mt-2 text-sm text-slate-600">
                 {selectedHabit.stats.lastCompletedAtLabel
                   ? `Marked ${selectedHabit.stats.lastCompletedAtLabel}`
                   : "No completion yet."}

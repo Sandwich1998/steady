@@ -33,7 +33,7 @@ const scenarios = [
   {
     name: "today-urge-open",
     run: async (page) => {
-      await page.getByRole("button", { name: "I feel an urge" }).click();
+      await page.getByRole("button", { name: "Urge hitting now" }).click();
       await page.waitForTimeout(150);
     },
   },

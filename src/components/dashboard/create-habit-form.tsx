@@ -9,6 +9,49 @@ import {
   HABIT_NAME_MAX_LENGTH,
 } from "@/lib/validation";
 
+const resetTemplates = [
+  {
+    name: "Water on wake",
+    minimumAction: "Drink a glass of water before checking your phone",
+    type: "BUILD",
+  },
+  {
+    name: "No phone first 30 min",
+    minimumAction: "Charge phone away from bed and start without scrolling",
+    type: "BUILD",
+  },
+  {
+    name: "Morning walk",
+    minimumAction: "Put on shoes and walk for 5 minutes",
+    type: "BUILD",
+  },
+  {
+    name: "Eat a real meal",
+    minimumAction: "Eat protein or a simple meal before cravings build",
+    type: "BUILD",
+  },
+  {
+    name: "Porn or masturbation urge",
+    minimumAction: "Delay 10 minutes, leave the room, and put phone away",
+    type: "BREAK",
+  },
+  {
+    name: "Evening weed craving",
+    minimumAction: "Walk, shower, tea, or text someone before deciding",
+    type: "BREAK",
+  },
+  {
+    name: "Sugar craving",
+    minimumAction: "Drink water and eat a real meal first",
+    type: "BREAK",
+  },
+  {
+    name: "No scrolling in bed",
+    minimumAction: "Put phone across the room before lights down",
+    type: "BREAK",
+  },
+] as const;
+
 export function CreateHabitForm() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -49,6 +92,12 @@ export function CreateHabitForm() {
     }
   }
 
+  function applyTemplate(template: (typeof resetTemplates)[number]) {
+    setName(template.name);
+    setMinimumAction(template.minimumAction);
+    setType(template.type);
+  }
+
   return (
     <Card
       title="New practice"
@@ -56,6 +105,31 @@ export function CreateHabitForm() {
       variant="soft"
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
+        <section className="grid gap-3 rounded-[24px] bg-white/62 p-4">
+          <div>
+            <div className="text-sm font-semibold text-slate-950">7-day reset starters</div>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Tap one, adjust if needed, then save.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {resetTemplates.map((template) => (
+              <button
+                key={template.name}
+                type="button"
+                onClick={() => applyTemplate(template)}
+                disabled={isSaving}
+                className="pressable min-h-11 rounded-[20px] border border-[#ecd9df] bg-white/86 px-3 py-3 text-left text-sm text-slate-700"
+              >
+                <div className="font-semibold text-slate-950">{template.name}</div>
+                <div className="mt-1 text-xs text-slate-500">
+                  {template.type === "BUILD" ? "Repeat" : "Loosen"}
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
         <div className="grid gap-2">
           <label className="text-sm font-medium text-slate-700" htmlFor="habit-name">
             Name

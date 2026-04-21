@@ -110,6 +110,16 @@ function IconManage() {
   );
 }
 
+function IconSupport() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.8]">
+      <path d="M12 21s-7-4.6-7-10.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.8C19 16.4 12 21 12 21Z" />
+      <path d="M12 10v4" />
+      <path d="M12 17h.01" />
+    </svg>
+  );
+}
+
 const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "today", label: "Today", icon: <IconToday /> },
   { id: "progress", label: "Progress", icon: <IconProgress /> },
@@ -132,6 +142,14 @@ export function MobileShell({ data }: MobileShellProps) {
       : activeTab === "progress"
         ? "See your week at a glance."
         : "Set up practices to return to, or patterns to catch earlier.";
+  function openUrgeSupport() {
+    setActiveTab("today");
+    setShowMenu(false);
+    window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("steady:open-urge-sheet"));
+    }, 80);
+  }
+
   return (
     <main className="min-h-screen px-0 text-slate-950">
       <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-[#ecd9df] sm:shadow-[0_0_0_1px_rgba(239,220,226,0.9),0_40px_120px_-52px_rgba(214,173,183,0.38)]">
@@ -168,9 +186,9 @@ export function MobileShell({ data }: MobileShellProps) {
                 type="button"
                 onClick={() => setShowMenu((value) => !value)}
                 className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-[#ead6dd] bg-white/85 text-slate-700"
-                aria-label="Open quick actions"
+                aria-label="Open support menu"
               >
-                <IconManage />
+                <IconSupport />
               </button>
             </div>
           </div>
@@ -182,6 +200,7 @@ export function MobileShell({ data }: MobileShellProps) {
               dayReset={data.dayReset}
               dayCompleted={data.stats.dayCompleted}
               habits={data.habits}
+              weeklyHistory={data.weeklyHistory}
             />
           ) : null}
 
@@ -191,6 +210,7 @@ export function MobileShell({ data }: MobileShellProps) {
                 stats={data.stats}
                 weeklyHistory={data.weeklyHistory}
                 previousWeekSummary={data.previousWeekSummary}
+                habits={data.habits}
               />
               <UrgeFeed recentUrges={data.recentUrges} />
             </div>
@@ -239,7 +259,7 @@ export function MobileShell({ data }: MobileShellProps) {
                     setActiveTab(tab.id);
                     setShowMenu(false);
                   }}
-                  className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
+                className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
                     active
                       ? "bg-[#fff0f4] text-slate-950 shadow-[0_14px_30px_-24px_rgba(255,173,187,0.36)]"
                       : "text-slate-500 hover:bg-[#fff4f7] hover:text-slate-800"
@@ -256,6 +276,7 @@ export function MobileShell({ data }: MobileShellProps) {
             <button
               type="button"
               onClick={() => setShowMenu((value) => !value)}
+              aria-label="Open support menu"
               className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
                 showMenu
                   ? "app-btn-primary shadow-[0_18px_36px_-24px_rgba(109,201,238,0.48)]"
@@ -265,8 +286,8 @@ export function MobileShell({ data }: MobileShellProps) {
               {showMenu ? (
                 <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#69d7ca_0%,#ffc978_100%)]" />
               ) : null}
-              <IconManage />
-              <span>Menu</span>
+              <IconSupport />
+              <span>Support</span>
             </button>
           </div>
         </nav>
@@ -276,11 +297,24 @@ export function MobileShell({ data }: MobileShellProps) {
             <div className="app-card animate-sheet-rise pointer-events-auto rounded-[32px] p-4 backdrop-blur">
               <button
                 type="button"
+                onClick={openUrgeSupport}
+                className="pressable flex w-full items-center gap-4 rounded-[24px] bg-[#fff7fb] px-3 py-3 text-left shadow-[0_14px_30px_-26px_rgba(214,173,183,0.16)]"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffd68b_0%,#8be6dc_100%)] text-slate-800">
+                  <IconSupport />
+                </div>
+                <div>
+                  <div className="text-lg font-semibold">Urge support</div>
+                  <div className="text-sm text-slate-600">Delay it, move, and change rooms.</div>
+                </div>
+              </button>
+              <button
+                type="button"
                 onClick={() => {
                   setActiveTab("manage");
                   setShowMenu(false);
                 }}
-                className="pressable flex w-full items-center gap-4 rounded-[24px] bg-[#fff7fb] px-3 py-3 text-left shadow-[0_14px_30px_-26px_rgba(214,173,183,0.16)]"
+                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-[#fff7fb]"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-800">
                   <IconManage />
