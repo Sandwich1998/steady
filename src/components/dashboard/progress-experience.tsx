@@ -35,7 +35,7 @@ type ProgressExperienceProps = {
   }[];
 };
 
-const moodTone = ["Quiet", "Low", "Steady", "Good", "Bright", "Strong"] as const;
+const moodTone = ["Quiet", "Very low", "Low", "Okay", "Good", "Great"] as const;
 
 function getMoodLabel(mood: number | null) {
   return mood ? moodTone[mood] : "Unmarked";
@@ -48,11 +48,46 @@ function getMoodShiftLabel(current: number | null, previous: number | null) {
 }
 
 function getMoodColorClass(mood: number | null) {
-  if (mood === null) return "bg-[#f1e1e7]";
-  if (mood <= 2) return "bg-[#ffb7bf]";
-  if (mood === 3) return "bg-[#ffd68b]";
-  if (mood === 4) return "bg-[#8be6dc]";
-  return "bg-[#69d7ca]";
+  if (mood === null) return "bg-white/10";
+  if (mood === 1) return "bg-[#ff4d6d]";
+  if (mood === 2) return "bg-[#ff8a3d]";
+  if (mood === 3) return "bg-[#ffd166]";
+  if (mood === 4) return "bg-[#7ee081]";
+  return "bg-[#2dd4bf]";
+}
+
+function getMoodTrendPath(weeklyHistory: ProgressExperienceProps["weeklyHistory"]) {
+  const values = weeklyHistory
+    .filter((day) => day.mood !== null)
+    .map((day) => day.mood as number);
+  const width = 320;
+  const height = 72;
+  const paddingX = 6;
+  const paddingY = 8;
+  const usableWidth = width - paddingX * 2;
+  const usableHeight = height - paddingY * 2;
+
+  const points = values.map((value, index) => {
+      const x =
+        paddingX + (usableWidth * index) / Math.max(values.length - 1, 1);
+      const y = paddingY + ((5 - value) / 4) * usableHeight;
+      return { x, y };
+    });
+
+  if (points.length === 0) return "";
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+
+  let path = `M ${points[0].x} ${points[0].y}`;
+
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const current = points[index];
+    const next = points[index + 1];
+    const midX = (current.x + next.x) / 2;
+
+    path += ` C ${midX} ${current.y}, ${midX} ${next.y}, ${next.x} ${next.y}`;
+  }
+
+  return path;
 }
 
 function getPrimarySignal(totalResisted: number, totalUrges: number, totalCompletions: number) {
@@ -113,10 +148,10 @@ export function ProgressExperience({
   const practiceMixLabel =
     stats.totalHabits > 0
       ? stats.buildHabits > stats.breakHabits
-        ? `Your repeat practices carried more of the week.`
+        ? "Your repeat practices carried more of the week."
         : stats.buildHabits < stats.breakHabits
-          ? `The harder patterns need a little more support right now.`
-          : `Your repeat and loosen practices both mattered this week.`
+          ? "The harder patterns need a little more support right now."
+          : "Your repeat and loosen practices both mattered this week."
       : "No practices set yet.";
   const bestDayCopy =
     bestDay && bestDay.completionsCount > 0
@@ -130,12 +165,12 @@ export function ProgressExperience({
       ? totalActed > 0
         ? `${totalResisted} interruptions and ${totalActed} slip${totalActed === 1 ? "" : "s"}. Keep practicing the quick return.`
         : `${totalResisted} urge interruption${totalResisted === 1 ? "" : "s"} logged. You are building delay.`
-      : "No urge moments logged yet. Use the button when the pull shows up.";
+      : "No urge moments logged yet. Use support when the pull shows up.";
   const heroStats = [
     {
       label: "Urges interrupted",
       value: totalUrges > 0 ? `${totalResisted}/${totalUrges}` : "0",
-      sublabel: totalUrges > 0 ? "Handled before acting" : "Use support when one hits",
+      sublabel: totalUrges > 0 ? "Handled before acting" : "No urge data yet",
     },
     {
       label: "Practice returns",
@@ -150,143 +185,91 @@ export function ProgressExperience({
   ];
 
   return (
-    <div className="grid gap-4">
-      <section className="app-hero relative overflow-hidden rounded-[28px] px-5 py-5">
-        <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-[rgba(184,166,255,0.1)] blur-3xl" />
-        <div className="pointer-events-none absolute left-0 bottom-0 h-20 w-20 rounded-full bg-[rgba(255,201,120,0.12)] blur-3xl" />
-
-        <div className="relative">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
-                Last 7 days
-              </div>
-              <div className="mt-3 text-sm font-semibold text-slate-700">{primarySignal.eyebrow}</div>
-              <h2 className="mt-2 text-[1.75rem] font-semibold leading-[1.05] tracking-tight text-slate-950">
-                {primarySignal.line}
-              </h2>
-              <p className="mt-3 max-w-[19rem] text-sm leading-6 text-slate-600">{primarySignal.note}</p>
+    <div className="grid gap-0">
+      <section className="px-1 py-2">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+              Last 7 days
             </div>
-            <div className="shrink-0 rounded-full bg-white/72 px-3 py-1.5 text-xs font-semibold text-slate-600">
-              Week
-            </div>
+            <div className="mt-3 text-sm font-semibold text-zinc-300">{primarySignal.eyebrow}</div>
+            <h2 className="mt-2 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-zinc-50">
+              {primarySignal.line}
+            </h2>
+            <p className="mt-3 max-w-[20rem] text-sm leading-6 text-zinc-400">{primarySignal.note}</p>
           </div>
-
-          <div className="mt-5 grid grid-cols-3 gap-2.5">
-            {heroStats.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-[20px] bg-white/62 px-3 py-3 shadow-[0_12px_28px_-28px_rgba(214,173,183,0.22)]"
-              >
-                <div className="min-h-8 text-[11px] font-semibold uppercase leading-4 tracking-[0.11em] text-slate-500">
-                  {item.label}
-                </div>
-                <div className="mt-2 text-[1.45rem] font-semibold leading-none text-slate-950">
-                  {item.value}
-                </div>
-                <div className="mt-1.5 text-[11px] leading-4 text-slate-500">{item.sublabel}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-3">
-        <article className="rounded-[28px] bg-white/70 px-5 py-5 shadow-[0_12px_30px_-28px_rgba(214,173,183,0.16)]">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="text-sm font-semibold text-slate-700">Mood</div>
-              <div className="mt-2 text-[1.35rem] font-semibold leading-tight tracking-tight text-slate-950">
-                Mood felt mostly steady
-              </div>
-              <div className="mt-1.5 text-sm leading-6 text-slate-600">{moodShiftLabel}</div>
-            </div>
-            <div className="shrink-0 rounded-full bg-[#fff7fb] px-3 py-1.5 text-xs font-semibold text-slate-600">
-              {averageMoodSource.length} check-in{averageMoodSource.length === 1 ? "" : "s"}
-            </div>
-          </div>
-
-          <div className="mt-5 grid grid-cols-7 gap-2" aria-label="Mood check-ins by day">
-            {weeklyHistory.map((day) => (
-              <div
-                key={day.date}
-                className={`h-5 rounded-full ${getMoodColorClass(day.mood)} ${
-                  day.mood === null
-                    ? "opacity-55"
-                    : "shadow-[0_12px_24px_-18px_rgba(105,215,202,0.72)]"
-                }`}
-                title={day.mood === null ? `${day.label}: no mood check-in` : `${day.label}: ${getMoodLabel(day.mood)}`}
-              />
-            ))}
-          </div>
-
-          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-500">
-            <span>Heavier</span>
-            <span>Steady</span>
-            <span>Brighter</span>
-          </div>
-        </article>
-
-        <article className="rounded-[28px] bg-[#fff8fb] px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="text-base font-semibold text-slate-950">Urge moments</div>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{controlCopy}</p>
-            </div>
-            <div className="shrink-0 rounded-full bg-white/78 px-3 py-1.5 text-sm font-semibold text-slate-700">
-              {totalUrges > 0 ? `${totalResisted}/${totalUrges}` : "0"}
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <article className="rounded-[30px] bg-white/74 px-5 py-5 shadow-[0_16px_38px_-34px_rgba(214,173,183,0.18)]">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="text-base font-semibold text-slate-950">This week, day by day</div>
-            <div className="mt-2 text-sm leading-6 text-slate-600">Daily completions at a glance.</div>
-          </div>
-          <div className="rounded-full bg-[#fff7fb] px-3 py-1.5 text-sm font-medium text-slate-700">
-            {totalCompletions} this week
+          <div className="shrink-0 px-1 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            Week
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-7 gap-2.5">
+        <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/6 pt-4">
+          {heroStats.map((item) => (
+            <div key={item.label} className="min-w-0 px-1">
+              <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.11em] text-zinc-500">
+                {item.label}
+              </div>
+              <div className="mt-2 text-[1.5rem] font-semibold leading-none text-zinc-50">
+                {item.value}
+              </div>
+              <div className="mt-1.5 text-[11px] leading-4 text-zinc-500">{item.sublabel}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-white/6 px-1 pt-5">
+        <div className="flex items-start justify-between gap-3 px-4">
+          <div className="min-w-0">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+              Weekly activity
+            </div>
+            <div className="mt-2 text-[1.25rem] font-semibold tracking-tight text-zinc-50">
+              This week, day by day
+            </div>
+            <div className="mt-2 text-sm leading-6 text-zinc-400">Daily completions at a glance.</div>
+          </div>
+          <div className="pt-0.5 text-sm font-medium text-zinc-400">{totalCompletions} total</div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-7 gap-2 px-4">
           {weeklyHistory.map((day) => {
             const barHeight = `${Math.max((day.completionsCount / maxCompletions) * 100, day.completionsCount > 0 ? 14 : 4)}%`;
             const isBestDay = bestDay?.date === day.date && day.completionsCount > 0;
 
             return (
               <div key={day.date} className="flex flex-col items-center">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
                   {day.label.slice(0, 3)}
                 </div>
                 <div
-                  className={`mt-3 flex h-32 w-full items-end justify-center rounded-[22px] px-2 py-3 ${
-                    isBestDay ? "bg-[linear-gradient(180deg,#fff7ef_0%,#fff4f7_100%)]" : "bg-[#fff8fb]"
+                  className={`mt-3 flex h-32 w-full items-end justify-center rounded-[14px] px-2 py-3 ${
+                    isBestDay
+                      ? "bg-[linear-gradient(180deg,rgba(254,44,85,0.12)_0%,rgba(37,244,238,0.07)_100%)]"
+                      : "bg-white/[0.03]"
                   }`}
                 >
-                  <div className="flex h-full w-9 items-end rounded-full bg-[#f6e7ed] p-1">
+                  <div className="flex h-full w-9 items-end rounded-full bg-white/6 p-1">
                     <div
                       className={`w-full rounded-full transition-all ${
                         day.completionsCount > 0
-                          ? "bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)]"
-                          : "bg-[linear-gradient(180deg,#ffe3b4_0%,#ffd3d8_100%)]"
+                          ? "bg-[linear-gradient(180deg,#25f4ee_0%,#fe2c55_100%)]"
+                          : "bg-white/10"
                       }`}
                       style={{ height: barHeight }}
                     />
                   </div>
                 </div>
-                <div className="mt-3 text-sm font-semibold text-slate-900">{day.completionsCount}</div>
+                <div className="mt-3 text-sm font-semibold text-zinc-100">{day.completionsCount}</div>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-5 grid gap-2 rounded-[22px] bg-[#fff8fb] px-4 py-3">
+        <div className="mt-5 grid gap-2 px-4 py-2">
           <div className="flex items-start justify-between gap-3 text-sm">
-            <span className="text-slate-500">Best day</span>
-            <span className="text-right font-medium text-slate-900">
+            <span className="text-zinc-500">Best day</span>
+            <span className="text-right font-medium text-zinc-100">
               {bestDay && bestDay.completionsCount > 0
                 ? `${bestDay.label} with ${bestDay.completionsCount} completion${bestDay.completionsCount === 1 ? "" : "s"}`
                 : "No day stood out yet"}
@@ -294,48 +277,154 @@ export function ProgressExperience({
           </div>
           {totalRestDays > 0 ? (
             <div className="flex items-start justify-between gap-3 text-sm">
-              <span className="text-slate-500">Rest days</span>
-              <span className="text-right font-medium text-slate-900">
+              <span className="text-zinc-500">Rest days</span>
+              <span className="text-right font-medium text-zinc-100">
                 {totalRestDays} planned rest day{totalRestDays === 1 ? "" : "s"} kept
               </span>
             </div>
           ) : null}
         </div>
-      </article>
-
-      <section className="grid gap-3 sm:grid-cols-2">
-        <article className="rounded-[28px] bg-white/58 px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
-          <div className="text-base font-semibold text-slate-950">Best day</div>
-          <div className="mt-3 text-sm leading-6 text-slate-600">{bestDayCopy}</div>
-        </article>
-
-        <article className="rounded-[28px] bg-white/58 px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
-          <div className="text-base font-semibold text-slate-950">What helped</div>
-          <div className="mt-3 text-sm leading-6 text-slate-600">
-            {practiceMixLabel}
-          </div>
-          <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#f6e7ed]">
-            <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,#8be6dc_0%,#ffd68b_100%)]"
-              style={{
-                width: `${stats.totalHabits > 0 ? (stats.buildHabits / stats.totalHabits) * 100 : 0}%`,
-              }}
-            />
-          </div>
-          <div className="mt-3 text-sm text-slate-600">
-            Keep the supportive ones close. Give the harder ones an earlier cue.
-          </div>
-        </article>
       </section>
 
-      <article className="rounded-[28px] bg-[#fff8fb] px-5 py-5 shadow-[0_10px_24px_-24px_rgba(214,173,183,0.1)]">
-        <div className="text-base font-semibold text-slate-950">Pattern pressure</div>
-        <p className="mt-3 text-sm leading-6 text-slate-600">
-          {hardestPattern
-            ? `${hardestPattern.name} is asking for the most support. Plan the high-risk time before it starts.`
-            : "Once you log urge moments, this will show where to add more support."}
-        </p>
-      </article>
+      <section className="border-t border-white/6 px-1 pt-5">
+        <div className="grid gap-5 px-4">
+          <article>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+                  Mood
+                </div>
+                <div className="mt-2 text-[1.2rem] font-semibold tracking-tight text-zinc-50">
+                  Mood felt mostly steady
+                </div>
+                <div className="mt-1.5 text-sm leading-6 text-zinc-400">{moodShiftLabel}</div>
+              </div>
+              <div className="shrink-0 text-xs font-semibold text-zinc-500">
+                {averageMoodSource.length} check-in{averageMoodSource.length === 1 ? "" : "s"}
+              </div>
+            </div>
+
+            <div className="mt-5 grid grid-cols-7 gap-2" aria-label="Mood check-ins by day">
+              {weeklyHistory.map((day) => (
+                <div
+                  key={day.date}
+                  className={`h-5 rounded-full ${getMoodColorClass(day.mood)} ${day.mood === null ? "opacity-55" : ""}`}
+                  title={day.mood === null ? `${day.label}: no mood check-in` : `${day.label}: ${getMoodLabel(day.mood)}`}
+                />
+              ))}
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-3 text-xs text-zinc-500">
+              <span>Heavier</span>
+              <span>Steady</span>
+              <span>Brighter</span>
+            </div>
+
+            <div className="mt-5 overflow-hidden rounded-[18px] bg-white/[0.03] px-3 py-3">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                  Mood trend
+                </div>
+                <div className="text-[11px] text-zinc-500">
+                  {averageMoodSource.length > 0
+                    ? `${averageMoodSource.length} actual check-in${averageMoodSource.length === 1 ? "" : "s"}`
+                    : "No check-ins yet"}
+                </div>
+              </div>
+              <svg
+                viewBox="0 0 320 72"
+                className="h-[72px] w-full"
+                aria-label="Mood trend over the last 7 days"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="moodTrendStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#ff4d6d" />
+                    <stop offset="25%" stopColor="#ff8a3d" />
+                    <stop offset="50%" stopColor="#ffd166" />
+                    <stop offset="75%" stopColor="#7ee081" />
+                    <stop offset="100%" stopColor="#2dd4bf" />
+                  </linearGradient>
+                </defs>
+                {[1, 2, 3, 4, 5].map((level) => {
+                  const y = 8 + ((5 - level) / 4) * (72 - 16);
+                  return (
+                    <line
+                      key={level}
+                      x1="0"
+                      y1={y}
+                      x2="320"
+                      y2={y}
+                      stroke="rgba(255,255,255,0.06)"
+                      strokeDasharray={level === 3 ? "4 4" : undefined}
+                    />
+                  );
+                })}
+                <path
+                  d={getMoodTrendPath(weeklyHistory)}
+                  fill="none"
+                  stroke="url(#moodTrendStroke)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </article>
+
+          <article className="border-t border-white/6 pt-5">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+              Pressure
+            </div>
+            <div className="mt-2 text-[1.2rem] font-semibold tracking-tight text-zinc-50">
+              Urge moments
+            </div>
+            <p className="mt-2 text-sm leading-6 text-zinc-400">{controlCopy}</p>
+            <div className="mt-4 text-sm font-semibold text-zinc-300">
+              {totalUrges > 0 ? `${totalResisted}/${totalUrges} handled before acting` : "No urge data yet"}
+            </div>
+            <div className="mt-5 border-t border-white/6 pt-4">
+              <div className="text-sm font-semibold text-zinc-50">Pattern pressure</div>
+              <p className="mt-2 text-sm leading-6 text-zinc-400">
+                {hardestPattern
+                  ? `${hardestPattern.name} is asking for the most support. Plan the high-risk time before it starts.`
+                  : "Once you log urge moments, this will show where to add more support."}
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="border-t border-white/6 px-1 pt-5">
+        <div className="grid gap-5 px-4 sm:grid-cols-2">
+          <article>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+              Read
+            </div>
+            <div className="mt-2 text-[1.2rem] font-semibold text-zinc-50">Best day</div>
+            <div className="mt-3 text-sm leading-6 text-zinc-400">{bestDayCopy}</div>
+          </article>
+
+          <article>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
+              Mix
+            </div>
+            <div className="mt-2 text-[1.2rem] font-semibold text-zinc-50">What helped</div>
+            <div className="mt-3 text-sm leading-6 text-zinc-400">{practiceMixLabel}</div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/6">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#25f4ee_0%,#fe2c55_100%)]"
+                style={{
+                  width: `${stats.totalHabits > 0 ? (stats.buildHabits / stats.totalHabits) * 100 : 0}%`,
+                }}
+              />
+            </div>
+            <div className="mt-3 text-sm text-zinc-400">
+              Keep the supportive ones close. Give the harder ones an earlier cue.
+            </div>
+          </article>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fff7f4;
-  --foreground: #202434;
-  --surface-shell: rgba(255, 250, 247, 0.95);
-  --surface-card: rgba(255, 255, 255, 0.94);
-  --surface-soft: rgba(255, 240, 244, 0.78);
-  --surface-field: rgba(255, 255, 255, 0.92);
-  --line-soft: rgba(227, 205, 214, 0.72);
-  --text-soft: rgba(61, 67, 88, 0.74);
-  --accent-mint: #69d7ca;
-  --accent-teal: #59c6bd;
-  --accent-peach: #ffc978;
-  --accent-lilac: #b8a6ff;
-  --accent-rose: #ff9ea5;
-  --shadow-soft: 0 24px 60px -34px rgba(173, 132, 140, 0.28);
+  --background: #0a0a0b;
+  --foreground: #f4f4f5;
+  --surface-shell: rgba(18, 18, 20, 0.94);
+  --surface-card: rgba(24, 24, 27, 0.96);
+  --surface-soft: rgba(33, 33, 37, 0.92);
+  --surface-field: rgba(38, 38, 43, 0.96);
+  --line-soft: rgba(255, 255, 255, 0.08);
+  --text-soft: rgba(228, 228, 231, 0.68);
+  --accent-mint: #25f4ee;
+  --accent-teal: #22d3ee;
+  --accent-peach: #f97316;
+  --accent-lilac: #8b5cf6;
+  --accent-rose: #fe2c55;
+  --shadow-soft: 0 20px 50px -34px rgba(0, 0, 0, 0.65);
 }
 
 @theme inline {
@@ -39,9 +39,9 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(255, 205, 216, 0.46), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(136, 238, 223, 0.18), transparent 22%),
-    linear-gradient(180deg, #fffaf7 0%, #fff3f5 100%);
+    radial-gradient(circle at top center, rgba(254, 44, 85, 0.14), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(37, 244, 238, 0.08), transparent 22%),
+    linear-gradient(180deg, #0f0f10 0%, #070708 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -66,13 +66,13 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid rgba(105, 215, 202, 0.72);
-  outline-offset: 3px;
+  outline: 2px solid rgba(37, 244, 238, 0.78);
+  outline-offset: 2px;
 }
 
 ::selection {
-  background: rgba(105, 215, 202, 0.26);
-  color: #13212c;
+  background: rgba(37, 244, 238, 0.3);
+  color: #ffffff;
 }
 
 @keyframes soft-pop {
@@ -189,74 +189,74 @@ textarea:focus-visible {
 
 .app-shell {
   background:
-    radial-gradient(circle at top, rgba(255, 214, 223, 0.55), transparent 24%),
-    radial-gradient(circle at bottom right, rgba(105, 215, 202, 0.14), transparent 22%),
-    linear-gradient(180deg, rgba(255, 252, 249, 0.98) 0%, rgba(255, 245, 247, 0.98) 100%);
+    radial-gradient(circle at top, rgba(254, 44, 85, 0.09), transparent 28%),
+    linear-gradient(180deg, rgba(15, 15, 16, 0.98) 0%, rgba(8, 8, 9, 0.98) 100%);
 }
 
 .app-header {
-  background: rgba(255, 248, 246, 0.82);
-  border-color: rgba(228, 212, 218, 0.8);
-  box-shadow: 0 18px 38px -30px rgba(195, 162, 172, 0.35);
+  background: rgba(10, 10, 11, 0.82);
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .app-nav {
-  background: rgba(255, 248, 246, 0.92);
-  border-color: rgba(228, 212, 218, 0.8);
+  background: rgba(10, 10, 11, 0.9);
+  border-color: transparent;
 }
 
 .app-card {
-  border: 1px solid var(--line-soft);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 247, 248, 0.96) 100%);
-  box-shadow: var(--shadow-soft);
+  border: 0;
+  background: rgba(18, 18, 21, 0.72);
+  box-shadow: none;
 }
 
 .app-card-soft {
-  border: 1px solid rgba(233, 214, 223, 0.88);
-  background: linear-gradient(180deg, rgba(255, 244, 247, 0.9) 0%, rgba(255, 250, 251, 0.95) 100%);
+  border: 0;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .app-hero {
-  border: 1px solid rgba(233, 214, 223, 0.88);
+  border: 0;
   background:
-    radial-gradient(circle at top, rgba(255, 212, 190, 0.45), transparent 30%),
-    radial-gradient(circle at 82% 18%, rgba(184, 166, 255, 0.24), transparent 24%),
-    linear-gradient(180deg, rgba(255, 247, 244, 0.98) 0%, rgba(255, 238, 242, 0.98) 100%);
-  box-shadow: 0 34px 90px -58px rgba(214, 165, 176, 0.42);
+    radial-gradient(circle at top right, rgba(254, 44, 85, 0.18), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(37, 244, 238, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(25, 25, 28, 0.98) 0%, rgba(13, 13, 15, 0.98) 100%);
+  box-shadow: none;
 }
 
 .app-chip {
-  border: 1px solid rgba(229, 212, 220, 0.9);
-  background: rgba(255, 255, 255, 0.82);
+  border: 0;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .app-field {
   min-height: 44px;
-  border: 1px solid rgba(227, 207, 215, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background: var(--surface-field);
   font-size: 16px;
+  color: #f4f4f5;
 }
 
 .app-btn-primary {
-  color: #132235;
-  background-color: #8be6dc;
-  background-image: linear-gradient(180deg, #8be6dc 0%, #6cc8f4 100%);
-  box-shadow: 0 18px 40px -24px rgba(109, 201, 238, 0.42);
+  color: #ffffff;
+  background-color: #fe2c55;
+  background-image: linear-gradient(180deg, #fe2c55 0%, #f31260 100%);
+  box-shadow: 0 16px 36px -24px rgba(254, 44, 85, 0.5);
 }
 
 .app-btn-primary:hover {
-  background-color: #9aebe1;
-  background-image: linear-gradient(180deg, #9aebe1 0%, #7bd1f8 100%);
+  background-color: #ff4168;
+  background-image: linear-gradient(180deg, #ff4168 0%, #f91d67 100%);
 }
 
 .app-btn-secondary {
-  color: #344056;
-  border: 1px solid rgba(229, 212, 220, 0.95);
-  background: rgba(255, 255, 255, 0.82);
+  color: #f4f4f5;
+  border: 0;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .app-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .text-soft {

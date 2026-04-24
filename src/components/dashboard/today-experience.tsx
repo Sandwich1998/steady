@@ -45,9 +45,9 @@ type TodayExperienceProps = {
 };
 
 const moodLabels: Record<number, string> = {
-  1: "Drained",
-  2: "Off",
-  3: "Steady",
+  1: "Very low",
+  2: "Low",
+  3: "Okay",
   4: "Good",
   5: "Great",
 };
@@ -121,6 +121,7 @@ export function TodayExperience({
     : nextHabit && !dayCompleted
       ? "Do one small step"
       : "See today's habits";
+  const supportActionLabel = actedToday > 0 ? "Get back on track" : "Open urge support";
 
   function handlePrimaryAction() {
     const targetId = dayReset ? "today-habits" : "daily-reset";
@@ -135,22 +136,22 @@ export function TodayExperience({
   }
 
   return (
-    <div className="mt-4 grid gap-5">
-      <section className="app-hero relative overflow-hidden rounded-[34px] px-5 py-6">
+    <div className="mt-2 grid gap-4">
+      <section className="app-hero relative overflow-hidden rounded-[24px] px-5 py-6">
         <div className="pointer-events-none absolute right-0 top-5 h-28 w-28 rounded-full bg-[rgba(184,179,255,0.16)] blur-3xl" />
         <div className="pointer-events-none absolute left-0 bottom-0 h-24 w-24 rounded-full bg-[rgba(255,200,155,0.14)] blur-3xl" />
 
         <div className="relative">
           <div className="max-w-[16rem]">
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f19a8d]">
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400">
               Today
             </div>
-            <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-slate-950">
+            <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-zinc-50">
               {heroTitle}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{heroSubtitle}</p>
-            <div className="app-chip mt-4 inline-flex max-w-full items-center rounded-full px-3 py-2 text-sm font-medium text-slate-700">
-              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(105,215,202,0.5)]" />
+            <p className="mt-3 text-sm leading-6 text-zinc-400">{heroSubtitle}</p>
+            <div className="app-chip mt-4 inline-flex max-w-full items-center rounded-[14px] px-3 py-2 text-sm font-medium text-zinc-200">
+              <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(37,244,238,0.45)]" />
               <span className="truncate">{heroStatus}</span>
             </div>
           </div>
@@ -161,65 +162,61 @@ export function TodayExperience({
             dayCompleted={dayCompleted}
           />
 
-          <div className="mt-5 grid gap-3">
+          <div className="mt-5 grid gap-2">
+            <button
+              type="button"
+              onClick={handlePrimaryAction}
+              className="pressable app-btn-primary min-h-11 w-full rounded-[14px] px-5 py-3 text-sm font-semibold"
+            >
+              {primaryActionLabel}
+            </button>
             {breakHabits.length > 0 ? (
               <button
                 type="button"
                 onClick={openUrgeSheet}
-                className="pressable app-btn-primary min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold"
+                className="pressable min-h-11 w-full rounded-[14px] bg-white/6 px-5 py-3 text-sm font-semibold text-zinc-100"
               >
-                Urge hitting now
+                {supportActionLabel}
               </button>
             ) : null}
-            <button
-              type="button"
-              onClick={handlePrimaryAction}
-              className={`pressable min-h-11 w-full rounded-full px-5 py-3 text-sm font-semibold ${
-                breakHabits.length > 0
-                  ? "bg-white/62 text-slate-700 shadow-[0_14px_32px_-26px_rgba(214,173,183,0.22)]"
-                  : "app-btn-primary"
-              }`}
-            >
-              {primaryActionLabel}
-            </button>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-3">
-        <article className="rounded-[30px] bg-white/74 px-5 py-5 shadow-[0_16px_38px_-34px_rgba(214,173,183,0.18)]">
+      <section className="grid gap-2 px-1">
+        <article className="px-3 py-3">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-base font-semibold text-slate-950">
+              <div className="text-base font-semibold text-zinc-50">
                 {actedToday > 0 ? "Pick back up from here" : resetPhase.title}
               </div>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
+              <p className="mt-2 text-sm leading-6 text-zinc-400">
                 {actedToday > 0
                   ? "One moment is not the whole day. Come back with one next step."
                   : resetPhase.copy}
               </p>
             </div>
-            <div className="shrink-0 rounded-full bg-[#fff2f6] px-3 py-1.5 text-xs font-semibold text-slate-600">
+            <div className="shrink-0 rounded-[12px] bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-300">
               {resetPhase.label}
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-x-2 gap-y-1">
             {supportAnchors.map((anchor) => (
-              <div key={anchor} className="rounded-[18px] bg-[#fff8fb] px-3 py-3 text-sm font-medium text-slate-700">
+              <div key={anchor} className="px-2 py-2 text-sm font-medium text-zinc-200">
                 {anchor}
               </div>
             ))}
           </div>
 
           <div className="mt-4 grid gap-3">
-            <div className="rounded-full bg-white/62 px-3 py-2 text-center text-sm font-medium text-slate-600">
+            <div className="px-1 text-center text-sm font-medium text-zinc-400">
               {completedTodayCount}/{habits.length || 1} practices held today
             </div>
             <button
               type="button"
               onClick={actedToday > 0 ? handlePrimaryAction : breakHabits.length > 0 ? openUrgeSheet : handlePrimaryAction}
-              className="pressable min-h-12 rounded-full bg-white/86 px-5 py-3 text-sm font-semibold text-slate-800 shadow-[0_12px_26px_-24px_rgba(214,173,183,0.22)]"
+              className="pressable min-h-12 rounded-[14px] bg-white/6 px-5 py-3 text-sm font-semibold text-zinc-100"
             >
               {actedToday > 0 ? "Choose next step" : breakHabits.length > 0 ? "Open support" : "Start one step"}
             </button>

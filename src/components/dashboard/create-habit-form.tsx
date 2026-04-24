@@ -105,10 +105,10 @@ export function CreateHabitForm() {
       variant="soft"
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
-        <section className="grid gap-3 rounded-[24px] bg-white/62 p-4">
+        <section className="grid gap-3 px-1 py-1">
           <div>
-            <div className="text-sm font-semibold text-slate-950">7-day reset starters</div>
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <div className="text-sm font-semibold text-zinc-50">7-day reset starters</div>
+            <p className="mt-1 text-sm leading-6 text-zinc-400">
               Tap one, adjust if needed, then save.
             </p>
           </div>
@@ -119,10 +119,10 @@ export function CreateHabitForm() {
                 type="button"
                 onClick={() => applyTemplate(template)}
                 disabled={isSaving}
-                className="pressable min-h-11 rounded-[20px] border border-[#ecd9df] bg-white/86 px-3 py-3 text-left text-sm text-slate-700"
+                className="pressable min-h-11 rounded-[14px] bg-white/5 px-3 py-3 text-left text-sm text-zinc-300"
               >
-                <div className="font-semibold text-slate-950">{template.name}</div>
-                <div className="mt-1 text-xs text-slate-500">
+                <div className="font-semibold text-zinc-50">{template.name}</div>
+                <div className="mt-1 text-xs text-zinc-500">
                   {template.type === "BUILD" ? "Repeat" : "Loosen"}
                 </div>
               </button>
@@ -131,7 +131,7 @@ export function CreateHabitForm() {
         </section>
 
         <div className="grid gap-2">
-          <label className="text-sm font-medium text-slate-700" htmlFor="habit-name">
+          <label className="text-sm font-medium text-zinc-300" htmlFor="habit-name">
             Name
           </label>
           <input
@@ -140,43 +140,43 @@ export function CreateHabitForm() {
             onChange={(event) => setName(event.target.value)}
             placeholder="Morning walk"
             maxLength={HABIT_NAME_MAX_LENGTH}
-            className="app-field rounded-2xl px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#e6c7d3]"
+            className="app-field rounded-[14px] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-500 focus:border-[#25f4ee]"
             required
           />
         </div>
         <div className="grid gap-2">
-          <span className="text-sm font-medium text-slate-700">Direction</span>
+          <span className="text-sm font-medium text-zinc-300">Direction</span>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => setType("BUILD")}
               disabled={isSaving}
-              className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
+              className={`pressable min-h-11 rounded-[14px] border px-4 py-3 text-left ${
                 type === "BUILD"
-                  ? "border-[#74c8f1] bg-[#edfaff] text-slate-950 shadow-[0_16px_34px_-22px_rgba(109,201,238,0.32)]"
-                  : "border-[#ecd9df] bg-white/86 text-slate-700 hover:bg-[#fff8fb]"
+                  ? "border-[#25f4ee] bg-[#0d2d31] text-zinc-50 shadow-[0_16px_34px_-22px_rgba(37,244,238,0.28)]"
+                  : "border-white/8 bg-white/5 text-zinc-300 hover:bg-white/8"
               }`}
               >
               <div className="text-sm font-semibold">Repeat</div>
-              <div className="mt-1 text-sm text-slate-500">A practice you want to come back to.</div>
+              <div className="mt-1 text-sm text-zinc-500">A practice you want to come back to.</div>
             </button>
             <button
               type="button"
               onClick={() => setType("BREAK")}
               disabled={isSaving}
-              className={`pressable min-h-11 rounded-[22px] border px-4 py-3 text-left ${
+              className={`pressable min-h-11 rounded-[14px] border px-4 py-3 text-left ${
                 type === "BREAK"
-                  ? "border-[#ffb5bd] bg-[#fff2f3] text-slate-950 shadow-[0_16px_34px_-22px_rgba(255,158,165,0.24)]"
-                  : "border-[#ecd9df] bg-white/86 text-slate-700 hover:bg-[#fff8fb]"
+                  ? "border-[#fe2c55] bg-[#34121d] text-zinc-50 shadow-[0_16px_34px_-22px_rgba(254,44,85,0.24)]"
+                  : "border-white/8 bg-white/5 text-zinc-300 hover:bg-white/8"
               }`}
               >
               <div className="text-sm font-semibold">Loosen</div>
-              <div className="mt-1 text-sm text-slate-500">A pattern you want to catch earlier.</div>
+              <div className="mt-1 text-sm text-zinc-500">A pattern you want to catch earlier.</div>
             </button>
           </div>
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium text-slate-700" htmlFor="habit-minimum-action">
+          <label className="text-sm font-medium text-zinc-300" htmlFor="habit-minimum-action">
             Minimum step
           </label>
           <input
@@ -185,14 +185,14 @@ export function CreateHabitForm() {
             onChange={(event) => setMinimumAction(event.target.value)}
             placeholder="Put on shoes and walk 5 minutes"
             maxLength={HABIT_MINIMUM_ACTION_MAX_LENGTH}
-            className="app-field rounded-2xl px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#e6c7d3]"
+            className="app-field rounded-[14px] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-500 focus:border-[#25f4ee]"
             required
           />
         </div>
         <button
           type="submit"
           disabled={isPending || isSaving}
-          className="pressable app-btn-primary min-h-11 rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+          className="pressable app-btn-primary min-h-11 rounded-[14px] px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           Save practice
         </button>

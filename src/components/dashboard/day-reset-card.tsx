@@ -14,38 +14,38 @@ type DayResetCardProps = {
 const moods = [
   {
     value: 1,
-    label: "Drained",
-    hint: "Very low energy",
-    dot: "bg-rose-400",
-    activeClass: "border-rose-300 bg-rose-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(251,113,133,0.45)]",
+    label: "Very low",
+    hint: "Red flag day",
+    dot: "bg-[#ff4d6d]",
+    activeClass: "border-[#ff4d6d]/80 bg-[#ff4d6d]/8 text-zinc-50 shadow-[0_14px_32px_-22px_rgba(255,77,109,0.28)]",
   },
   {
     value: 2,
-    label: "Off",
-    hint: "A bit flat",
-    dot: "bg-orange-400",
-    activeClass: "border-orange-300 bg-orange-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(251,146,60,0.42)]",
+    label: "Low",
+    hint: "Not feeling great",
+    dot: "bg-[#ff8a3d]",
+    activeClass: "border-[#ff8a3d]/80 bg-[#ff8a3d]/8 text-zinc-50 shadow-[0_14px_32px_-22px_rgba(255,138,61,0.24)]",
   },
   {
     value: 3,
-    label: "Steady",
-    hint: "Neutral and stable",
-    dot: "bg-amber-300",
-    activeClass: "border-amber-300 bg-amber-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(252,211,77,0.4)]",
+    label: "Okay",
+    hint: "Neutral and manageable",
+    dot: "bg-[#ffd166]",
+    activeClass: "border-[#ffd166]/80 bg-[#ffd166]/10 text-zinc-50 shadow-[0_14px_32px_-22px_rgba(255,209,102,0.22)]",
   },
   {
     value: 4,
     label: "Good",
-    hint: "Clear and positive",
-    dot: "bg-lime-400",
-    activeClass: "border-lime-300 bg-lime-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(163,230,53,0.38)]",
+    hint: "Feeling fairly solid",
+    dot: "bg-[#7ee081]",
+    activeClass: "border-[#7ee081]/80 bg-[#7ee081]/8 text-zinc-50 shadow-[0_14px_32px_-22px_rgba(126,224,129,0.22)]",
   },
   {
     value: 5,
     label: "Great",
-    hint: "Strong and ready",
-    dot: "bg-emerald-400",
-    activeClass: "border-emerald-300 bg-emerald-50 text-slate-950 shadow-[0_12px_28px_-20px_rgba(52,211,153,0.42)]",
+    hint: "Strong and clear",
+    dot: "bg-[#2dd4bf]",
+    activeClass: "border-[#2dd4bf]/80 bg-[#2dd4bf]/8 text-zinc-50 shadow-[0_14px_32px_-22px_rgba(45,212,191,0.24)]",
   },
 ] as const;
 
@@ -102,51 +102,51 @@ export function DayResetCard({
           ) : null
         }
       >
-        <div className="app-card-soft rounded-[24px] p-4">
+        <div className="px-1 py-1">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
               Mood
             </div>
-            <div className="mt-2 text-xl font-semibold text-slate-950">
+            <div className="mt-2 text-xl font-semibold text-zinc-50">
               {selectedMoodOption.label}
             </div>
-            <div className="mt-1 text-sm text-slate-600">{selectedMoodOption.hint}</div>
+            <div className="mt-1 text-sm text-zinc-400">{selectedMoodOption.hint}</div>
           </div>
           <div className="text-right">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
               Level
             </div>
-            <div className="mt-2 text-2xl font-semibold text-slate-950">{selectedMood}/5</div>
+            <div className="mt-2 text-2xl font-semibold text-zinc-50">{selectedMood}/5</div>
           </div>
         </div>
-        <div className="mt-4 h-2 rounded-full bg-[linear-gradient(90deg,rgba(255,171,157,0.9)_0%,rgba(255,200,155,0.92)_38%,rgba(184,179,255,0.9)_72%,rgba(121,219,198,0.92)_100%)]" />
-        <div className="mt-2 flex items-center justify-between text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+        <div className="mt-4 h-2 rounded-full bg-[linear-gradient(90deg,#ff4d6d_0%,#ff8a3d_25%,#ffd166_50%,#7ee081_75%,#2dd4bf_100%)]" />
+        <div className="mt-2 flex items-center justify-between text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
           <span>Low</span>
           <span>High</span>
         </div>
       </div>
 
       {dayStarted ? (
-        <div className="app-card-soft rounded-[24px] px-4 py-4">
+        <div className="px-1 py-1">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
                 Today&apos;s mood
               </div>
-              <div className="mt-2 text-base font-semibold text-slate-950">{selectedMoodOption.label}</div>
-              <div className="mt-1 text-sm text-slate-600">{selectedMoodOption.hint}</div>
+              <div className="mt-2 text-base font-semibold text-zinc-50">{selectedMoodOption.label}</div>
+              <div className="mt-1 text-sm text-zinc-400">{selectedMoodOption.hint}</div>
             </div>
             <div className={`mt-1 h-3 w-3 rounded-full ${selectedMoodOption.dot}`} />
           </div>
         </div>
       ) : (
         <>
-          <div className="rounded-[24px] bg-[#fff8fb] px-4 py-4">
-            <div className="text-sm font-semibold text-slate-950">First 30 minutes</div>
+          <div className="px-1 py-2">
+            <div className="text-sm font-semibold text-zinc-50">First 30 minutes</div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               {["Water", "No scrolling", "Move a little", "Eat something real"].map((step) => (
-                <div key={step} className="rounded-[18px] bg-white/78 px-3 py-3 text-sm text-slate-700">
+                <div key={step} className="px-2 py-2 text-sm text-zinc-300">
                   {step}
                 </div>
               ))}
@@ -164,17 +164,17 @@ export function DayResetCard({
                   onClick={() => setSelectedMood(mood.value)}
                   disabled={isSaving}
                   aria-pressed={active}
-                  className={`min-h-[4.7rem] rounded-[20px] border px-2.5 py-3 text-center transition ${
+                  className={`min-h-[4.5rem] rounded-[14px] border px-2.5 py-3 text-center transition ${
                     active
                       ? mood.activeClass
-                      : "border-[#ecd9df] bg-white/86 text-slate-700 hover:border-[#e4c7d0] hover:bg-[#fff8fb]"
+                      : "border-white/8 bg-white/5 text-zinc-300 hover:border-white/12 hover:bg-white/8"
                   }`}
                 >
                   <div className="flex flex-col items-center gap-2">
                     <div className={`h-3 w-3 rounded-full ${mood.dot}`} />
                     <div className="text-[11px] font-semibold leading-tight">{mood.label}</div>
                   </div>
-                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
                     {mood.value}
                   </div>
                 </button>
@@ -184,7 +184,7 @@ export function DayResetCard({
         </>
       )}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="text-sm text-slate-600">
+        <div className="text-sm text-zinc-400">
           {startedAt
             ? `Checked in ${startedAtLabel}.`
             : "No check-in today yet."}
@@ -193,7 +193,7 @@ export function DayResetCard({
           type="button"
           onClick={startDay}
           disabled={isPending || isSaving || dayStarted}
-          className="pressable app-btn-primary rounded-full px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+          className="pressable app-btn-primary rounded-[14px] px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           {dayStarted ? "Done" : "Start the day"}
         </button>

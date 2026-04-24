@@ -151,16 +151,16 @@ export function MobileShell({ data }: MobileShellProps) {
   }
 
   return (
-    <main className="min-h-screen px-0 text-slate-950">
-      <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh] sm:border-x sm:border-[#ecd9df] sm:shadow-[0_0_0_1px_rgba(239,220,226,0.9),0_40px_120px_-52px_rgba(214,173,183,0.38)]">
+    <main className="min-h-screen px-0 text-zinc-50">
+      <div className="app-shell mx-auto flex min-h-screen w-full max-w-[430px] flex-col sm:min-h-[100svh]">
         <header
-          className={`app-header sticky top-0 z-30 px-4 backdrop-blur ${compactHeader ? "pb-2.5" : "pb-3"}`}
+          className={`app-header sticky top-0 z-30 px-4 backdrop-blur-xl ${compactHeader ? "pb-2.5" : "pb-3"}`}
           style={{ paddingTop: `calc(env(safe-area-inset-top) + ${compactHeader ? "10px" : "12px"})` }}
         >
           <div className="flex items-start justify-between gap-4">
             <div>
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
                   {screenLabel}
                 </div>
                 <h1
@@ -168,16 +168,16 @@ export function MobileShell({ data }: MobileShellProps) {
                 >
                   {screenTitle}
                 </h1>
-                <p className={`text-slate-600 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
+                <p className={`text-zinc-400 ${compactHeader ? "mt-0.5 text-xs" : "mt-1 text-sm"}`}>
                   {compactHeader ? screenSubtitle : data.today}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setActiveTab("progress")}
-                className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-full text-slate-700"
+                className="pressable app-btn-secondary flex h-10 w-10 items-center justify-center rounded-[14px] text-zinc-100"
                 aria-label="Open progress"
               >
                 <IconProgress />
@@ -185,7 +185,7 @@ export function MobileShell({ data }: MobileShellProps) {
               <button
                 type="button"
                 onClick={() => setShowMenu((value) => !value)}
-                className="pressable flex h-11 w-11 items-center justify-center rounded-full border border-[#ead6dd] bg-white/85 text-slate-700"
+                className="pressable flex h-10 w-10 items-center justify-center rounded-[14px] bg-white/5 text-zinc-100"
                 aria-label="Open support menu"
               >
                 <IconSupport />
@@ -194,7 +194,7 @@ export function MobileShell({ data }: MobileShellProps) {
           </div>
         </header>
 
-        <div className="flex-1 px-4 pb-32 pt-3">
+        <div className="flex-1 px-4 pb-28 pt-2">
           {activeTab === "today" ? (
             <TodayExperience
               dayReset={data.dayReset}
@@ -218,26 +218,26 @@ export function MobileShell({ data }: MobileShellProps) {
 
           {activeTab === "manage" ? (
             <div className="mt-5 grid gap-4">
-              <section className="app-card-soft overflow-hidden rounded-[32px] px-5 py-6">
-                <div className="text-sm font-semibold text-slate-700">Practices</div>
-                <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-slate-950">
+              <section className="px-1 py-1">
+                <div className="text-sm font-semibold text-zinc-300">Practices</div>
+                <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-tight text-zinc-50">
                   Set up what you want to return to.
                 </h2>
-                <p className="mt-2 max-w-[16rem] text-sm leading-6 text-slate-600">
+                <p className="mt-2 max-w-[16rem] text-sm leading-6 text-zinc-400">
                   Keep each one plain, small, and easy to reach for on a hard day.
                 </p>
               </section>
               <CreateHabitForm />
-              <section className="rounded-[28px] bg-white/62 p-5 shadow-[0_12px_28px_-26px_rgba(214,173,183,0.14)]">
-                <div className="text-sm font-semibold text-slate-700">Practice balance</div>
+              <section className="px-1 py-1">
+                <div className="text-sm font-semibold text-zinc-300">Practice balance</div>
                 <div className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-[22px] bg-[#fff8fb] px-4 py-4">
-                    <div className="text-xs text-slate-500">Repeat</div>
-                    <div className="mt-2 text-2xl font-semibold text-slate-950">{data.stats.buildHabits}</div>
+                  <div className="rounded-[18px] bg-white/4 px-4 py-4">
+                    <div className="text-xs text-zinc-500">Repeat</div>
+                    <div className="mt-2 text-2xl font-semibold text-zinc-50">{data.stats.buildHabits}</div>
                   </div>
-                  <div className="rounded-[22px] bg-[#fff8fb] px-4 py-4">
-                    <div className="text-xs text-slate-500">Loosen</div>
-                    <div className="mt-2 text-2xl font-semibold text-slate-950">{breakHabits.length}</div>
+                  <div className="rounded-[18px] bg-white/4 px-4 py-4">
+                    <div className="text-xs text-zinc-500">Loosen</div>
+                    <div className="mt-2 text-2xl font-semibold text-zinc-50">{breakHabits.length}</div>
                   </div>
                 </div>
               </section>
@@ -245,8 +245,8 @@ export function MobileShell({ data }: MobileShellProps) {
           ) : null}
         </div>
 
-        <nav className="app-nav fixed bottom-0 left-0 right-0 z-40 mx-auto w-full max-w-[430px] border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-          <div className="grid grid-cols-4 gap-2 rounded-[26px] border border-[#ecd9df] bg-white/92 p-2 shadow-[0_20px_40px_-24px_rgba(214,173,183,0.26)]">
+        <nav className="app-nav fixed bottom-0 left-0 right-0 z-40 mx-auto w-full max-w-[430px] px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur-xl">
+          <div className="grid grid-cols-4 gap-1.5 rounded-[18px] bg-[#121214]/72 p-1.5">
             {tabs.map((tab) => {
               const active = activeTab === tab.id;
 
@@ -259,14 +259,14 @@ export function MobileShell({ data }: MobileShellProps) {
                     setActiveTab(tab.id);
                     setShowMenu(false);
                   }}
-                className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
+                className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[14px] px-2 py-2 text-[11px] font-medium ${
                     active
-                      ? "bg-[#fff0f4] text-slate-950 shadow-[0_14px_30px_-24px_rgba(255,173,187,0.36)]"
-                      : "text-slate-500 hover:bg-[#fff4f7] hover:text-slate-800"
+                      ? "app-btn-primary"
+                      : "text-zinc-500 hover:bg-white/4 hover:text-zinc-200"
                   }`}
                 >
                   {active ? (
-                    <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#69d7ca_0%,#ffc978_100%)]" />
+                    <span className="absolute inset-x-3 top-1 h-0.5 rounded-full bg-[linear-gradient(90deg,#25f4ee_0%,#fe2c55_100%)]" />
                   ) : null}
                   {tab.icon}
                   <span>{tab.label}</span>
@@ -277,14 +277,14 @@ export function MobileShell({ data }: MobileShellProps) {
               type="button"
               onClick={() => setShowMenu((value) => !value)}
               aria-label="Open support menu"
-              className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[20px] px-3 py-2 text-xs font-medium ${
+              className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[14px] px-2 py-2 text-[11px] font-medium ${
                 showMenu
-                  ? "app-btn-primary shadow-[0_18px_36px_-24px_rgba(109,201,238,0.48)]"
-                  : "text-slate-500 hover:bg-[#fff4f7] hover:text-slate-800"
+                  ? "app-btn-primary"
+                  : "text-zinc-500 hover:bg-white/4 hover:text-zinc-200"
               }`}
             >
               {showMenu ? (
-                <span className="absolute inset-x-4 top-1 h-1 rounded-full bg-[linear-gradient(90deg,#69d7ca_0%,#ffc978_100%)]" />
+                <span className="absolute inset-x-3 top-1 h-0.5 rounded-full bg-[linear-gradient(90deg,#25f4ee_0%,#fe2c55_100%)]" />
               ) : null}
               <IconSupport />
               <span>Support</span>
@@ -293,19 +293,19 @@ export function MobileShell({ data }: MobileShellProps) {
         </nav>
 
         {showMenu ? (
-          <div className="pointer-events-none fixed inset-x-0 bottom-28 z-50 mx-auto w-full max-w-[430px] px-4">
-            <div className="app-card animate-sheet-rise pointer-events-auto rounded-[32px] p-4 backdrop-blur">
+          <div className="pointer-events-none fixed inset-x-0 bottom-24 z-50 mx-auto w-full max-w-[430px] px-4">
+            <div className="app-card animate-sheet-rise pointer-events-auto rounded-[24px] p-4 backdrop-blur">
               <button
                 type="button"
                 onClick={openUrgeSupport}
-                className="pressable flex w-full items-center gap-4 rounded-[24px] bg-[#fff7fb] px-3 py-3 text-left shadow-[0_14px_30px_-26px_rgba(214,173,183,0.16)]"
+                className="pressable flex w-full items-center gap-4 rounded-[24px] bg-white/4 px-3 py-3 text-left"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffd68b_0%,#8be6dc_100%)] text-slate-800">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#25f4ee_0%,#fe2c55_100%)] text-white">
                   <IconSupport />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">Urge support</div>
-                  <div className="text-sm text-slate-600">Delay it, move, and change rooms.</div>
+                  <div className="text-lg font-semibold text-zinc-50">Urge support</div>
+                  <div className="text-sm text-zinc-400">Delay it, move, and change rooms.</div>
                 </div>
               </button>
               <button
@@ -314,14 +314,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("manage");
                   setShowMenu(false);
                 }}
-                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-[#fff7fb]"
+                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-white/4"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#8be6dc_0%,#6cc8f4_100%)] text-slate-800">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/6 text-zinc-100">
                   <IconManage />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">New practice</div>
-                  <div className="text-sm text-slate-600">Add a practice to return to, or a pattern to catch earlier.</div>
+                  <div className="text-lg font-semibold text-zinc-50">New practice</div>
+                  <div className="text-sm text-zinc-400">Add a practice to return to, or a pattern to catch earlier.</div>
                 </div>
               </button>
               <button
@@ -330,14 +330,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("today");
                   setShowMenu(false);
                 }}
-                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-[#fff7fb]"
+                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-white/4"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#fff1f5] text-slate-700">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/6 text-zinc-100">
                   <IconToday />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">Go to today</div>
-                  <div className="text-sm text-slate-600">Check in and move through today.</div>
+                  <div className="text-lg font-semibold text-zinc-50">Go to today</div>
+                  <div className="text-sm text-zinc-400">Check in and move through today.</div>
                 </div>
               </button>
               <button
@@ -346,14 +346,14 @@ export function MobileShell({ data }: MobileShellProps) {
                   setActiveTab("progress");
                   setShowMenu(false);
                 }}
-                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-[#fff7fb]"
+                className="pressable mt-2 flex w-full items-center gap-4 rounded-[24px] px-3 py-3 text-left hover:bg-white/4"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(180deg,#ffd68b_0%,#8be6dc_100%)] text-slate-800">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/6 text-zinc-100">
                   <IconProgress />
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">Week view</div>
-                  <div className="text-sm text-slate-600">See your week, mood, and patterns.</div>
+                  <div className="text-lg font-semibold text-zinc-50">Week view</div>
+                  <div className="text-sm text-zinc-400">See your week, mood, and patterns.</div>
                 </div>
               </button>
             </div>

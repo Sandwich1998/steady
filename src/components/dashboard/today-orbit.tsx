@@ -32,20 +32,20 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
   const center = 66;
 
   return (
-    <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-[28px] border border-[#ecd9df] bg-white/78 px-4 py-4 shadow-[0_18px_40px_-28px_rgba(214,173,183,0.26)]">
+    <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-[22px] bg-white/[0.03] px-4 py-4">
       <div className="relative shrink-0">
         <svg viewBox="0 0 132 132" className="h-[7.15rem] w-[7.15rem] -rotate-90">
           <circle
             cx={center}
             cy={center}
             r={radius - 13}
-            fill="rgba(255,228,233,0.48)"
+            fill="rgba(255,255,255,0.04)"
           />
           <circle
             cx={center}
             cy={center}
             r={radius}
-            stroke="rgba(223,199,208,0.8)"
+            stroke="rgba(255,255,255,0.08)"
             strokeWidth="9"
             fill="none"
           />
@@ -53,7 +53,7 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
             cx={center}
             cy={center}
             r={radius - 8}
-            stroke="rgba(244,230,234,0.95)"
+            stroke="rgba(255,255,255,0.06)"
             strokeWidth="1.5"
             fill="none"
           />
@@ -71,44 +71,44 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
           />
           <defs>
             <linearGradient id="todayOrbitRing" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ffc978" />
-              <stop offset="100%" stopColor="#69d7ca" />
+              <stop offset="0%" stopColor="#25f4ee" />
+              <stop offset="100%" stopColor="#fe2c55" />
             </linearGradient>
           </defs>
         </svg>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <div className="text-[1.55rem] font-semibold text-slate-950">
+          <div className="text-[1.55rem] font-semibold text-zinc-50">
             {completedCount + restedCount}/{totalHabits}
           </div>
-          <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.22em] text-slate-500">
+          <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-500">
             done
           </div>
         </div>
       </div>
 
       <div className="min-w-0">
-        <div className="text-sm font-semibold text-slate-700">
+        <div className="text-sm font-semibold text-zinc-300">
           {dayCompleted ? "Wrapped for today" : "Still open today"}
         </div>
-        <div className="mt-2 text-lg font-semibold leading-tight text-slate-950">
+        <div className="mt-2 text-lg font-semibold leading-tight text-zinc-50">
           {dayCompleted ? "All set for today." : "Keep today steady."}
         </div>
-        <div className="mt-2 text-sm leading-6 text-slate-600">
+        <div className="mt-2 text-sm leading-6 text-zinc-400">
           {dayCompleted
             ? "Come back tomorrow. If the day gets wobbly later, support is still here."
             : nextHabit?.minimumAction ?? "Set one practice and the ring will start to fill."}
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
+          <span className="rounded-full bg-white/6 px-3 py-1.5 text-sm text-zinc-300">
             {Math.max(totalHabits - completedCount - restedCount, 0)} left
           </span>
           {restedCount > 0 ? (
-            <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
+            <span className="rounded-full bg-white/6 px-3 py-1.5 text-sm text-zinc-300">
               {restedCount} rest day{restedCount === 1 ? "" : "s"}
             </span>
           ) : null}
           {nextHabit && !dayCompleted ? (
-            <span className="rounded-full border border-[#ecd9df] bg-[#fff7fb] px-3 py-1.5 text-sm text-slate-700">
+            <span className="rounded-full bg-white/6 px-3 py-1.5 text-sm text-zinc-300">
               {nextHabit.type === "BUILD" ? "Repeat" : "Loosen"}
             </span>
           ) : null}
