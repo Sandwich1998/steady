@@ -185,8 +185,8 @@ export function ProgressExperience({
   ];
 
   return (
-    <div className="grid gap-0">
-      <section className="px-1 py-2">
+    <div className="grid gap-4">
+      <section className="app-card grain-card reveal rounded-[30px] p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
@@ -203,9 +203,9 @@ export function ProgressExperience({
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/6 pt-4">
+        <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/8 pt-4">
           {heroStats.map((item) => (
-            <div key={item.label} className="min-w-0 px-1">
+            <div key={item.label} className="metric-tile min-w-0 rounded-[20px] p-3">
               <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.11em] text-zinc-500">
                 {item.label}
               </div>
@@ -218,7 +218,7 @@ export function ProgressExperience({
         </div>
       </section>
 
-      <section className="border-t border-white/6 px-1 pt-5">
+      <section className="app-card reveal stagger-1 rounded-[30px] p-5 sm:p-6">
         <div className="flex items-start justify-between gap-3 px-4">
           <div className="min-w-0">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
@@ -243,9 +243,9 @@ export function ProgressExperience({
                   {day.label.slice(0, 3)}
                 </div>
                 <div
-                  className={`mt-3 flex h-32 w-full items-end justify-center rounded-[14px] px-2 py-3 ${
+                  className={`mt-3 flex h-32 w-full items-end justify-center rounded-[16px] px-2 py-3 ${
                     isBestDay
-                      ? "bg-[linear-gradient(180deg,rgba(254,44,85,0.12)_0%,rgba(37,244,238,0.07)_100%)]"
+                      ? "bg-[linear-gradient(180deg,rgba(255,47,104,0.18)_0%,rgba(55,245,220,0.09)_100%)]"
                       : "bg-white/[0.03]"
                   }`}
                 >
@@ -286,7 +286,7 @@ export function ProgressExperience({
         </div>
       </section>
 
-      <section className="border-t border-white/6 px-1 pt-5">
+      <section className="app-card reveal stagger-2 rounded-[30px] p-5 sm:p-6">
         <div className="grid gap-5 px-4">
           <article>
             <div className="flex items-start justify-between gap-3">
@@ -320,7 +320,7 @@ export function ProgressExperience({
               <span>Brighter</span>
             </div>
 
-            <div className="mt-5 overflow-hidden rounded-[18px] bg-white/[0.03] px-3 py-3">
+            <div className="mt-5 overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.035] px-3 py-3">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
                   Mood trend
@@ -372,7 +372,7 @@ export function ProgressExperience({
             </div>
           </article>
 
-          <article className="border-t border-white/6 pt-5">
+          <article className="border-t border-white/8 pt-5">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
               Pressure
             </div>
@@ -383,7 +383,7 @@ export function ProgressExperience({
             <div className="mt-4 text-sm font-semibold text-zinc-300">
               {totalUrges > 0 ? `${totalResisted}/${totalUrges} handled before acting` : "No urge data yet"}
             </div>
-            <div className="mt-5 border-t border-white/6 pt-4">
+            <div className="mt-5 border-t border-white/8 pt-4">
               <div className="text-sm font-semibold text-zinc-50">Pattern pressure</div>
               <p className="mt-2 text-sm leading-6 text-zinc-400">
                 {hardestPattern
@@ -395,7 +395,7 @@ export function ProgressExperience({
         </div>
       </section>
 
-      <section className="border-t border-white/6 px-1 pt-5">
+      <section className="app-card-soft reveal stagger-3 rounded-[30px] p-5 sm:p-6">
         <div className="grid gap-5 px-4 sm:grid-cols-2">
           <article>
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">

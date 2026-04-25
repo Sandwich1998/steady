@@ -93,7 +93,7 @@ export function DayResetCard({
     <div id="daily-reset">
       <Card
         title="Morning check-in"
-        description="Pick the closest mood and begin from there."
+        description="Pick the closest mood, then give the next few hours a simple shape."
         action={
           currentMood ? (
             <div className="rounded-full bg-[#dcfff5] px-3 py-1 text-sm font-medium text-[#176857]">
@@ -103,6 +103,7 @@ export function DayResetCard({
         }
       >
         <div className="px-1 py-1">
+        <div className="app-card-soft rounded-[24px] p-4">
         <div className="flex items-end justify-between gap-4">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
@@ -125,6 +126,7 @@ export function DayResetCard({
           <span>Low</span>
           <span>High</span>
         </div>
+        </div>
       </div>
 
       {dayStarted ? (
@@ -146,7 +148,7 @@ export function DayResetCard({
             <div className="text-sm font-semibold text-zinc-50">First 30 minutes</div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               {["Water", "No scrolling", "Move a little", "Eat something real"].map((step) => (
-                <div key={step} className="px-2 py-2 text-sm text-zinc-300">
+                <div key={step} className="rounded-[16px] bg-white/[0.045] px-3 py-2.5 text-sm text-zinc-300">
                   {step}
                 </div>
               ))}
@@ -193,7 +195,7 @@ export function DayResetCard({
           type="button"
           onClick={startDay}
           disabled={isPending || isSaving || dayStarted}
-          className="pressable app-btn-primary rounded-[14px] px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+          className="pressable app-btn-primary min-h-12 rounded-[16px] px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           {dayStarted ? "Done" : "Start the day"}
         </button>

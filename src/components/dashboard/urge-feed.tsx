@@ -17,7 +17,7 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
   const resistedCount = recentUrges.filter((urge) => urge.outcome === "RESISTED").length;
 
   return (
-    <section className="border-t border-white/6 px-5 pt-5">
+    <section className="app-card reveal stagger-3 rounded-[30px] p-5 sm:p-6">
       <div className="max-w-[18rem]">
         <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
           Recent urges
@@ -32,12 +32,12 @@ export function UrgeFeed({ recentUrges }: UrgeFeedProps) {
         </p>
       </div>
       {recentUrges.length === 0 ? (
-        <p className="mt-4 rounded-[14px] bg-white/4 p-4 text-sm text-zinc-400">
+        <p className="mt-4 rounded-[18px] border border-dashed border-white/10 bg-white/4 p-4 text-sm text-zinc-400">
           No urge moments yet. If one hits, you can log it here.
         </p>
       ) : (
         <div className="relative mt-5">
-          <div className="pointer-events-none absolute bottom-0 left-[7px] top-1 w-px bg-white/8" />
+          <div className="pointer-events-none absolute bottom-0 left-[7px] top-1 w-px bg-white/10" />
           <div className="grid gap-4">
             {visibleUrges.map((urge) => (
               <article

@@ -131,7 +131,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
 
   if (habits.length === 0) {
     return (
-      <section className="rounded-[28px] border border-dashed border-white/10 bg-white/4 p-5">
+      <section className="app-card-soft reveal rounded-[28px] border-dashed p-5">
         <div className="text-base font-semibold text-zinc-50">No practices yet</div>
         <p className="mt-2 text-sm leading-6 text-zinc-400">
           Add one practice and this screen will guide you through today.
@@ -142,9 +142,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
 
   return (
     <>
-      <section id="today-habits" className="grid gap-4">
+      <section id="today-habits" className="reveal stagger-2 grid gap-4">
         {allHeld ? (
-          <article className="px-5 py-5">
+          <article className="app-card-soft rounded-[28px] px-5 py-5">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
               {restedCount > 0 ? "Wrapped for today" : "All done"}
             </div>
@@ -157,7 +157,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
           </article>
         ) : nextHabit ? (
           <article
-            className={`relative overflow-hidden rounded-[24px] px-5 py-5 transition ${
+            className={`grain-card relative overflow-hidden rounded-[30px] border border-white/10 px-5 py-5 shadow-[0_24px_80px_-54px_rgba(0,0,0,0.95)] transition sm:px-6 ${
               celebratingHabitId === nextHabit.id
                 ? "animate-soft-pop bg-[radial-gradient(circle_at_top,#69d7ca30,transparent_55%),linear-gradient(180deg,#1a2322_0%,#121716_100%)]"
                 : "bg-[radial-gradient(circle_at_top,rgba(254,44,85,0.12),transparent_36%),linear-gradient(180deg,rgba(20,20,22,0.82)_0%,rgba(12,12,14,0.82)_100%)]"
@@ -197,9 +197,9 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   <button
                     type="button"
                     onClick={openUrgeSupport}
-                    className="pressable mt-3 min-h-11 rounded-full bg-white/6 px-4 py-2.5 text-sm font-semibold text-zinc-100"
+                    className="pressable app-btn-quiet mt-3 min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold text-zinc-100"
                   >
-                    Use 10-minute support
+                    Urge hitting now
                   </button>
                 ) : null}
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
@@ -210,13 +210,13 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <button
                 type="button"
                 onClick={() => setSelectedHabitId(nextHabit.id)}
-                className="flex h-11 min-w-11 items-center justify-center rounded-full bg-white/6 px-4 text-sm font-medium text-zinc-300"
+                className="pressable app-btn-secondary flex h-11 min-w-11 items-center justify-center rounded-full px-4 text-sm font-medium text-zinc-300"
               >
                 Details
               </button>
             </div>
 
-            <div className="relative mt-5 grid gap-3">
+            <div className="relative mt-5 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
               <button
                 type="button"
                 onClick={() => completeHabit(nextHabit.id)}
@@ -226,12 +226,12 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   isPending ||
                   activeMutationHabitId !== null
                 }
-                className={`min-h-11 flex-1 rounded-full px-5 py-3 text-sm font-semibold transition ${
+                className={`min-h-12 flex-1 rounded-[18px] px-5 py-3 text-sm font-semibold transition ${
                   nextHabit.completedToday
                       ? "cursor-not-allowed bg-[#dcfff5] text-[#176857]"
                       : nextHabit.restedToday
                       ? "cursor-not-allowed bg-[#3b3117] text-[#facc15]"
-                    : "bg-[linear-gradient(180deg,#fe2c55_0%,#f31260_100%)] text-white shadow-[0_16px_42px_-24px_rgba(254,44,85,0.45)] hover:scale-[1.01] hover:brightness-[1.02] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                    : "app-btn-primary text-white hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
                 {nextHabit.completedToday ? "Done today" : nextHabit.restedToday ? "Resting today" : "Mark as done"}
@@ -246,11 +246,11 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     isPending ||
                     activeMutationHabitId !== null
                   }
-                  className="min-h-11 rounded-full bg-white/6 px-5 py-3 text-sm font-medium text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="pressable app-btn-secondary min-h-12 rounded-[18px] px-5 py-3 text-sm font-medium text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {nextHabit.restedToday ? "Resting today" : "Rest today"}
                 </button>
-                <div className="rounded-full bg-white/6 px-3 py-2 text-sm text-zinc-300">
+                <div className="flex items-center rounded-[18px] bg-white/6 px-3 py-2 text-sm text-zinc-300">
                   {Math.max(
                     habits.filter((habit) => !habit.completedToday && !habit.restedToday).length - 1,
                     0,
@@ -276,10 +276,10 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                   return (
                     <article
                       key={habit.id}
-                      className={`rounded-[18px] px-4 py-3 ${
-                        isClosed
-                          ? "bg-white/[0.03]"
-                          : "bg-white/[0.05]"
+                    className={`rounded-[22px] border px-4 py-3 ${
+                      isClosed
+                          ? "border-white/8 bg-white/[0.035]"
+                          : "border-white/10 bg-white/[0.055]"
                       }`}
                     >
                       <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
@@ -319,7 +319,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                             type="button"
                             onClick={() => completeHabit(habit.id)}
                             disabled={isPending || activeMutationHabitId !== null}
-                            className="min-h-11 rounded-full bg-[linear-gradient(180deg,#fe2c55_0%,#f31260_100%)] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                            className="pressable app-btn-primary min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             Mark
                           </button>
@@ -331,7 +331,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                           type="button"
                           onClick={() => restHabit(habit.id)}
                           disabled={isPending || activeMutationHabitId !== null}
-                          className="mt-3 min-h-11 w-full rounded-full bg-white/6 px-3 py-2.5 text-sm font-medium text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="pressable app-btn-secondary mt-3 min-h-11 w-full rounded-full px-3 py-2.5 text-sm font-medium text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           Rest today
                         </button>
@@ -347,7 +347,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
       </section>
 
       {selectedHabit ? (
-        <div className="fixed inset-0 z-50 flex items-end bg-black/60">
+        <div className="animate-overlay-fade fixed inset-0 z-50 flex items-end bg-black/70 backdrop-blur-sm lg:items-center lg:justify-center lg:p-6">
           <button
             type="button"
             aria-label="Close habit details"
@@ -355,7 +355,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
             className="absolute inset-0"
           />
           <div
-            className="app-card animate-sheet-rise relative z-10 max-h-[88svh] w-full overflow-y-auto rounded-t-[28px] p-5 shadow-[0_-30px_80px_-30px_rgba(0,0,0,0.85)]"
+            className="app-card animate-sheet-rise relative z-10 max-h-[88svh] w-full overflow-y-auto rounded-t-[28px] p-5 shadow-[0_-30px_80px_-30px_rgba(0,0,0,0.85)] lg:max-w-[560px] lg:rounded-[30px]"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
           >
             <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-white/10" />
@@ -380,7 +380,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               <button
                 type="button"
                 onClick={() => setSelectedHabitId(null)}
-                className="min-h-11 rounded-full border border-white/8 bg-white/6 px-4 py-2.5 text-sm font-medium text-zinc-200"
+                className="pressable app-btn-secondary min-h-11 rounded-full px-4 py-2.5 text-sm font-medium text-zinc-200"
               >
                 Close
               </button>

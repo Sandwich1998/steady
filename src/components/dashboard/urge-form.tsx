@@ -99,6 +99,10 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
     }
   }
 
+  if (hiddenUntilOpen && !isOpen && !savedMessage) {
+    return null;
+  }
+
   return (
     <Card
       title="Support for hard moments"
@@ -128,9 +132,9 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
               type="button"
               onClick={() => setIsOpen(true)}
               disabled={isSaving}
-              className="pressable app-btn-primary shrink-0 rounded-full px-4 py-3 text-sm font-semibold"
+            className="pressable app-btn-primary shrink-0 rounded-full px-4 py-3 text-sm font-semibold"
             >
-              Note the urge
+              Urge hitting now
             </button>
           </div>
           {savedMessage ? (
@@ -141,7 +145,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
         </div>
         )
       ) : (
-        <div className="fixed inset-0 z-50 flex items-end bg-black/60 animate-overlay-fade">
+        <div className="animate-overlay-fade fixed inset-0 z-50 flex items-end bg-black/70 backdrop-blur-sm lg:items-center lg:justify-center lg:p-6">
           <button
             type="button"
             aria-label="Close urge sheet"
@@ -149,7 +153,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
             className="absolute inset-0"
           />
           <form
-            className="app-card animate-sheet-rise relative z-10 max-h-[92svh] w-full overflow-y-auto rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(0,0,0,0.85)]"
+            className="app-card animate-sheet-rise relative z-10 max-h-[92svh] w-full overflow-y-auto rounded-t-[34px] p-5 shadow-[0_-30px_80px_-30px_rgba(0,0,0,0.85)] lg:max-w-[640px] lg:rounded-[34px]"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
             onSubmit={handleSubmit}
           >
@@ -170,14 +174,14 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 disabled={isSaving}
-                className="pressable min-h-11 rounded-full border border-white/8 bg-white/6 px-4 py-2.5 text-sm font-semibold text-zinc-200"
+                className="pressable app-btn-secondary min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold text-zinc-200"
               >
                 Close
               </button>
             </div>
 
             <div className="mt-5 grid gap-4">
-              <section className="rounded-[26px] bg-white/4 p-4">
+              <section className="rounded-[26px] border border-white/8 bg-white/[0.045] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-sm font-semibold text-zinc-50">10-minute rule</div>
@@ -185,7 +189,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                       I can do it, but not right now.
                     </div>
                   </div>
-                  <div className="rounded-full bg-white/6 px-3 py-2 text-sm font-semibold text-zinc-100">
+                  <div className="rounded-full bg-white/8 px-3 py-2 text-sm font-semibold text-zinc-100">
                     {Math.floor(delaySeconds / 60)}:{String(delaySeconds % 60).padStart(2, "0")}
                   </div>
                 </div>
@@ -199,11 +203,11 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                 </button>
               </section>
 
-              <section className="grid gap-3 rounded-[26px] bg-white/4 p-4">
+              <section className="grid gap-3 rounded-[26px] border border-white/8 bg-white/[0.045] p-4">
                 <div className="text-sm font-semibold text-zinc-50">Do this now</div>
                 <div className="grid grid-cols-2 gap-2">
                   {interruptionSteps.map((step) => (
-                    <div key={step} className="rounded-[18px] bg-white/5 px-3 py-3 text-sm font-medium text-zinc-300">
+                    <div key={step} className="rounded-[18px] bg-white/[0.055] px-3 py-3 text-sm font-medium text-zinc-300">
                       {step}
                     </div>
                   ))}
@@ -214,7 +218,7 @@ export function UrgeForm({ habits, hiddenUntilOpen = false }: UrgeFormProps) {
                 <div className="text-sm font-medium text-zinc-300">Replacement if the pull stays loud</div>
                 <div className="flex flex-wrap gap-2">
                   {replacements.map((replacement) => (
-                    <span key={replacement} className="rounded-full bg-white/6 px-3 py-2 text-sm text-zinc-300">
+                    <span key={replacement} className="rounded-full bg-white/7 px-3 py-2 text-sm text-zinc-300">
                       {replacement}
                     </span>
                   ))}

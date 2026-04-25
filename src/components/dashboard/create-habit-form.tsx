@@ -105,21 +105,21 @@ export function CreateHabitForm() {
       variant="soft"
     >
       <form className="grid gap-4" onSubmit={handleSubmit}>
-        <section className="grid gap-3 px-1 py-1">
+        <section className="grid gap-3 rounded-[24px] border border-white/8 bg-white/[0.035] p-4">
           <div>
             <div className="text-sm font-semibold text-zinc-50">7-day reset starters</div>
             <p className="mt-1 text-sm leading-6 text-zinc-400">
               Tap one, adjust if needed, then save.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
             {resetTemplates.map((template) => (
               <button
                 key={template.name}
                 type="button"
                 onClick={() => applyTemplate(template)}
                 disabled={isSaving}
-                className="pressable min-h-11 rounded-[14px] bg-white/5 px-3 py-3 text-left text-sm text-zinc-300"
+                className="pressable min-h-11 rounded-[18px] border border-white/8 bg-white/[0.045] px-3 py-3 text-left text-sm text-zinc-300 hover:border-white/14 hover:bg-white/[0.07]"
               >
                 <div className="font-semibold text-zinc-50">{template.name}</div>
                 <div className="mt-1 text-xs text-zinc-500">
@@ -151,7 +151,7 @@ export function CreateHabitForm() {
               type="button"
               onClick={() => setType("BUILD")}
               disabled={isSaving}
-              className={`pressable min-h-11 rounded-[14px] border px-4 py-3 text-left ${
+              className={`pressable min-h-11 rounded-[18px] border px-4 py-3 text-left ${
                 type === "BUILD"
                   ? "border-[#25f4ee] bg-[#0d2d31] text-zinc-50 shadow-[0_16px_34px_-22px_rgba(37,244,238,0.28)]"
                   : "border-white/8 bg-white/5 text-zinc-300 hover:bg-white/8"
@@ -164,7 +164,7 @@ export function CreateHabitForm() {
               type="button"
               onClick={() => setType("BREAK")}
               disabled={isSaving}
-              className={`pressable min-h-11 rounded-[14px] border px-4 py-3 text-left ${
+              className={`pressable min-h-11 rounded-[18px] border px-4 py-3 text-left ${
                 type === "BREAK"
                   ? "border-[#fe2c55] bg-[#34121d] text-zinc-50 shadow-[0_16px_34px_-22px_rgba(254,44,85,0.24)]"
                   : "border-white/8 bg-white/5 text-zinc-300 hover:bg-white/8"
@@ -180,10 +180,10 @@ export function CreateHabitForm() {
             Minimum step
           </label>
           <input
-            id="habit-minimum-action"
-            value={minimumAction}
-            onChange={(event) => setMinimumAction(event.target.value)}
-            placeholder="Put on shoes and walk 5 minutes"
+          id="habit-minimum-action"
+          value={minimumAction}
+          onChange={(event) => setMinimumAction(event.target.value)}
+          placeholder="Put on shoes and walk 5 minutes"
             maxLength={HABIT_MINIMUM_ACTION_MAX_LENGTH}
             className="app-field rounded-[14px] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-500 focus:border-[#25f4ee]"
             required
@@ -192,7 +192,7 @@ export function CreateHabitForm() {
         <button
           type="submit"
           disabled={isPending || isSaving}
-          className="pressable app-btn-primary min-h-11 rounded-[14px] px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+          className="pressable app-btn-primary min-h-12 rounded-[16px] px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           Save practice
         </button>

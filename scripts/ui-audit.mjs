@@ -8,13 +8,14 @@ import { chromium } from "playwright";
 const require = createRequire(import.meta.url);
 const axeSource = require("axe-core").source;
 
-const baseUrl = process.env.UI_AUDIT_URL ?? "http://127.0.0.1:3000";
+const baseUrl = process.env.UI_AUDIT_URL ?? "http://localhost:3000";
 const outputDir = path.resolve(process.cwd(), "reports", "ui-audit");
 
 const viewports = [
-  { name: "iphone-375x812", width: 375, height: 812 },
-  { name: "iphone-390x844", width: 390, height: 844 },
-  { name: "iphone-393x852", width: 393, height: 852 },
+  { name: "iphone-375x812", width: 375, height: 812, isMobile: true },
+  { name: "iphone-390x844", width: 390, height: 844, isMobile: true },
+  { name: "ipad-768x1024", width: 768, height: 1024, isMobile: false },
+  { name: "desktop-1280x900", width: 1280, height: 900, isMobile: false },
 ];
 
 const scenarios = [
@@ -25,29 +26,28 @@ const scenarios = [
   {
     name: "today-habit-detail",
     run: async (page) => {
-      const detailButton = page.locator("article button").first();
-      await detailButton.click();
+      await page.getByRole("button", { name: /details/i }).first().click();
       await page.waitForTimeout(150);
     },
   },
   {
     name: "today-urge-open",
     run: async (page) => {
-      await page.getByRole("button", { name: "Urge hitting now" }).click();
+      await page.getByRole("button", { name: /urge hitting now/i }).first().click();
       await page.waitForTimeout(150);
     },
   },
   {
     name: "progress-tab",
     run: async (page) => {
-      await page.getByRole("button", { name: "Progress" }).last().click();
+      await page.getByRole("button", { name: /^Progress/i }).first().click();
       await page.waitForTimeout(150);
     },
   },
   {
     name: "manage-tab",
     run: async (page) => {
-      await page.getByRole("button", { name: "Manage" }).click();
+      await page.getByRole("button", { name: /^Manage/i }).first().click();
       await page.waitForTimeout(150);
     },
   },
@@ -397,9 +397,9 @@ async function main() {
     for (const viewport of viewports) {
       const context = await browser.newContext({
         viewport: { width: viewport.width, height: viewport.height },
-        deviceScaleFactor: 3,
-        isMobile: true,
-        hasTouch: true,
+        deviceScaleFactor: viewport.isMobile ? 3 : 1,
+        isMobile: viewport.isMobile,
+        hasTouch: viewport.isMobile,
       });
       const page = await context.newPage();
       const scenarioResults = [];

@@ -1,6 +1,6 @@
 import { chromium, devices } from "playwright";
 
-const baseUrl = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000";
+const baseUrl = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
 const browser = await chromium.launch();
 const context = await browser.newContext({
   ...devices["Pixel 7"],
@@ -11,10 +11,10 @@ try {
   await page.goto(baseUrl, { waitUntil: "networkidle" });
 
   await page.locator("#bottom-nav-progress").click();
-  await page.getByText("Last 7 days", { exact: true }).waitFor({ state: "visible" });
+  await page.getByText("Strongest signal", { exact: true }).waitFor({ state: "visible" });
 
   await page.getByRole("button", { name: /manage/i }).click();
-  await page.getByText(/set up what you want to return to/i).waitFor({ state: "visible" });
+  await page.getByText("Practice system", { exact: true }).waitFor({ state: "visible" });
 
   console.log("Smoke test passed.");
 } finally {

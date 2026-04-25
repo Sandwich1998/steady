@@ -1,20 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0b;
-  --foreground: #f4f4f5;
-  --surface-shell: rgba(18, 18, 20, 0.94);
-  --surface-card: rgba(24, 24, 27, 0.96);
-  --surface-soft: rgba(33, 33, 37, 0.92);
-  --surface-field: rgba(38, 38, 43, 0.96);
-  --line-soft: rgba(255, 255, 255, 0.08);
-  --text-soft: rgba(228, 228, 231, 0.68);
-  --accent-mint: #25f4ee;
-  --accent-teal: #22d3ee;
-  --accent-peach: #f97316;
-  --accent-lilac: #8b5cf6;
-  --accent-rose: #fe2c55;
-  --shadow-soft: 0 20px 50px -34px rgba(0, 0, 0, 0.65);
+  --background: #08090a;
+  --foreground: #f7f4ee;
+  --surface-shell: rgba(13, 14, 16, 0.88);
+  --surface-card: rgba(22, 23, 26, 0.78);
+  --surface-soft: rgba(255, 255, 255, 0.055);
+  --surface-field: rgba(255, 255, 255, 0.075);
+  --line-soft: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --text-soft: rgba(236, 231, 221, 0.68);
+  --text-muted: rgba(236, 231, 221, 0.48);
+  --accent-mint: #37f5dc;
+  --accent-teal: #61d9ff;
+  --accent-peach: #ffb86b;
+  --accent-gold: #f6d365;
+  --accent-lilac: #c0a6ff;
+  --accent-rose: #ff2f68;
+  --accent-ink: #07080a;
+  --shadow-soft: 0 24px 70px -42px rgba(0, 0, 0, 0.78);
+  --shadow-glow: 0 28px 90px -48px rgba(55, 245, 220, 0.5);
 }
 
 @theme inline {
@@ -39,9 +44,10 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top center, rgba(254, 44, 85, 0.14), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(37, 244, 238, 0.08), transparent 22%),
-    linear-gradient(180deg, #0f0f10 0%, #070708 100%);
+    radial-gradient(circle at 15% -10%, rgba(255, 47, 104, 0.2), transparent 30%),
+    radial-gradient(circle at 86% 12%, rgba(55, 245, 220, 0.16), transparent 28%),
+    radial-gradient(circle at 80% 88%, rgba(246, 211, 101, 0.11), transparent 24%),
+    linear-gradient(135deg, #08090a 0%, #11100f 46%, #050606 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -73,6 +79,34 @@ textarea:focus-visible {
 ::selection {
   background: rgba(37, 244, 238, 0.3);
   color: #ffffff;
+}
+
+body::before {
+  pointer-events: none;
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(circle at top, black, transparent 72%);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid rgba(8, 9, 10, 0.9);
+  border-radius: 999px;
 }
 
 @keyframes soft-pop {
@@ -153,6 +187,27 @@ textarea:focus-visible {
   }
 }
 
+@keyframes float-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ambient-shift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(14px, -12px, 0) scale(1.04);
+  }
+}
+
 .animate-ring-breathe {
   animation: ring-breathe 3.2s ease-in-out infinite;
 }
@@ -173,6 +228,26 @@ textarea:focus-visible {
   animation: overlay-fade 220ms ease-out;
 }
 
+.reveal {
+  animation: float-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stagger-1 {
+  animation-delay: 60ms;
+}
+
+.stagger-2 {
+  animation-delay: 120ms;
+}
+
+.stagger-3 {
+  animation-delay: 180ms;
+}
+
+.ambient-shift {
+  animation: ambient-shift 14s ease-in-out infinite;
+}
+
 .pressable {
   transition:
     transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -189,78 +264,127 @@ textarea:focus-visible {
 
 .app-shell {
   background:
-    radial-gradient(circle at top, rgba(254, 44, 85, 0.09), transparent 28%),
-    linear-gradient(180deg, rgba(15, 15, 16, 0.98) 0%, rgba(8, 8, 9, 0.98) 100%);
+    radial-gradient(circle at 18% 0%, rgba(255, 47, 104, 0.13), transparent 34%),
+    radial-gradient(circle at 100% 26%, rgba(55, 245, 220, 0.09), transparent 26%),
+    linear-gradient(180deg, rgba(11, 12, 14, 0.86) 0%, rgba(8, 9, 10, 0.92) 100%);
 }
 
 .app-header {
-  background: rgba(10, 10, 11, 0.82);
-  border-color: transparent;
-  box-shadow: none;
+  background: linear-gradient(180deg, rgba(8, 9, 10, 0.88) 0%, rgba(8, 9, 10, 0.64) 100%);
+  border-color: var(--line-soft);
+  box-shadow: 0 18px 50px -42px rgba(0, 0, 0, 0.9);
 }
 
 .app-nav {
-  background: rgba(10, 10, 11, 0.9);
+  background: linear-gradient(180deg, rgba(8, 9, 10, 0) 0%, rgba(8, 9, 10, 0.95) 34%);
   border-color: transparent;
 }
 
 .app-card {
-  border: 0;
-  background: rgba(18, 18, 21, 0.72);
-  box-shadow: none;
+  border: 1px solid var(--line-soft);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.095) 0%, rgba(255, 255, 255, 0.045) 100%),
+    rgba(14, 15, 18, 0.78);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(24px);
 }
 
 .app-card-soft {
-  border: 0;
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top left, rgba(55, 245, 220, 0.07), transparent 34%),
+    rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(18px);
 }
 
 .app-hero {
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background:
-    radial-gradient(circle at top right, rgba(254, 44, 85, 0.18), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(37, 244, 238, 0.08), transparent 24%),
-    linear-gradient(180deg, rgba(25, 25, 28, 0.98) 0%, rgba(13, 13, 15, 0.98) 100%);
-  box-shadow: none;
+    radial-gradient(circle at 92% 8%, rgba(255, 47, 104, 0.34), transparent 34%),
+    radial-gradient(circle at 0% 100%, rgba(55, 245, 220, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(26, 28, 32, 0.98) 0%, rgba(10, 11, 13, 0.98) 74%);
+  box-shadow:
+    0 30px 80px -50px rgba(255, 47, 104, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .app-chip {
-  border: 0;
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.075);
+  backdrop-filter: blur(12px);
 }
 
 .app-field {
   min-height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   background: var(--surface-field);
   font-size: 16px;
-  color: #f4f4f5;
+  color: var(--foreground);
 }
 
 .app-btn-primary {
   color: #ffffff;
-  background-color: #fe2c55;
-  background-image: linear-gradient(180deg, #fe2c55 0%, #f31260 100%);
-  box-shadow: 0 16px 36px -24px rgba(254, 44, 85, 0.5);
+  background-color: #bd083f;
+  background-image: linear-gradient(135deg, #d30a45 0%, #98114f 100%);
+  box-shadow: 0 18px 46px -24px rgba(255, 47, 104, 0.74);
 }
 
 .app-btn-primary:hover {
-  background-color: #ff4168;
-  background-image: linear-gradient(180deg, #ff4168 0%, #f91d67 100%);
+  background-color: #ca0b4c;
+  background-image: linear-gradient(135deg, #e11353 0%, #a5165a 100%);
 }
 
 .app-btn-secondary {
-  color: #f4f4f5;
-  border: 0;
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--foreground);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.065);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .app-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.app-btn-quiet {
+  color: var(--foreground);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(135deg, rgba(55, 245, 220, 0.1), rgba(255, 255, 255, 0.055)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.metric-tile {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.grain-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.grain-card::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.2) 0 1px, transparent 1px),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px);
+  background-size: 34px 34px, 46px 46px;
+  mix-blend-mode: screen;
 }
 
 .text-soft {
   color: var(--text-soft);
+}
+
+.text-muted {
+  color: var(--text-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

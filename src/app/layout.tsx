@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -13,8 +13,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Steady",
-  description: "A warmer daily companion for resets, tiny wins, and urge logging.",
+  applicationName: "Steady",
+  title: {
+    default: "Steady",
+    template: "%s · Steady",
+  },
+  description: "A focused daily companion for resets, tiny wins, and urge support.",
+  appleWebApp: {
+    capable: true,
+    title: "Steady",
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#08090a",
 };
 
 export default function RootLayout({

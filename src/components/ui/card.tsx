@@ -17,15 +17,15 @@ export function Card({
 }: CardProps) {
   const shellClass =
     variant === "soft"
-      ? "app-card-soft rounded-[22px] p-5 text-zinc-50"
-      : "app-card rounded-[22px] p-5 text-zinc-50";
+      ? "app-card-soft reveal rounded-[28px] p-5 text-zinc-50 sm:p-6"
+      : "app-card reveal rounded-[28px] p-5 text-zinc-50 sm:p-6";
 
   return (
     <section className={shellClass}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold tracking-tight text-zinc-50">{title}</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-zinc-50 sm:text-[1.35rem]">{title}</h2>
             {description ? <p className="text-sm leading-6 text-zinc-400">{description}</p> : null}
           </div>
           {action}

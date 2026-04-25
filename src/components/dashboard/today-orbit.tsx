@@ -32,14 +32,14 @@ export function TodayOrbit({ habits, nextHabit, dayCompleted }: TodayOrbitProps)
   const center = 66;
 
   return (
-    <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-[22px] bg-white/[0.03] px-4 py-4">
+    <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-[26px] border border-white/8 bg-white/[0.055] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur sm:max-w-[30rem]">
       <div className="relative shrink-0">
         <svg viewBox="0 0 132 132" className="h-[7.15rem] w-[7.15rem] -rotate-90">
           <circle
             cx={center}
             cy={center}
             r={radius - 13}
-            fill="rgba(255,255,255,0.04)"
+            fill="rgba(255,255,255,0.055)"
           />
           <circle
             cx={center}

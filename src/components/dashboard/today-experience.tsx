@@ -121,7 +121,7 @@ export function TodayExperience({
     : nextHabit && !dayCompleted
       ? "Do one small step"
       : "See today's habits";
-  const supportActionLabel = actedToday > 0 ? "Get back on track" : "Open urge support";
+  const supportActionLabel = "Urge hitting now";
 
   function handlePrimaryAction() {
     const targetId = dayReset ? "today-habits" : "daily-reset";
@@ -136,20 +136,21 @@ export function TodayExperience({
   }
 
   return (
-    <div className="mt-2 grid gap-4">
-      <section className="app-hero relative overflow-hidden rounded-[24px] px-5 py-6">
-        <div className="pointer-events-none absolute right-0 top-5 h-28 w-28 rounded-full bg-[rgba(184,179,255,0.16)] blur-3xl" />
-        <div className="pointer-events-none absolute left-0 bottom-0 h-24 w-24 rounded-full bg-[rgba(255,200,155,0.14)] blur-3xl" />
+    <div className="mt-2 grid gap-4 lg:mt-0 lg:gap-5">
+      <section className="app-hero reveal relative overflow-hidden rounded-[30px] px-5 py-6 sm:px-6 lg:px-7 lg:py-7">
+        <div className="pointer-events-none absolute right-0 top-5 h-40 w-40 rounded-full bg-[rgba(192,166,255,0.18)] blur-3xl" />
+        <div className="pointer-events-none absolute left-0 bottom-0 h-28 w-28 rounded-full bg-[rgba(55,245,220,0.14)] blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.38),transparent)]" />
 
         <div className="relative">
-          <div className="max-w-[16rem]">
+          <div className="max-w-[22rem] lg:max-w-[32rem]">
             <div className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400">
               Today
             </div>
-            <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-zinc-50">
+            <h2 className="mt-3 text-[2.15rem] font-semibold leading-[0.98] tracking-tight text-zinc-50 sm:text-[2.65rem] lg:text-[3rem]">
               {heroTitle}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-zinc-400">{heroSubtitle}</p>
+            <p className="mt-3 max-w-[30rem] text-sm leading-6 text-zinc-400">{heroSubtitle}</p>
             <div className="app-chip mt-4 inline-flex max-w-full items-center rounded-[14px] px-3 py-2 text-sm font-medium text-zinc-200">
               <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-[var(--accent-mint)] shadow-[0_0_14px_rgba(37,244,238,0.45)]" />
               <span className="truncate">{heroStatus}</span>
@@ -162,11 +163,11 @@ export function TodayExperience({
             dayCompleted={dayCompleted}
           />
 
-          <div className="mt-5 grid gap-2">
+          <div className="mt-5 grid gap-2 sm:grid-cols-2">
             <button
               type="button"
               onClick={handlePrimaryAction}
-              className="pressable app-btn-primary min-h-11 w-full rounded-[14px] px-5 py-3 text-sm font-semibold"
+              className="pressable app-btn-primary min-h-12 w-full rounded-[16px] px-5 py-3 text-sm font-semibold"
             >
               {primaryActionLabel}
             </button>
@@ -174,7 +175,7 @@ export function TodayExperience({
               <button
                 type="button"
                 onClick={openUrgeSheet}
-                className="pressable min-h-11 w-full rounded-[14px] bg-white/6 px-5 py-3 text-sm font-semibold text-zinc-100"
+                className="pressable app-btn-quiet min-h-12 w-full rounded-[16px] px-5 py-3 text-sm font-semibold text-zinc-100"
               >
                 {supportActionLabel}
               </button>
@@ -183,8 +184,8 @@ export function TodayExperience({
         </div>
       </section>
 
-      <section className="grid gap-2 px-1">
-        <article className="px-3 py-3">
+      <section className="reveal stagger-1 grid gap-2 px-1">
+        <article className="app-card-soft rounded-[28px] px-4 py-4 sm:px-5">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-base font-semibold text-zinc-50">
@@ -196,14 +197,14 @@ export function TodayExperience({
                   : resetPhase.copy}
               </p>
             </div>
-            <div className="shrink-0 rounded-[12px] bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-300">
+            <div className="shrink-0 rounded-[12px] bg-white/7 px-3 py-1.5 text-xs font-semibold text-zinc-300">
               {resetPhase.label}
             </div>
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-x-2 gap-y-1">
             {supportAnchors.map((anchor) => (
-              <div key={anchor} className="px-2 py-2 text-sm font-medium text-zinc-200">
+              <div key={anchor} className="rounded-[16px] bg-white/[0.045] px-3 py-2.5 text-sm font-medium text-zinc-200">
                 {anchor}
               </div>
             ))}
@@ -216,7 +217,7 @@ export function TodayExperience({
             <button
               type="button"
               onClick={actedToday > 0 ? handlePrimaryAction : breakHabits.length > 0 ? openUrgeSheet : handlePrimaryAction}
-              className="pressable min-h-12 rounded-[14px] bg-white/6 px-5 py-3 text-sm font-semibold text-zinc-100"
+              className="pressable app-btn-secondary min-h-12 rounded-[16px] px-5 py-3 text-sm font-semibold text-zinc-100"
             >
               {actedToday > 0 ? "Choose next step" : breakHabits.length > 0 ? "Open support" : "Start one step"}
             </button>
