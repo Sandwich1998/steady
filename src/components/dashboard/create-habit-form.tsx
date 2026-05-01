@@ -31,14 +31,14 @@ const resetTemplates = [
     type: "BUILD",
   },
   {
-    name: "Porn or masturbation urge",
-    minimumAction: "Delay 10 minutes, leave the room, and put phone away",
-    type: "BREAK",
+    name: "Nature walk",
+    minimumAction: "Step outside and walk for 10 minutes without your phone",
+    type: "BUILD",
   },
   {
-    name: "Evening weed craving",
-    minimumAction: "Walk, shower, tea, or text someone before deciding",
-    type: "BREAK",
+    name: "Gym session",
+    minimumAction: "Pack clothes and do 10 easy minutes",
+    type: "BUILD",
   },
   {
     name: "Sugar craving",
