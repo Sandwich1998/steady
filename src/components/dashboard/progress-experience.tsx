@@ -31,6 +31,9 @@ type ProgressExperienceProps = {
       totalUrges: number;
       resistedUrges: number;
       actedUrges: number;
+      urgesLast7Days: number;
+      resistedUrgesLast7Days: number;
+      actedUrgesLast7Days: number;
     };
   }[];
 };
@@ -93,32 +96,32 @@ function getMoodTrendPath(weeklyHistory: ProgressExperienceProps["weeklyHistory"
 function getPrimarySignal(totalResisted: number, totalUrges: number, totalCompletions: number) {
   if (totalUrges > 0 && totalResisted > 0) {
     return {
-      eyebrow: "Strongest signal",
-      line: `${totalResisted} urge interruption${totalResisted === 1 ? "" : "s"}`,
-      note: `${totalUrges} urge moment${totalUrges === 1 ? "" : "s"} logged in the last 7 days.`,
+      eyebrow: "What mattered most",
+      line: `${totalResisted} urge${totalResisted === 1 ? "" : "s"} handled before acting`,
+      note: "You practiced the pause when the pull showed up. That is steadiness under pressure.",
     };
   }
 
   if (totalUrges > 0) {
     return {
-      eyebrow: "Next signal to build",
-      line: "Delay the next urge",
-      note: `${totalUrges} urge moment${totalUrges === 1 ? "" : "s"} logged. One 10-minute delay counts.`,
+      eyebrow: "What mattered most",
+      line: `${totalUrges} urge moment${totalUrges === 1 ? "" : "s"} noticed`,
+      note: "Even when it was hard, logging the moment gives the next return a place to start.",
     };
   }
 
   if (totalCompletions > 0) {
     return {
-      eyebrow: "Strongest signal",
-      line: `${totalCompletions} practice return${totalCompletions === 1 ? "" : "s"}`,
-      note: "Completions in the last 7 days. Small returns are the point.",
+      eyebrow: "What stood out",
+      line: `You came back ${totalCompletions} time${totalCompletions === 1 ? "" : "s"}`,
+      note: "Small returns are the point. This is what steadiness looked like this week.",
     };
   }
 
   return {
-    eyebrow: "Next signal to build",
-    line: "One small return",
-    note: "Log one practice or one delayed urge to make this screen useful.",
+    eyebrow: "What to build next",
+    line: "One return starts the week",
+    note: "Check in, log a small practice, or open support when an urge shows up.",
   };
 }
 
@@ -158,8 +161,8 @@ export function ProgressExperience({
       ? `${bestDay.label} felt strongest. You showed up ${bestDay.completionsCount} time${bestDay.completionsCount === 1 ? "" : "s"}.`
       : "No single day stood out yet, but the week still gave you something to notice.";
   const hardestPattern = [...habits]
-    .filter((habit) => habit.stats.totalUrges > 0)
-    .sort((a, b) => b.stats.totalUrges - a.stats.totalUrges)[0] ?? null;
+    .filter((habit) => habit.stats.urgesLast7Days > 0)
+    .sort((a, b) => b.stats.urgesLast7Days - a.stats.urgesLast7Days)[0] ?? null;
   const controlCopy =
     totalUrges > 0
       ? totalActed > 0
@@ -168,19 +171,39 @@ export function ProgressExperience({
       : "No urge moments logged yet. Use support when the pull shows up.";
   const heroStats = [
     {
-      label: "Urges interrupted",
-      value: totalUrges > 0 ? `${totalResisted}/${totalUrges}` : "0",
-      sublabel: totalUrges > 0 ? "Handled before acting" : "No urge data yet",
+      label: "Urges",
+      value: totalUrges > 0 ? `${totalResisted}/${totalUrges}` : "Ready",
+      sublabel:
+        totalUrges > 0
+          ? totalResisted > 0
+            ? "Handled before acting."
+            : "Logged clearly; support stays close."
+          : "Support is ready when one shows up.",
+      accentClass: "bg-[var(--accent-mint)]",
+      panelClass: "from-[#12302f]/70 to-white/[0.035]",
+      valueClass: totalUrges > 0 ? "text-zinc-50" : "text-[#7af7f2]",
     },
     {
-      label: "Practice returns",
-      value: totalCompletions,
-      sublabel: "Completed in 7 days",
+      label: "Returns",
+      value: totalCompletions > 0 ? totalCompletions : "Start",
+      sublabel:
+        totalCompletions > 0
+          ? "Across the last 7 days."
+          : "One small action starts the signal.",
+      accentClass: "bg-[var(--accent-rose)]",
+      panelClass: "from-[#321421]/70 to-white/[0.035]",
+      valueClass: totalCompletions > 0 ? "text-zinc-50" : "text-[#ff7d9a]",
     },
     {
-      label: "Mood check-ins",
-      value: averageMoodSource.length,
-      sublabel: "Days with a mood note",
+      label: "Mood",
+      value: averageMoodSource.length > 0 ? averageMoodSource.length : "Open",
+      sublabel:
+        averageMoodSource.length > 0
+          ? `Mood note${averageMoodSource.length === 1 ? "" : "s"} on how the week felt.`
+          : "Optional, but useful when patterns shift.",
+      accentClass: "bg-[var(--accent-gold)]",
+      panelClass: "from-[#342a13]/70 to-white/[0.035]",
+      valueClass: averageMoodSource.length > 0 ? "text-zinc-50" : "text-[#f6d365]",
     },
   ];
 
@@ -205,14 +228,20 @@ export function ProgressExperience({
 
         <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/8 pt-4">
           {heroStats.map((item) => (
-            <div key={item.label} className="metric-tile min-w-0 rounded-[20px] p-3">
-              <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.11em] text-zinc-500">
-                {item.label}
+            <div
+              key={item.label}
+              className={`min-w-0 rounded-[20px] border border-white/8 bg-[linear-gradient(180deg,var(--tw-gradient-stops))] ${item.panelClass} p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]`}
+            >
+              <div className="flex items-center gap-2">
+                <span className={`h-2 w-2 rounded-full ${item.accentClass}`} />
+                <div className="text-[11px] font-semibold uppercase leading-4 tracking-[0.11em] text-zinc-500">
+                  {item.label}
+                </div>
               </div>
-              <div className="mt-2 text-[1.5rem] font-semibold leading-none text-zinc-50">
+              <div className={`mt-2 text-[1.5rem] font-semibold leading-none ${item.valueClass}`}>
                 {item.value}
               </div>
-              <div className="mt-1.5 text-[11px] leading-4 text-zinc-500">{item.sublabel}</div>
+              <div className="mt-1.5 text-[11px] leading-4 text-zinc-400">{item.sublabel}</div>
             </div>
           ))}
         </div>
@@ -374,7 +403,7 @@ export function ProgressExperience({
 
           <article className="border-t border-white/8 pt-5">
             <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              Pressure
+              Urges
             </div>
             <div className="mt-2 text-[1.2rem] font-semibold tracking-tight text-zinc-50">
               Urge moments
@@ -384,7 +413,7 @@ export function ProgressExperience({
               {totalUrges > 0 ? `${totalResisted}/${totalUrges} handled before acting` : "No urge data yet"}
             </div>
             <div className="mt-5 border-t border-white/8 pt-4">
-              <div className="text-sm font-semibold text-zinc-50">Pattern pressure</div>
+              <div className="text-sm font-semibold text-zinc-50">Pattern to watch</div>
               <p className="mt-2 text-sm leading-6 text-zinc-400">
                 {hardestPattern
                   ? `${hardestPattern.name} is asking for the most support. Plan the high-risk time before it starts.`

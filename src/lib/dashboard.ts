@@ -5,6 +5,7 @@ import {
   APP_TIME_ZONE,
   formatDateKey,
   getDateDaysAgo,
+  getEndOfDateDaysAgo,
   getRecentDateKeys,
   getTodayKey,
 } from "@/lib/date";
@@ -41,28 +42,15 @@ function isSteadierDay(day: {
   return day.completed;
 }
 
-export async function getDashboardData() {
+export async function getDashboardData(userId: string) {
   const today = getTodayKey();
   const lastSevenDays = getRecentDateKeys(7);
   const previousSevenDays = getRecentDateKeys(7, 7);
+  const lastSevenDayKeys = lastSevenDays.map((day) => day.key);
+  const previousSevenDayKeys = previousSevenDays.map((day) => day.key);
   const startDate = getDateDaysAgo(6);
   const previousStartDate = getDateDaysAgo(13);
-  const previousEndDate = new Date(getDateDaysAgo(7));
-  previousEndDate.setUTCHours(23, 59, 59, 999);
-  const prismaWithRestDays = prisma as typeof prisma & {
-    habitRestDay?: {
-      findMany: (args: {
-        where:
-          | { date: string }
-          | {
-              date: {
-                in: string[];
-              };
-            };
-        select: { habitId?: true; date?: true };
-      }) => Promise<{ habitId?: string; date?: string }[]>;
-    };
-  };
+  const previousEndDate = getEndOfDateDaysAgo(7);
 
   const [
     dayReset,
@@ -84,10 +72,14 @@ export async function getDashboardData() {
     urgeIntensityTotals,
   ] =
     await Promise.all([
-    prisma.dayReset.findUnique({
-      where: { date: today },
+    prisma.dayReset.findFirst({
+      where: {
+        userId,
+        date: today,
+      },
     }),
     prisma.habit.findMany({
+      where: { userId },
       orderBy: [{ createdAt: "desc" }],
       select: {
         id: true,
@@ -97,14 +89,23 @@ export async function getDashboardData() {
       },
     }),
     prisma.habitCompletion.findMany({
-      where: { date: today },
+      where: {
+        date: today,
+        habit: { userId },
+      },
       select: { habitId: true },
     }),
-    prismaWithRestDays.habitRestDay?.findMany({
-      where: { date: today },
+    prisma.habitRestDay.findMany({
+      where: {
+        date: today,
+        habit: { userId },
+      },
       select: { habitId: true },
-    }) ?? Promise.resolve([]),
+    }),
     prisma.urgeLog.findMany({
+      where: {
+        habit: { userId },
+      },
       orderBy: { createdAt: "desc" },
       take: 8,
       include: {
@@ -118,55 +119,63 @@ export async function getDashboardData() {
     }),
     prisma.dayReset.findMany({
       where: {
+        userId,
         date: {
-          in: lastSevenDays.map((day) => day.key),
+          in: lastSevenDayKeys,
         },
       },
     }),
     prisma.habitCompletion.findMany({
       where: {
+        habit: { userId },
         date: {
-          in: lastSevenDays.map((day) => day.key),
+          in: lastSevenDayKeys,
         },
       },
       select: { date: true },
     }),
-    prismaWithRestDays.habitRestDay?.findMany({
+    prisma.habitRestDay.findMany({
       where: {
+        habit: { userId },
         date: {
-          in: lastSevenDays.map((day) => day.key),
+          in: lastSevenDayKeys,
         },
       },
       select: { date: true },
-    }) ?? Promise.resolve([]),
+    }),
     prisma.urgeLog.findMany({
       where: {
+        habit: { userId },
         createdAt: {
           gte: startDate,
         },
       },
       select: {
+        habitId: true,
         createdAt: true,
         outcome: true,
       },
     }),
     prisma.dayReset.findMany({
       where: {
+        userId,
         date: {
-          in: previousSevenDays.map((day) => day.key),
+          in: previousSevenDayKeys,
         },
       },
     }),
     prisma.habitCompletion.findMany({
       where: {
+        habit: { userId },
         date: {
-          in: previousSevenDays.map((day) => day.key),
+          in: previousSevenDayKeys,
         },
       },
       select: { date: true },
     }),
     prisma.urgeLog.findMany({
       where: {
+        habit: { userId },
         createdAt: {
           gte: previousStartDate,
           lte: previousEndDate,
@@ -179,27 +188,40 @@ export async function getDashboardData() {
     }),
     prisma.habitCompletion.groupBy({
       by: ["habitId"],
+      where: {
+        habit: { userId },
+      },
       _count: { _all: true },
     }),
     prisma.habitCompletion.groupBy({
       by: ["habitId"],
       where: {
+        habit: { userId },
         date: {
-          in: lastSevenDays.map((day) => day.key),
+          in: lastSevenDayKeys,
         },
       },
       _count: { _all: true },
     }),
     prisma.habitCompletion.groupBy({
       by: ["habitId"],
+      where: {
+        habit: { userId },
+      },
       _max: { completedAt: true },
     }),
     prisma.urgeLog.groupBy({
       by: ["habitId", "outcome"],
+      where: {
+        habit: { userId },
+      },
       _count: { _all: true },
     }),
     prisma.urgeLog.groupBy({
       by: ["habitId"],
+      where: {
+        habit: { userId },
+      },
       _count: { _all: true },
       _avg: { intensity: true },
     }),
@@ -234,6 +256,19 @@ export async function getDashboardData() {
       entry.acted += 1;
     }
     map.set(dateKey, entry);
+    return map;
+  }, new Map());
+  const weeklyUrgeCountsByHabit = weeklyUrges.reduce<
+    Map<string, { total: number; resisted: number; acted: number }>
+  >((map, urge) => {
+    const entry = map.get(urge.habitId) ?? { total: 0, resisted: 0, acted: 0 };
+    entry.total += 1;
+    if (urge.outcome === UrgeOutcome.RESISTED) {
+      entry.resisted += 1;
+    } else {
+      entry.acted += 1;
+    }
+    map.set(urge.habitId, entry);
     return map;
   }, new Map());
   const previousResetMap = new Map(previousWeekResets.map((reset) => [reset.date, reset.mood]));
@@ -337,6 +372,9 @@ export async function getDashboardData() {
         totalUrges: urgeTotalsMap.get(habit.id)?.total ?? 0,
         resistedUrges: resistedUrgeMap.get(habit.id) ?? 0,
         actedUrges: actedUrgeMap.get(habit.id) ?? 0,
+        urgesLast7Days: weeklyUrgeCountsByHabit.get(habit.id)?.total ?? 0,
+        resistedUrgesLast7Days: weeklyUrgeCountsByHabit.get(habit.id)?.resisted ?? 0,
+        actedUrgesLast7Days: weeklyUrgeCountsByHabit.get(habit.id)?.acted ?? 0,
         averageUrgeIntensity: urgeTotalsMap.get(habit.id)?.averageIntensity ?? null,
       },
     })),

@@ -9,6 +9,11 @@ import { TodayExperience } from "@/components/dashboard/today-experience";
 import { UrgeFeed } from "@/components/dashboard/urge-feed";
 
 type DashboardData = {
+  user: {
+    username: string;
+    email: string;
+    imageUrl: string | null;
+  };
   today: string;
   dayReset: {
     mood: number;
@@ -37,6 +42,9 @@ type DashboardData = {
       totalUrges: number;
       resistedUrges: number;
       actedUrges: number;
+      urgesLast7Days: number;
+      resistedUrgesLast7Days: number;
+      actedUrgesLast7Days: number;
       averageUrgeIntensity: number | null;
     };
   }[];
@@ -129,6 +137,16 @@ function IconSpark() {
   );
 }
 
+function IconSignOut() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.8]">
+      <path d="M10 6H6.5A2.5 2.5 0 0 0 4 8.5v7A2.5 2.5 0 0 0 6.5 18H10" />
+      <path d="M14 8l4 4-4 4" />
+      <path d="M18 12H9" />
+    </svg>
+  );
+}
+
 const tabs: { id: Tab; label: string; icon: React.ReactNode; summary: string }[] = [
   { id: "today", label: "Today", icon: <IconToday />, summary: "Check in and finish small." },
   { id: "progress", label: "Progress", icon: <IconProgress />, summary: "Read the last 7 days." },
@@ -171,6 +189,8 @@ function DesktopNav({
   activeTab,
   setActiveTab,
   openUrgeSupport,
+  onLogout,
+  user,
   hasBreakHabits,
   heldCount,
   totalHabits,
@@ -178,10 +198,14 @@ function DesktopNav({
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
   openUrgeSupport: () => void;
+  onLogout: () => void;
+  user: DashboardData["user"];
   hasBreakHabits: boolean;
   heldCount: number;
   totalHabits: number;
 }) {
+  const initial = user.username.slice(0, 1).toUpperCase();
+
   return (
     <aside className="hidden min-h-[calc(100svh-2.5rem)] flex-col justify-between rounded-[30px] border border-white/10 bg-white/[0.045] p-4 shadow-[0_30px_90px_-60px_rgba(0,0,0,0.9)] backdrop-blur-2xl lg:flex">
       <div>
@@ -233,6 +257,26 @@ function DesktopNav({
       </div>
 
       <div className="grid gap-3">
+        <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[15px] bg-white/10 text-sm font-semibold text-zinc-50">
+              {initial}
+            </div>
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold text-zinc-50">{user.username}</div>
+              <div className="truncate text-xs text-zinc-500">{user.email}</div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onLogout}
+            className="pressable mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-[16px] border border-white/10 bg-white/[0.055] px-3 py-2 text-sm font-semibold text-zinc-300 hover:bg-white/[0.08] hover:text-zinc-50"
+          >
+            <IconSignOut />
+            Sign out
+          </button>
+        </div>
+
         <div className="metric-tile rounded-[24px] p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
             Today held
@@ -385,8 +429,8 @@ function ManageExperience({ data }: { data: DashboardData }) {
     [...data.habits].sort(
       (a, b) =>
         b.stats.completionsLast7Days +
-        b.stats.resistedUrges -
-        (a.stats.completionsLast7Days + a.stats.resistedUrges),
+        b.stats.resistedUrgesLast7Days -
+        (a.stats.completionsLast7Days + a.stats.resistedUrgesLast7Days),
     )[0] ?? null;
 
   return (
@@ -461,17 +505,25 @@ function ManageExperience({ data }: { data: DashboardData }) {
 export function MobileShell({ data }: MobileShellProps) {
   const [activeTab, setActiveTab] = useState<Tab>("today");
   const [showMenu, setShowMenu] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
   const copy = getTabCopy(activeTab, data.today);
   const breakHabits = data.habits.filter((habit) => habit.type === "BREAK");
   const heldCount = data.habits.filter((habit) => habit.completedToday || habit.restedToday).length;
   const compactHeader = activeTab !== "today";
+  const userInitial = data.user.username.slice(0, 1).toUpperCase();
 
   function openUrgeSupport() {
     setActiveTab("today");
     setShowMenu(false);
+    setShowAccount(false);
     window.setTimeout(() => {
       window.dispatchEvent(new CustomEvent("steady:open-urge-sheet"));
     }, 80);
+  }
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
+    window.location.assign("/login");
   }
 
   return (
@@ -485,8 +537,11 @@ export function MobileShell({ data }: MobileShellProps) {
           setActiveTab={(tab) => {
             setActiveTab(tab);
             setShowMenu(false);
+            setShowAccount(false);
           }}
           openUrgeSupport={openUrgeSupport}
+          onLogout={handleLogout}
+          user={data.user}
           hasBreakHabits={breakHabits.length > 0}
           heldCount={heldCount}
           totalHabits={data.habits.length}
@@ -527,6 +582,7 @@ export function MobileShell({ data }: MobileShellProps) {
                   onClick={() => {
                     setActiveTab("progress");
                     setShowMenu(false);
+                    setShowAccount(false);
                   }}
                   className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-[14px] text-zinc-100 lg:hidden"
                   aria-label="Open progress"
@@ -535,11 +591,25 @@ export function MobileShell({ data }: MobileShellProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowMenu((value) => !value)}
+                  onClick={() => {
+                    setShowMenu((value) => !value);
+                    setShowAccount(false);
+                  }}
                   className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-[14px] text-zinc-100"
                   aria-label="Open support menu"
                 >
                   <IconSupport />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAccount((value) => !value);
+                    setShowMenu(false);
+                  }}
+                  className="pressable app-btn-secondary flex h-11 w-11 items-center justify-center rounded-[14px] text-sm font-semibold text-zinc-100"
+                  aria-label="Open account menu"
+                >
+                  {userInitial}
                 </button>
               </div>
             </div>
@@ -586,6 +656,7 @@ export function MobileShell({ data }: MobileShellProps) {
                   onClick={() => {
                     setActiveTab(tab.id);
                     setShowMenu(false);
+                    setShowAccount(false);
                   }}
                   className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[16px] px-2 py-2 text-[11px] font-medium ${
                     active
@@ -603,7 +674,10 @@ export function MobileShell({ data }: MobileShellProps) {
             })}
             <button
               type="button"
-              onClick={() => setShowMenu((value) => !value)}
+              onClick={() => {
+                setShowMenu((value) => !value);
+                setShowAccount(false);
+              }}
               aria-label="Open support menu"
               className={`pressable relative flex flex-col items-center justify-center gap-1 rounded-[16px] px-2 py-2 text-[11px] font-medium ${
                 showMenu
@@ -683,6 +757,32 @@ export function MobileShell({ data }: MobileShellProps) {
                   <div className="text-lg font-semibold text-zinc-50">Week view</div>
                   <div className="text-sm text-zinc-400">See your week, mood, and patterns.</div>
                 </div>
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        {showAccount ? (
+          <div className="pointer-events-none fixed inset-x-0 top-[calc(4.8rem+env(safe-area-inset-top))] z-50 mx-auto w-full max-w-[430px] px-4 lg:left-auto lg:right-6 lg:top-8 lg:mx-0 lg:max-w-[320px]">
+            <div className="app-card animate-sheet-rise pointer-events-auto rounded-[26px] p-4 backdrop-blur">
+              <div className="flex items-center gap-3 rounded-[22px] bg-white/[0.055] p-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#37f5dc_0%,#ff2f68_100%)] text-base font-black text-[#07080a]">
+                  {userInitial}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-lg font-semibold text-zinc-50">
+                    {data.user.username}
+                  </div>
+                  <div className="truncate text-sm text-zinc-400">{data.user.email}</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="pressable mt-3 flex w-full items-center justify-center gap-2 rounded-[20px] border border-white/10 bg-white/[0.055] px-4 py-3 text-sm font-semibold text-zinc-200 hover:bg-white/[0.08] hover:text-zinc-50"
+              >
+                <IconSignOut />
+                Sign out
               </button>
             </div>
           </div>

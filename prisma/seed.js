@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+const { scryptSync } = require("crypto");
 const { PrismaClient, HabitType, UrgeOutcome } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -24,9 +25,16 @@ function atHour(date, hour) {
   return next;
 }
 
-async function findOrCreateHabit({ name, type, minimumAction }) {
+function hashDemoPassword(password) {
+  const salt = "steady-demo-salt";
+  const derivedKey = scryptSync(password, salt, 64);
+
+  return `scrypt:${salt}:${derivedKey.toString("base64url")}`;
+}
+
+async function findOrCreateHabit({ name, type, minimumAction, userId }) {
   const existing = await prisma.habit.findFirst({
-    where: { name },
+    where: { name, userId },
   });
 
   if (existing) {
@@ -37,7 +45,7 @@ async function findOrCreateHabit({ name, type, minimumAction }) {
   }
 
   return prisma.habit.create({
-    data: { name, type, minimumAction },
+    data: { name, type, minimumAction, userId },
   });
 }
 
@@ -58,15 +66,28 @@ async function upsertCompletion(habitId, dateKey, completedAt) {
   });
 }
 
-async function upsertDayReset(dateKey, mood, startedAt) {
-  return prisma.dayReset.upsert({
-    where: { date: dateKey },
-    update: { mood, startedAt },
-    create: {
-      date: dateKey,
-      mood,
-      startedAt,
-    },
+async function upsertDayReset(userId, dateKey, mood, startedAt) {
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.dayReset.findFirst({
+      where: { userId, date: dateKey },
+      select: { id: true },
+    });
+
+    if (existing) {
+      return tx.dayReset.update({
+        where: { id: existing.id },
+        data: { mood, startedAt },
+      });
+    }
+
+    return tx.dayReset.create({
+      data: {
+        date: dateKey,
+        mood,
+        startedAt,
+        userId,
+      },
+    });
   });
 }
 
@@ -95,28 +116,49 @@ async function ensureUrge({ habitId, createdAt, intensity, outcome }) {
 }
 
 async function main() {
+  const demoUser = await prisma.user.upsert({
+    where: { email: "demo@steady.local" },
+    update: {
+      username: "Demo",
+      usernameKey: "demo",
+      passwordHash: hashDemoPassword("steady-demo-123"),
+      emailVerifiedAt: new Date(),
+    },
+    create: {
+      email: "demo@steady.local",
+      username: "Demo",
+      usernameKey: "demo",
+      passwordHash: hashDemoPassword("steady-demo-123"),
+      emailVerifiedAt: new Date(),
+    },
+  });
+
   const read = await findOrCreateHabit({
     name: "Read 10 pages",
     type: HabitType.BUILD,
     minimumAction: "Read one page before noon",
+    userId: demoUser.id,
   });
 
   const walk = await findOrCreateHabit({
     name: "Morning walk",
     type: HabitType.BUILD,
     minimumAction: "Put on shoes and walk for 5 minutes",
+    userId: demoUser.id,
   });
 
   const doomscroll = await findOrCreateHabit({
     name: "Late-night doomscrolling",
     type: HabitType.BREAK,
     minimumAction: "Put the phone down for 60 seconds",
+    userId: demoUser.id,
   });
 
   const sugar = await findOrCreateHabit({
     name: "Stress snacking",
     type: HabitType.BREAK,
     minimumAction: "Drink water before deciding",
+    userId: demoUser.id,
   });
 
   const moods = [4, 3, 5, 2, 4, 3, 5];
@@ -125,7 +167,7 @@ async function main() {
     const day = daysAgo(6 - index);
     const dateKey = formatDateKey(day);
 
-    await upsertDayReset(dateKey, moods[index], atHour(day, 8));
+    await upsertDayReset(demoUser.id, dateKey, moods[index], atHour(day, 8));
 
     if (index !== 1) {
       await upsertCompletion(read.id, dateKey, atHour(day, 9));
@@ -152,7 +194,7 @@ async function main() {
     }
   }
 
-  console.log("Seeded habit MVP data.");
+  console.log("Seeded Steady data for demo@steady.local / steady-demo-123.");
 }
 
 main()

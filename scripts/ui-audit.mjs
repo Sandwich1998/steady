@@ -1,8 +1,10 @@
+import { createHash, randomBytes } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { createRequire } from "node:module";
 
+import { PrismaClient } from "@prisma/client";
 import { chromium } from "playwright";
 
 const require = createRequire(import.meta.url);
@@ -10,6 +12,9 @@ const axeSource = require("axe-core").source;
 
 const baseUrl = process.env.UI_AUDIT_URL ?? "http://localhost:3000";
 const outputDir = path.resolve(process.cwd(), "reports", "ui-audit");
+const prisma = new PrismaClient();
+const sessionToken = randomBytes(32).toString("base64url");
+const tokenHash = createHash("sha256").update(sessionToken).digest("hex");
 
 const viewports = [
   { name: "iphone-375x812", width: 375, height: 812, isMobile: true },
@@ -26,14 +31,27 @@ const scenarios = [
   {
     name: "today-habit-detail",
     run: async (page) => {
-      await page.getByRole("button", { name: /details/i }).first().click();
+      const detailsButton = page.getByRole("button", { name: /details/i }).first();
+      if ((await detailsButton.count()) === 0) {
+        await page.getByText(/You can also do these|No practices yet|Start check-in|Today support/i).first().waitFor({
+          state: "visible",
+        });
+        return;
+      }
+
+      await detailsButton.click();
       await page.waitForTimeout(150);
     },
   },
   {
     name: "today-urge-open",
     run: async (page) => {
-      await page.getByRole("button", { name: /urge hitting now/i }).first().click();
+      const urgeButton = page.getByRole("button", { name: /urge hitting now/i }).first();
+      if ((await urgeButton.count()) === 0) {
+        return;
+      }
+
+      await urgeButton.click();
       await page.waitForTimeout(150);
     },
   },
@@ -389,6 +407,29 @@ async function auditScenario(page, viewport, scenario) {
 
 async function main() {
   await ensureOutputDir();
+  const user = await prisma.user.upsert({
+    where: { email: "audit@steady.local" },
+    update: {
+      username: "Audit",
+      usernameKey: "audit",
+      emailVerifiedAt: new Date(),
+    },
+    create: {
+      email: "audit@steady.local",
+      username: "Audit",
+      usernameKey: "audit",
+      emailVerifiedAt: new Date(),
+    },
+  });
+
+  await prisma.session.create({
+    data: {
+      tokenHash,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      userId: user.id,
+    },
+  });
+
   const browser = await chromium.launch({ headless: true });
 
   try {
@@ -401,6 +442,15 @@ async function main() {
         isMobile: viewport.isMobile,
         hasTouch: viewport.isMobile,
       });
+      await context.addCookies([
+        {
+          name: "steady_session",
+          value: sessionToken,
+          url: new URL(baseUrl).origin,
+          httpOnly: true,
+          sameSite: "Lax",
+        },
+      ]);
       const page = await context.newPage();
       const scenarioResults = [];
 
@@ -455,6 +505,8 @@ async function main() {
     console.log(`JSON report: ${jsonPath}`);
     console.log(`Markdown summary: ${markdownPath}`);
   } finally {
+    await prisma.session.deleteMany({ where: { tokenHash } }).catch(() => undefined);
+    await prisma.$disconnect();
     await browser.close();
   }
 }

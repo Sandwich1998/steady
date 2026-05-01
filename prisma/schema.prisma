@@ -17,6 +17,84 @@ enum UrgeOutcome {
   ACTED
 }
 
+model User {
+  id                  String                   @id @default(cuid())
+  email               String                   @unique
+  username            String
+  usernameKey         String                   @unique
+  passwordHash        String?
+  emailVerifiedAt     DateTime?
+  imageUrl            String?
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  accounts            OAuthAccount[]
+  dayResets           DayReset[]
+  habits              Habit[]
+  passwordResetTokens PasswordResetToken[]
+  sessions            Session[]
+  verificationTokens  EmailVerificationToken[]
+}
+
+model PendingRegistration {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String
+  usernameKey  String   @unique
+  passwordHash String
+  tokenHash    String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model OAuthAccount {
+  id                String   @id @default(cuid())
+  provider          String
+  providerAccountId String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
 model Habit {
   id            String            @id @default(cuid())
   name          String
@@ -24,16 +102,25 @@ model Habit {
   minimumAction String
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
+  userId        String?
+  user          User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   completions   HabitCompletion[]
   restDays      HabitRestDay[]
   urgeLogs      UrgeLog[]
+
+  @@index([userId])
 }
 
 model DayReset {
   id        String   @id @default(cuid())
-  date      String   @unique
+  date      String
   mood      Int
   startedAt DateTime @default(now())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId])
 }
 
 model HabitCompletion {
@@ -47,11 +134,11 @@ model HabitCompletion {
 }
 
 model HabitRestDay {
-  id        String   @id @default(cuid())
-  date      String
-  restedAt  DateTime @default(now())
-  habitId   String
-  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  id       String   @id @default(cuid())
+  date     String
+  restedAt DateTime @default(now())
+  habitId  String
+  habit    Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
   @@unique([habitId, date])
 }
@@ -61,6 +148,6 @@ model UrgeLog {
   intensity Int
   outcome   UrgeOutcome
   createdAt DateTime    @default(now())
-  habitId    String
-  habit      Habit      @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId   String
+  habit     Habit       @relation(fields: [habitId], references: [id], onDelete: Cascade)
 }

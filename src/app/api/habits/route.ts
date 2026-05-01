@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getRateLimitKey } from "@/lib/rate-limit";
 import {
@@ -12,6 +13,12 @@ import {
 
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Please log in to continue." }, { status: 401 });
+    }
+
     const rateLimit = checkRateLimit(getRateLimitKey(request, "habit-create"), 15, 60_000);
     if (!rateLimit.allowed) {
       return NextResponse.json(
@@ -55,6 +62,7 @@ export async function POST(request: Request) {
         name,
         minimumAction,
         type,
+        userId: user.id,
       },
     });
 

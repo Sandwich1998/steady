@@ -60,7 +60,7 @@ export function TodayExperience({
 }: TodayExperienceProps) {
   const breakHabits = habits.filter((habit) => habit.type === "BREAK");
   const nextHabit = habits.find((habit) => !habit.completedToday && !habit.restedToday) ?? null;
-  const completedTodayCount = habits.filter((habit) => habit.completedToday).length;
+  const heldTodayCount = habits.filter((habit) => habit.completedToday || habit.restedToday).length;
   const actedToday = weeklyHistory.at(-1)?.actedCount ?? 0;
   const checkedInDays = weeklyHistory.filter((day) => day.mood !== null).length;
   const resetDay = Math.min(Math.max(checkedInDays + (dayReset ? 0 : 1), 1), 7);
@@ -212,7 +212,7 @@ export function TodayExperience({
 
           <div className="mt-4 grid gap-3">
             <div className="px-1 text-center text-sm font-medium text-zinc-400">
-              {completedTodayCount}/{habits.length || 1} practices held today
+              {heldTodayCount}/{habits.length || 1} practices held today
             </div>
             <button
               type="button"

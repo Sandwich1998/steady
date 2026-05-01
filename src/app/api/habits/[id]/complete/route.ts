@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getCurrentUser } from "@/lib/auth";
 import { getTodayKey } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getRateLimitKey } from "@/lib/rate-limit";
@@ -10,6 +11,12 @@ type RouteContext = {
 
 export async function POST(request: Request, context: RouteContext) {
   try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Please log in to continue." }, { status: 401 });
+    }
+
     const rateLimit = checkRateLimit(getRateLimitKey(request, "habit-complete"), 40, 60_000);
     if (!rateLimit.allowed) {
       return NextResponse.json(
@@ -21,8 +28,8 @@ export async function POST(request: Request, context: RouteContext) {
     const { id } = await context.params;
     const today = getTodayKey();
 
-    const habit = await prisma.habit.findUnique({
-      where: { id },
+    const habit = await prisma.habit.findFirst({
+      where: { id, userId: user.id },
       select: { id: true },
     });
 
