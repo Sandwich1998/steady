@@ -216,7 +216,7 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
               </button>
             </div>
 
-            <div className="relative mt-5 grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
+            <div className="relative mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
               <button
                 type="button"
                 onClick={() => completeHabit(nextHabit.id)}
@@ -234,23 +234,24 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                     : "app-btn-primary text-white hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 }`}
               >
-                {nextHabit.completedToday ? "Done today" : nextHabit.restedToday ? "Resting today" : "Mark as done"}
+                {nextHabit.completedToday ? "Done today" : nextHabit.restedToday ? "Resting today" : "Done"}
               </button>
-              <div className="grid grid-cols-[1fr_auto] gap-3">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:justify-end">
                 <button
                   type="button"
                   onClick={() => restHabit(nextHabit.id)}
+                  aria-label={`Rest ${nextHabit.name} today`}
                   disabled={
                     nextHabit.restedToday ||
                     nextHabit.completedToday ||
                     isPending ||
                     activeMutationHabitId !== null
                   }
-                  className="pressable app-btn-secondary min-h-12 rounded-[18px] px-5 py-3 text-sm font-medium text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="pressable min-h-9 rounded-full border border-white/8 bg-white/[0.035] px-3.5 py-2 text-xs font-semibold text-zinc-400 hover:border-white/14 hover:bg-white/[0.06] hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {nextHabit.restedToday ? "Resting today" : "Rest today"}
+                  {nextHabit.restedToday ? "Resting" : "Rest today"}
                 </button>
-                <div className="flex items-center rounded-[18px] bg-white/6 px-3 py-2 text-sm text-zinc-300">
+                <div className="text-sm text-zinc-500">
                   {Math.max(
                     habits.filter((habit) => !habit.completedToday && !habit.restedToday).length - 1,
                     0,
@@ -315,27 +316,28 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
                             {habit.completedToday ? "Done" : "Resting"}
                           </div>
                         ) : (
-                          <button
-                            type="button"
-                            onClick={() => completeHabit(habit.id)}
-                            disabled={isPending || activeMutationHabitId !== null}
-                            className="pressable app-btn-primary min-h-11 rounded-full px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            Mark
-                          </button>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => restHabit(habit.id)}
+                              aria-label={`Rest ${habit.name} today`}
+                              disabled={isPending || activeMutationHabitId !== null}
+                              className="pressable min-h-9 rounded-full px-2.5 py-1.5 text-xs font-semibold text-zinc-500 hover:bg-white/[0.055] hover:text-zinc-300 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              Rest
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => completeHabit(habit.id)}
+                              aria-label={`Mark ${habit.name} done today`}
+                              disabled={isPending || activeMutationHabitId !== null}
+                              className="pressable app-btn-primary min-h-10 rounded-full px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              Done
+                            </button>
+                          </div>
                         )}
                       </div>
-
-                      {!isClosed ? (
-                        <button
-                          type="button"
-                          onClick={() => restHabit(habit.id)}
-                          disabled={isPending || activeMutationHabitId !== null}
-                          className="pressable app-btn-secondary mt-3 min-h-11 w-full rounded-full px-3 py-2.5 text-sm font-medium text-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          Rest today
-                        </button>
-                      ) : null}
                     </article>
                   );
                 })}
